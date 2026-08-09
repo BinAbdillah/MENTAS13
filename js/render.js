@@ -15,8 +15,8 @@ function renderHeader(d) {
       <a href="#hero" class="flex items-center gap-3">
         ${renderLogo(i.logo)}
         <span>
-          <span class="block text-base font-extrabold leading-tight text-slate-900">${i.namaRW}</span>
-          <span class="block text-xs text-slate-500">${i.tagline}</span>
+          <span class="bblock text-lg font-extrabold leading-tight text-slate-900lock text-base font-extrabold leading-tight text-slate-900">${i.namaRW}</span>
+          <span class="block text-sm text-slate-500">${i.tagline}</span>
         </span>
       </a>
       <nav class="hidden items-center gap-1 md:flex">
@@ -48,16 +48,16 @@ function renderHero(d) {
           <span class="rounded-full bg-emerald-500/20 px-4 py-1.5 text-xs font-semibold text-emerald-300 ring-1 ring-emerald-400/40">
             ${i.kecamatan} • ${i.kota}
           </span>
-          <h1 class="mt-4 text-3xl font-extrabold leading-tight md:text-5xl">
+          <h1 class="mt-4 text-4xl font-extrabold leading-tight md:text-6xl">
             ${hero.judul}<br><span class="text-emerald-400">${i.namaRW}</span>
           </h1>
-          <blockquote class="mt-5 border-l-4 border-emerald-400 pl-4 text-sm leading-relaxed text-slate-200 md:text-base">
+          <blockquote class="mt-5 border-l-4 border-emerald-400 pl-4 text-base leading-relaxed text-slate-200 md:text-lg">
             “${hero.sambutan}”
           </blockquote>
           <div class="mt-5 flex items-center gap-3">
             <span class="grid h-12 w-12 place-items-center rounded-full bg-emerald-500 font-extrabold text-slate-900">${inisial(ketua.nama)}</span>
             <span>
-              <span class="block font-bold">${namaAtau(ketua.nama)}</span>
+              <span class="block text-lg font-bold">${namaAtau(ketua.nama)}</span>
               <span class="block text-xs text-emerald-300">Ketua RW • Periode ${hero.periode}</span>
             </span>
           </div>
