@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Resmi RW 013 Menteng Atas</title>
+
+  <!-- Tailwind CDN + konfigurasi terpisah -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/tailwind-config.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <!-- Leaflet: peta interaktif (gratis, tanpa API key) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Style custom project (CSS murni, TANPA @apply) -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-slate-50 font-sans text-slate-800">
+  <!-- KERANGKA KOSONG — seluruh isi dirender JS dari data.json -->
+  <header id="header" class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur"></header>
+
+  <main>
+    <div id="hero"></div>        <!-- Banner + sambutan ketua RW -->
+    <div id="profil"></div>     <!-- Statistik & perbatasan wilayah -->
+    <div id="struktur"></div>   <!-- Penasihat, pengurus RW/RT, mitra -->
+    <div id="agenda"></div>     <!-- Agenda kegiatan -->
+    <div id="fasilitas"></div>  <!-- Fasilitas warga -->
+    <div id="peta-cuaca"></div> <!-- Peta interaktif + cuaca real-time -->
+  </main>
+
+  <footer id="kontak"></footer>
+
+  <!-- Urutan penting: utils → render → peta-cuaca → app -->
+  <script src="js/utils.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/peta-cuaca.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
