@@ -1,26 +1,29 @@
 /* =========================================================
-   style.css — CSS murni + TEMA "SAGE HIJAU" + font display
+   style.css — CSS murni + TEMA "SAGE HIJAU" v2 (lebih terasa)
    ========================================================= */
 
-/* ---------- Variabel tema (ganti di sini bila ingin ganti suasana) ---------- */
+/* ---------- Variabel tema: sage v2, hijau lebih hadir ---------- */
 :root {
-  --bg:        #F2F5F1;   /* latar halaman */
-  --surface:   #FBFCFA;   /* kartu / header */
-  --fill:      #E7EEE5;   /* isian lembut (avatar, kotak kecil) */
-  --line:      #DCE5DA;   /* garis tepi */
-  --line-soft: #E9F0E7;   /* garis tepi halus */
+  --bg:        #EAF0E6;   /* latar halaman — hijau lembut yang terlihat */
+  --surface:   #F8FBF5;   /* kartu / header — putih kehijauan */
+  --fill:      #DCE8D6;   /* isian lembut — sage jelas */
+  --line:      #C7D8C0;   /* garis tepi — sage */
+  --line-soft: #D6E3CF;   /* garis halus */
 }
 
 html { scroll-behavior: smooth; font-size: 17px; }
 
-/* ---------- Font judul (opsi 1: Bricolage Grotesque) ---------- */
+/* ---------- Font judul (Bricolage Grotesque) ---------- */
 h1, h2, h3 {
   font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', system-ui, sans-serif;
   letter-spacing: -0.015em;
 }
+h2 { color: #16301f; }   /* judul section: hijau-tua yang elegan */
 
-/* ---------- Lapisan tema: remap utility Tailwind ke palet sage,
-              tanpa menyentuh render.js ---------- */
+/* ---------- Seleksi teks senada tema ---------- */
+::selection { background: #bbf7d0; color: #052e16; }
+
+/* ---------- Lapisan tema: remap utility Tailwind ---------- */
 body            { background-color: var(--bg) !important; }
 .bg-white       { background-color: var(--surface) !important; }
 .bg-white\/90   { background-color: color-mix(in srgb, var(--surface) 92%, transparent) !important; }
@@ -39,14 +42,14 @@ body            { background-color: var(--bg) !important; }
   border-radius: 1rem;
   border: 1px solid var(--line);
   background: var(--surface);
-  box-shadow: 0 1px 2px 0 rgb(60 80 60 / .06);
+  box-shadow: 0 1px 3px 0 rgb(50 80 40 / .08);
 }
 
 /* ---------- Efek hover kartu ---------- */
 .kartu-hover { transition: transform .2s ease, box-shadow .2s ease; }
 .kartu-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 6px -1px rgb(60 80 60 / .12), 0 2px 4px -2px rgb(60 80 60 / .1);
+  box-shadow: 0 6px 14px -4px rgb(50 80 40 / .18), 0 2px 4px -2px rgb(50 80 40 / .1);
 }
 
 /* ---------- Navigasi ---------- */
@@ -55,12 +58,12 @@ body            { background-color: var(--bg) !important; }
   padding: .6rem 1rem;
   font-size: 1rem;
   font-weight: 600;
-  color: #475569;
+  color: #44584a;
 }
-.nav-link:hover { background: #ecfdf5; color: #047857; }
+.nav-link:hover { background: #dce8d6; color: #14532d; }
 
 /* ---------- Nilai belum diisi ---------- */
-.nilai-kosong { font-style: italic; color: #94a3b8; }
+.nilai-kosong { font-style: italic; color: #8aa08f; }
 
 /* ---------- Pin marker peta ---------- */
 .pin-f {
