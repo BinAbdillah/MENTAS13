@@ -24,7 +24,7 @@ const inisial = (nama) => {
 
 /* Render logo: bila nilai berupa path gambar → <img>,
    bila emoji → span biasa. Ada fallback emoji bila gambar 404. */
-const renderLogo = (logo, cls = 'h-11 w-11') => {
+const renderLogo = (logo, cls = 'h-12 w-12') => {
   if (/\.(png|jpe?g|svg|webp)$/i.test(String(logo))) {
     return `
       <span class="relative inline-block ${cls}">
@@ -59,7 +59,7 @@ const WARNA_KATEGORI = {
 // Komponen judul section agar konsisten
 const judulSeksi = (ikon, judul, sub) => `
   <div class="mb-10 text-center">
-    <span class="text-3xl">${ikon}</span>
-    <h2 class="mt-2 text-2xl font-extrabold text-slate-900 md:text-3xl">${judul}</h2>
-    <p class="mt-2 text-slate-500">${sub}</p>
+    <span class="text-4xl">${ikon}</span>
+    <h2 class="mt-2 text-3xl font-extrabold text-slate-900 md:text-4xl">${judul}</h2>
+    <p class="mt-2 text-base text-slate-500 md:text-lg">${sub}</p>
   </div>`;
