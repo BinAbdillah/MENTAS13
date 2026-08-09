@@ -1,23 +1,45 @@
 /* =========================================================
-   peta-cuaca.js — peta interaktif (Leaflet) + cuaca (Open-Meteo)
+   peta-cuaca.js — peta interaktif + cuaca real-time
+   Mode peta diatur dari data.json → "peta.mode":
+     • "google"  → embed Google My Maps pengurus (posisi akurat)
+     • "leaflet" → peta Leaflet + koordinat dari data.json
    ========================================================= */
 
 function renderPetaCuaca(d) {
+  const pakaiGoogle = d.peta && d.peta.mode === 'google' && d.peta.googleEmbed;
+
   $('#peta-cuaca').innerHTML = `
-    <section class="mx-auto max-w-6xl px-4 py-16">
+    <section class="mx-auto max-w-6xl px-4 py-16 md:py-20">
       ${judulSeksi('🗺️', 'Peta Wilayah & Cuaca', 'Peta interaktif RW 013 dan cuaca real-time sekitar wilayah')}
       <div class="grid gap-6 lg:grid-cols-3">
-        <div id="peta" class="h-[380px] rounded-2xl border border-slate-200 shadow-sm lg:col-span-2 md:h-[460px]"></div>
-        <div id="cuacaCard" class="kartu p-6">
-          <p class="animate-pulse text-sm text-slate-500">Memuat cuaca…</p>
+
+        ${pakaiGoogle ? `
+        <!-- PETA: embed Google My Maps pengurus (geser/zoom langsung) -->
+        <div class="overflow-hidden rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
+          <iframe src="${d.peta.googleEmbed}" title="Peta Wilayah RW 013 Menteng Atas"
+                  class="h-[420px] w-full md:h-[520px]" loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        </div>` : `
+        <!-- PETA: Leaflet (bila mode 'leaflet') -->
+        <div id="peta" class="h-[420px] rounded-2xl border border-slate-200 shadow-sm lg:col-span-2 md:h-[520px]"></div>`}
+
+        <!-- KARTU CUACA real-time -->
+        <div id="cuacaCard" class="kartu p-6 md:p-7">
+          <p class="animate-pulse text-base text-slate-500">Memuat cuaca…</p>
         </div>
       </div>
+
+      ${pakaiGoogle ? `
+      <p class="mt-4 text-sm text-slate-500">
+        🗺️ Peta & titik fasilitas dikelola melalui <b>Google My Maps pengurus</b> — perbarui di sana, website otomatis mengikuti.
+      </p>` : ''}
     </section>`;
-  initPeta(d);
+
+  if (!pakaiGoogle) initPeta(d);   // hanya bila mode leaflet
   renderCuaca(d);
 }
 
-/* Peta: polygon batas RW + marker fasilitas */
+/* ---------- Leaflet (mode 'leaflet') ---------- */
 function initPeta(d) {
   const peta = L.map('peta', { scrollWheelZoom: false });
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -31,14 +53,14 @@ function initPeta(d) {
   d.fasilitas.forEach((f) => {
     L.marker(f.koordinat, {
       icon: L.divIcon({ className: '', html: '<div class="pin-f">' + f.ikon + '</div>',
-        iconSize: [34, 34], iconAnchor: [17, 32], popupAnchor: [0, -28] })
+        iconSize: [38, 38], iconAnchor: [19, 36], popupAnchor: [0, -30] })
     }).addTo(peta).bindPopup('<b>' + f.nama + '</b><br>' + f.jenis);
   });
 
   peta.fitBounds(batas.getBounds(), { padding: [40, 40], maxZoom: 18 });
 }
 
-/* Cuaca real-time dari Open-Meteo (gratis, tanpa API key) */
+/* ---------- Cuaca real-time: Open-Meteo (gratis, tanpa API key) ---------- */
 async function renderCuaca(d) {
   const [lat, lon] = d.identitas.koordinat;
   try {
@@ -46,21 +68,21 @@ async function renderCuaca(d) {
     const c = (await r.json()).current;
     const [ikon, teks] = labelCuaca(c.weather_code);
     $('#cuacaCard').innerHTML = `
-      <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500">Cuaca ${d.identitas.kota}</h3>
-      <div class="mt-4 flex items-center gap-4">
-        <span class="text-5xl">${ikon}</span>
+      <h3 class="text-base font-bold uppercase tracking-wider text-slate-500">Cuaca ${d.identitas.kota}</h3>
+      <div class="mt-5 flex items-center gap-5">
+        <span class="text-6xl">${ikon}</span>
         <div>
-          <b class="text-4xl text-slate-900">${Math.round(c.temperature_2m)}°C</b>
-          <p class="text-sm font-medium text-slate-600">${teks}</p>
+          <b class="text-5xl text-slate-900">${Math.round(c.temperature_2m)}°C</b>
+          <p class="text-base font-medium text-slate-600">${teks}</p>
         </div>
       </div>
-      <div class="mt-5 grid grid-cols-3 gap-2 text-center text-xs">
-        <div class="rounded-xl bg-slate-100 p-3">🌡️<br><b class="text-sm">${Math.round(c.apparent_temperature)}°C</b><br>Terasa</div>
-        <div class="rounded-xl bg-slate-100 p-3">💧<br><b class="text-sm">${c.relative_humidity_2m}%</b><br>Kelembapan</div>
-        <div class="rounded-xl bg-slate-100 p-3">🌬️<br><b class="text-sm">${Math.round(c.wind_speed_10m)}</b><br>km/jam</div>
+      <div class="mt-6 grid grid-cols-3 gap-2 text-center text-sm">
+        <div class="rounded-xl bg-slate-100 p-4">🌡️<br><b class="text-base">${Math.round(c.apparent_temperature)}°C</b><br>Terasa</div>
+        <div class="rounded-xl bg-slate-100 p-4">💧<br><b class="text-base">${c.relative_humidity_2m}%</b><br>Kelembapan</div>
+        <div class="rounded-xl bg-slate-100 p-4">🌬️<br><b class="text-base">${Math.round(c.wind_speed_10m)}</b><br>km/jam</div>
       </div>
-      <p class="mt-4 text-[11px] text-slate-400">Sumber: Open-Meteo • diperbarui otomatis</p>`;
+      <p class="mt-5 text-xs text-slate-400">Sumber: Open-Meteo • diperbarui otomatis</p>`;
   } catch (e) {
-    $('#cuacaCard').innerHTML = '<p class="text-sm text-slate-500">⚠️ Cuaca tidak dapat dimuat. Periksa koneksi internet.</p>';
+    $('#cuacaCard').innerHTML = '<p class="text-base text-slate-500">⚠️ Cuaca tidak dapat dimuat. Periksa koneksi internet.</p>';
   }
 }

@@ -1,5 +1,5 @@
 /* =========================================================
-   utils.js — fungsi pembantu umum
+   utils.js — fungsi pembantu umum (versi tipografi besar)
    ========================================================= */
 
 // Pemilih elemen singkat
@@ -22,8 +22,8 @@ const inisial = (nama) => {
     .split(' ').map((k) => k[0]).slice(0, 2).join('').toUpperCase();
 };
 
-/* Render logo: bila nilai berupa path gambar → <img>,
-   bila emoji → span biasa. Ada fallback emoji bila gambar 404. */
+/* Render logo: path gambar → <img> (fallback emoji bila 404),
+   emoji → span biasa. Ukuran default diperbesar (h-12 w-12). */
 const renderLogo = (logo, cls = 'h-12 w-12') => {
   if (/\.(png|jpe?g|svg|webp)$/i.test(String(logo))) {
     return `
@@ -56,10 +56,10 @@ const WARNA_KATEGORI = {
   'Kerja Bakti': 'bg-amber-100 text-amber-700'
 };
 
-// Komponen judul section agar konsisten
+// Komponen judul section — ukuran dinaikkan satu tingkat
 const judulSeksi = (ikon, judul, sub) => `
-  <div class="mb-10 text-center">
+  <div class="mb-10 text-center md:mb-12">
     <span class="text-4xl">${ikon}</span>
-    <h2 class="mt-2 text-3xl font-extrabold text-slate-900 md:text-4xl">${judul}</h2>
-    <p class="mt-2 text-base text-slate-500 md:text-lg">${sub}</p>
+    <h2 class="mt-3 text-3xl font-extrabold text-slate-900 md:text-4xl">${judul}</h2>
+    <p class="mt-3 text-base text-slate-500 md:text-lg">${sub}</p>
   </div>`;

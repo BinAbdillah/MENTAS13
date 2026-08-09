@@ -1,6 +1,5 @@
 {
   "_catatan": "DATA SEMENTARA — diperbarui berkala. Field berawalan '_' tidak ditampilkan.",
-  "_catatanLogo": "Rename file 'logo rw.png' di folder assets menjadi 'logo-rw.png'. Bila file tidak ada, logo otomatis fallback ke emoji.",
 
   "identitas": {
     "namaRW": "RW 013 Menteng Atas",
@@ -12,7 +11,7 @@
     "koordinat": [-6.2138, 106.8478],
     "telepon": "",
     "email": "",
-    "jamLayanan": "Sabtu • 19.30–21.00 WIB (tentatif)",
+    "jamLayanan": "Minggu-Jumat • 20.00–22.00 WIB (tentatif)",
     "sosmed": { "instagram": "", "facebook": "", "whatsapp": "" }
   },
 
@@ -20,7 +19,24 @@
     "foto": "https://images.unsplash.com/photo-1449844174353-612b95733a6b?auto=format&fit=crop&w=1600&q=60",
     "judul": "Selamat Datang di Website Resmi",
     "sambutan": "Website ini menjadi sarana informasi dan silaturahmi warga RW 013 Menteng Atas. Mari bersama menjaga lingkungan yang aman, bersih, dan guyub.",
-    "periode": "2023–2028"
+    "periode": "2024–2029"
+  },
+
+  "banner": {
+    "_catatan": "Banner temporer. Otomatis SEMBUNYI di luar rentang tanggal — tidak perlu hapus kode.",
+    "aktif": true,
+    "mulai": "2026-08-01",
+    "selesai": "2026-08-31",
+    "gambar": "assets/logo-HUT-RI-81.png",
+    "teks": "Dirgahayu Republik Indonesia ke-81",
+    "sub": "Merdeka! Mari semarakkan lomba & kegiatan 17 Agustus di RW 013.",
+    "link": "#agenda"
+  },
+
+  "peta": {
+    "_catatanMode": "mode 'google' = embed My Maps pengurus (posisi akurat). Ubah ke 'leaflet' bila koordinat fasilitas sudah diisi ulang.",
+    "mode": "google",
+    "googleEmbed": "https://www.google.com/maps/d/embed?mid=1_opObY1kFOyctMgN6jrozmqhc3j5bLg&ehbc=2E312F"
   },
 
   "wilayah": {
@@ -66,9 +82,9 @@
   ],
 
   "mitra": [
-    { "nama": "TP PKK RW 013", "ikon": "👩‍👧", "deskripsi": "Gerakan pemberdayaan & kesejahteraan keluarga.",
+    { "nama": "TP PKK RW 013", "ikon": "👩👧", "deskripsi": "Gerakan pemberdayaan & kesejahteraan keluarga.",
       "struktur": [ { "jabatan": "Ketua", "nama": "" }, { "jabatan": "Sekretaris", "nama": "" }, { "jabatan": "Bendahara", "nama": "" } ] },
-    { "nama": "Karang Taruna Unit 13", "ikon": "🧑‍🤝‍🧑", "deskripsi": "Wadah kreativitas & kegiatan pemuda wilayah.",
+    { "nama": "Karang Taruna Unit 13", "ikon": "🧑‍‍🧑", "deskripsi": "Wadah kreativitas & kegiatan pemuda wilayah.",
       "struktur": [ { "jabatan": "Ketua", "nama": "" }, { "jabatan": "Wakil Ketua", "nama": "" }, { "jabatan": "Sekretaris", "nama": "" } ] },
     { "nama": "LMK", "ikon": "🏘️", "deskripsi": "Lembaga Musyawarah Kelurahan — mitra pembangunan warga.",
       "struktur": [ { "jabatan": "Ketua", "nama": "" } ] }
@@ -85,7 +101,7 @@
     { "nama": "Pos RW 13",                    "ikon": "🏠", "jenis": "Administrasi", "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21375, 106.84775] }
   ],
 
-  "_catatanPeta": "Koordinat fasilitas & polygon batas masih PERKIRAAN — perbarui bila sudah ada data GPS akurat.",
+  "_catatanPeta": "Koordinat 'fasilitas' & 'batasRW' di bawah hanya dipakai mode 'leaflet' (saat ini perkiraan).",
   "batasRW": [
     [-6.21355, 106.84755], [-6.21350, 106.84800], [-6.21380, 106.84812],
     [-6.21410, 106.84800], [-6.21415, 106.84755], [-6.21385, 106.84743]
