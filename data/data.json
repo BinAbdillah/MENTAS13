@@ -11,7 +11,7 @@
     "koordinat": [-6.2138, 106.8478],
     "telepon": "",
     "email": "",
-    "jamLayanan": "Minggu-Jumat • 20.00–22.00 WIB (tentatif)",
+    "jamLayanan": "Sabtu • 19.30–21.00 WIB (tentatif)",
     "sosmed": { "instagram": "", "facebook": "", "whatsapp": "" }
   },
 
@@ -19,18 +19,18 @@
     "foto": "https://images.unsplash.com/photo-1449844174353-612b95733a6b?auto=format&fit=crop&w=1600&q=60",
     "judul": "Selamat Datang di Website Resmi",
     "sambutan": "Website ini menjadi sarana informasi dan silaturahmi warga RW 013 Menteng Atas. Mari bersama menjaga lingkungan yang aman, bersih, dan guyub.",
-    "periode": "2024–2029"
+    "periode": "2023–2028"
   },
 
   "banner": {
-    "_catatan": "Banner temporer. Otomatis SEMBUNYI di luar rentang tanggal — tidak perlu hapus kode.",
+    "_catatan": "Spanduk temporer: otomatis SEMBUNYI di luar rentang tanggal. Gambar dipakai apa adanya tanpa teks tambahan. Bila nama file berbeda, cukup ubah 'gambar'. Set 'gantiFotoHero': true bila spanduk ingin dipakai juga sebagai latar hero.",
     "aktif": true,
     "mulai": "2026-08-01",
     "selesai": "2026-08-31",
     "gambar": "assets/logo-HUT-RI-81.png",
-    "teks": "Dirgahayu Republik Indonesia ke-81",
-    "sub": "Merdeka! Mari semarakkan lomba & kegiatan 17 Agustus di RW 013.",
-    "link": "#agenda"
+    "teks": "HUT RI ke-81 — Menjaga Alam, Membangun Bangsa",
+    "link": "#agenda",
+    "gantiFotoHero": false
   },
 
   "peta": {
@@ -82,7 +82,7 @@
   ],
 
   "mitra": [
-    { "nama": "TP PKK RW 013", "ikon": "👩👧", "deskripsi": "Gerakan pemberdayaan & kesejahteraan keluarga.",
+    { "nama": "TP PKK RW 013", "ikon": "👩", "deskripsi": "Gerakan pemberdayaan & kesejahteraan keluarga.",
       "struktur": [ { "jabatan": "Ketua", "nama": "" }, { "jabatan": "Sekretaris", "nama": "" }, { "jabatan": "Bendahara", "nama": "" } ] },
     { "nama": "Karang Taruna Unit 13", "ikon": "🧑‍‍🧑", "deskripsi": "Wadah kreativitas & kegiatan pemuda wilayah.",
       "struktur": [ { "jabatan": "Ketua", "nama": "" }, { "jabatan": "Wakil Ketua", "nama": "" }, { "jabatan": "Sekretaris", "nama": "" } ] },

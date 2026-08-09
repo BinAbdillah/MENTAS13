@@ -1,5 +1,5 @@
 /* =========================================================
-   utils.js — fungsi pembantu umum (versi tipografi besar)
+   utils.js — fungsi pembantu umum
    ========================================================= */
 
 // Pemilih elemen singkat
@@ -22,19 +22,30 @@ const inisial = (nama) => {
     .split(' ').map((k) => k[0]).slice(0, 2).join('').toUpperCase();
 };
 
-/* Render logo: path gambar → <img> (fallback emoji bila 404),
-   emoji → span biasa. Ukuran default diperbesar (h-12 w-12). */
-const renderLogo = (logo, cls = 'h-12 w-12') => {
+/* Cek apakah banner temporer sedang aktif (dalam rentang tanggal).
+   Dipakai oleh app.js (banner) dan render.js (opsi latar hero). */
+const bannerAktif = (b) => {
+  if (!b || !b.aktif) return false;
+  const now = new Date();
+  return now >= new Date(b.mulai + 'T00:00:00')
+      && now <= new Date(b.selesai + 'T23:59:59');
+};
+
+/* Render logo DIPERBESAR (±56px mobile / 64px desktop).
+   - Path gambar → <img> object-contain TANPA kotak hijau (warna asli logo terlihat).
+   - Emoji → span berkotak hijau.
+   - Fallback otomatis ke emoji bila gambar 404. */
+const renderLogo = (logo, cls = 'h-14 w-14 md:h-16 md:w-16') => {
   if (/\.(png|jpe?g|svg|webp)$/i.test(String(logo))) {
     return `
       <span class="relative inline-block ${cls}">
         <img src="${logo}" alt="Logo RW"
-             class="absolute inset-0 h-full w-full rounded-xl object-cover shadow"
+             class="absolute inset-0 h-full w-full rounded-xl object-contain"
              onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
-        <span class="hidden h-full w-full place-items-center rounded-xl bg-emerald-600 text-2xl shadow">🏛️</span>
+        <span class="hidden h-full w-full place-items-center rounded-xl bg-emerald-600 text-2xl shadow md:text-3xl">🏛️</span>
       </span>`;
   }
-  return `<span class="grid ${cls} place-items-center rounded-xl bg-emerald-600 text-2xl shadow">${logo}</span>`;
+  return `<span class="grid ${cls} place-items-center rounded-xl bg-emerald-600 text-2xl shadow md:text-3xl">${logo}</span>`;
 };
 
 // Kode cuaca WMO → ikon & label bahasa Indonesia
@@ -56,7 +67,7 @@ const WARNA_KATEGORI = {
   'Kerja Bakti': 'bg-amber-100 text-amber-700'
 };
 
-// Komponen judul section — ukuran dinaikkan satu tingkat
+// Komponen judul section — ukuran besar
 const judulSeksi = (ikon, judul, sub) => `
   <div class="mb-10 text-center md:mb-12">
     <span class="text-4xl">${ikon}</span>
