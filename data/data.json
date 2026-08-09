@@ -3,15 +3,15 @@
 
   "identitas": {
     "namaRW": "RW 013 Menteng Atas",
-    "tagline": "A.M.A.N.A.H",
+    "tagline": "Mandiri • Rukun • Sejahtera",
     "logo": "assets/logo-rw.png",
     "kecamatan": "Kecamatan Setiabudi",
     "kota": "Jakarta Selatan",
-    "alamat": "RT 06 / RW 013 (Pos RW 13), Menteng Atas, Jakarta Selatan",
+    "alamat": "Sekretariat RW 013 (Pos RW 13), Menteng Atas, Jakarta Selatan",
     "koordinat": [-6.2138, 106.8478],
     "telepon": "",
-    "email": "baddillrag@gmail.com",
-    "jamLayanan": "Minggu-Jum'at • 20.00–22.00 WIB (tentatif)",
+    "email": "",
+    "jamLayanan": "Sabtu • 19.30–21.00 WIB (tentatif)",
     "sosmed": { "instagram": "", "facebook": "", "whatsapp": "" }
   },
 
@@ -41,7 +41,7 @@
 
   "wilayah": {
     "luasM2": 4200,
-    "penduduk": 1881,
+    "penduduk": 1782,
     "jumlahRT": 9,
     "perbatasan": [
       { "arah": "Timur",   "dengan": "Jl. Subur Ujung RW.015" },
@@ -100,12 +100,12 @@
   ],
 
   "fasilitas": [
-    { "nama": "Masjid Jami' Al Barkah",       "ikon": "🕌", "jenis": "Ibadah",     "alamat": "RT 01 / RW 013 Menteng Atas", "koordinat": [-6.21360, 106.84760] },
-    { "nama": "Yayasan Ar Rizky As Salafiyyah", "ikon": "🏫", "jenis": "Pendidikan", "alamat": "RT 02 / RW 013 Menteng Atas", "koordinat": [-6.21365, 106.84795] },
-    { "nama": "Saung Warga RW 13",            "ikon": "🛖", "jenis": "Ruang Publik", "alamat": "RT 02 / RW 013 Menteng Atas", "koordinat": [-6.21390, 106.84760] },
-    { "nama": "RPTRA Kebon Sawo",             "ikon": "🌳", "jenis": "Ruang Hijau",  "alamat": "RT 06 / RW 013 Menteng Atas", "koordinat": [-6.21400, 106.84790] },
-    { "nama": "PAUD ASTERIA",                 "ikon": "🎓", "jenis": "Pendidikan",   "alamat": "RT 06 / RW 013 Menteng Atas", "koordinat": [-6.21395, 106.84800] },
-    { "nama": "Pos RW 13",                    "ikon": "🏠", "jenis": "Administrasi", "alamat": "RT 06 / RW 013 Menteng Atas", "koordinat": [-6.21375, 106.84775] }
+    { "nama": "Masjid Jami' Al Barkah",       "ikon": "🕌", "jenis": "Ibadah",     "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21360, 106.84760] },
+    { "nama": "Yayasan Ar Rizky As Salafiyyah", "ikon": "🏫", "jenis": "Pendidikan", "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21365, 106.84795] },
+    { "nama": "Saung Warga RW 13",            "ikon": "🛖", "jenis": "Ruang Publik", "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21390, 106.84760] },
+    { "nama": "RPTRA Kebon Sawo",             "ikon": "🌳", "jenis": "Ruang Hijau",  "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21400, 106.84790] },
+    { "nama": "PAUD ASTERIA",                 "ikon": "🎓", "jenis": "Pendidikan",   "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21395, 106.84800] },
+    { "nama": "Pos RW 13",                    "ikon": "🏠", "jenis": "Administrasi", "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21375, 106.84775] }
   ],
 
   "_catatanPeta": "Koordinat 'fasilitas' & 'batasRW' di bawah hanya dipakai mode 'leaflet' (saat ini perkiraan).",

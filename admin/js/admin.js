@@ -1,7 +1,8 @@
 /* =========================================================
-   admin.js (module) — halaman admin data-driven:
-   form dibangun OTOMATIS dari struktur data (tanpa hardcode),
-   sehingga field baru di data.json langsung muncul di form.
+   admin.js (module) — form otomatis + self-healing:
+   saat form dimuat, field yang hilang di data Firebase
+   otomatis dilengkapi dari data.json lokal (merge).
+   Sekali "Simpan" → data Firebase sembuh lengkap.
    ========================================================= */
 
    const $ = (s) => document.querySelector(s);
@@ -20,19 +21,32 @@
      } catch (e) { console.error('Firebase gagal dimuat:', e); }
    }
    
-   /* ---------- Util kecil ---------- */
+   /* ---------- Util ---------- */
    const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
    const escAttr = (s) => esc(s).replace(/"/g, '&quot;');
    const pretty = (k) => String(k).replace(/[_-]/g, ' ');
    const status = (t) => { $('#statusLine').textContent = t; };
    
-   /* Template untuk tombol "Tambah" bila array kosong */
+   /* Merge: base = kerangka lokal, extra = data Firebase.
+      Field yang hilang di extra diisi dari base. */
+   function mergeDeep(base, extra) {
+     if (Array.isArray(extra)) return extra;
+     if (extra && typeof extra === 'object' && base && typeof base === 'object' && !Array.isArray(base)) {
+       const out = { ...base };
+       for (const [k, v] of Object.entries(extra)) {
+         out[k] = (typeof base[k] !== 'undefined') ? mergeDeep(base[k], v) : v;
+       }
+       return out;
+     }
+     return (typeof extra === 'undefined') ? base : extra;
+   }
+   
    const TEMPLATES = {
      agenda: { tanggal: '2026-01-01', waktu: '', judul: '', tempat: '', kategori: 'Kegiatan', deskripsi: '' }
    };
-   const templates = {};   // template per path array (diisi saat render)
+   const templates = {};
    
-   /* ---------- Pembangun form otomatis (rekursif) ---------- */
+   /* ---------- Pembangun form otomatis ---------- */
    function templateOf(key, sample) {
      if (TEMPLATES[key]) return JSON.parse(JSON.stringify(TEMPLATES[key]));
      const z = (v) => typeof v === 'number' ? 0
@@ -51,34 +65,30 @@
    }
    
    function buildUI(key, value) {
-     // Daun: string / number / boolean / null
      if (value === null || ['string', 'number', 'boolean'].includes(typeof value)) {
        const tipe = typeof value === 'boolean' ? 'bool' : typeof value === 'number' ? 'num' : 'str';
-       const panjang = tipe === 'str' && (String(value).length > 60 || /sambutan|deskripsi|alamat/i.test(key));
+       const v = value === null ? '' : value;                      // null → input kosong
+       const panjang = tipe === 'str' && (String(v).length > 60 || /sambutan|deskripsi|alamat/i.test(key));
        const ctrl = tipe === 'bool'
-         ? `<input type="checkbox" class="h-4 w-4 accent-emerald-600" ${value ? 'checked' : ''}>`
+         ? `<input type="checkbox" class="h-4 w-4 accent-emerald-600" ${v ? 'checked' : ''}>`
          : tipe === 'num'
-         ? `<input type="number" step="any" class="inp" value="${value}">`
+         ? `<input type="number" step="any" class="inp" value="${v}">`
          : panjang
-         ? `<textarea class="inp">${esc(value)}</textarea>`
-         : `<input type="text" class="inp" value="${escAttr(value)}">`;
+         ? `<textarea class="inp">${esc(v)}</textarea>`
+         : `<input type="text" class="inp" value="${escAttr(v)}">`;
        return tipe === 'bool'
          ? `<div data-key="${key}" data-tipe="bool" class="leaf"><label class="mt-3 flex items-center gap-2 font-semibold">${ctrl}<span class="capitalize">${pretty(key)}</span></label></div>`
          : `<div data-key="${key}" data-tipe="${tipe}" class="leaf"><label class="lbl">${pretty(key)}</label>${ctrl}</div>`;
      }
    
-     // Array
      if (Array.isArray(value)) {
-       // Array of array (koordinat polygon) → textarea JSON
        if (value.length && Array.isArray(value[0])) {
          return `<div data-key="${key}" data-tipe="json" class="leaf"><label class="lbl">${pretty(key)} <span class="hint">(JSON — hati-hati saat edit)</span></label><textarea class="inp mono" rows="4">${esc(JSON.stringify(value))}</textarea></div>`;
        }
-       // Array primitif (daftar nama, pasangan koordinat) → input koma
        if (!value.length || typeof value[0] !== 'object') {
          const nums = value.length && typeof value[0] === 'number';
          return `<div data-key="${key}" data-tipe="${nums ? 'csvnum' : 'csv'}" class="leaf"><label class="lbl">${pretty(key)} <span class="hint">(pisahkan dengan koma)</span></label><input class="inp" value="${escAttr(value.join(', '))}"></div>`;
        }
-       // Array of object → daftar item + tombol tambah
        return `<fieldset data-key="${key}" data-path="${key}" data-tipe="arr" class="arr">
          <legend class="lbl2">${pretty(key)}</legend>
          ${value.map(itemHTML).join('')}
@@ -86,12 +96,11 @@
        </fieldset>`;
      }
    
-     // Object → fieldset bersarang
      const inner = Object.entries(value).map(([k, v]) => buildUI(k, v)).join('');
      return `<fieldset data-key="${key}" data-tipe="obj" class="obj"><legend class="lbl2">${pretty(key)}</legend>${inner}</fieldset>`;
    }
    
-   /* ---------- Kumpulkan nilai form kembali jadi objek ---------- */
+   /* ---------- Kumpulkan nilai form ---------- */
    function collect(el) {
      const t = el.dataset.tipe;
      if (t === 'str')  return el.querySelector('input,textarea').value;
@@ -109,39 +118,43 @@
      return null;
    }
    
-   /* ---------- Tambah / hapus item (delegasi) ---------- */
+   /* ---------- Tambah / hapus item ---------- */
    $('#formRoot').addEventListener('click', (e) => {
      const b = e.target.closest('[data-aksi]');
      if (!b) return;
      if (b.dataset.aksi === 'del') { b.closest('[data-tipe="item"]').remove(); return; }
      if (b.dataset.aksi === 'add') {
        const arr = b.closest('[data-tipe="arr"]');
-       const tpl = templates[arr.dataset.path] || templateOf(arr.dataset.key, collect(arr.querySelectorAll(':scope > [data-tipe="item"]')[0] || { dataset: {} }));
+       const first = arr.querySelector(':scope > [data-tipe="item"]');
+       const tpl = templates[arr.dataset.path] || (first ? templateOf(arr.dataset.key, collect(first)) : {});
        b.insertAdjacentHTML('beforebegin', itemHTML(tpl));
      }
    });
    
-   /* ---------- Muat data ke form ---------- */
+   /* ---------- Muat data ke form (dengan merge penyembuh) ---------- */
    async function muatKeForm() {
+     let lokal = null;
+     try { const r = await fetch('../data/data.json'); lokal = await r.json(); } catch (e) {}
+   
      let v = null, sumber = '';
      if (db) {
        try { const s = await _fb.get(_fb.ref(db, 'data')); if (s.val()) { v = s.val(); sumber = 'Firebase'; } } catch (e) {}
      }
-     if (!v) {
-       try { const r = await fetch('../data/data.json'); v = await r.json(); sumber = 'data.json lokal'; } catch (e) {}
-     }
+     if (!v && lokal) { v = lokal; sumber = 'data.json lokal'; }
      if (!v) { status('❌ Tidak ada data untuk dimuat.'); return; }
    
-     // template array untuk tombol "Tambah"
+     // SELF-HEALING: lengkapi field yang hilang dari kerangka lokal
+     if (lokal && sumber === 'Firebase') v = mergeDeep(lokal, v);
+   
      Object.entries(v).forEach(([k, val]) => {
        if (Array.isArray(val) && val.length && typeof val[0] === 'object') templates[k] = templateOf(k, val[0]);
      });
    
      $('#formRoot').innerHTML = Object.entries(v).map(([k, val]) => buildUI(k, val)).join('');
-     status('📂 Data dimuat dari ' + sumber + '. Silakan edit, lalu Simpan.');
+     status('📂 Dimuat dari ' + sumber + '. Field yang kosong/bolong sudah dilengkapi otomatis — tekan Simpan untuk merapikan Firebase.');
    }
    
-   /* ---------- Auth & tombol aksi ---------- */
+   /* ---------- Auth & aksi ---------- */
    function tampilEditor() {
      $('#loginCard').classList.add('hidden');
      $('#formRoot').classList.remove('hidden');
@@ -165,11 +178,8 @@
    
    $('#btnMasuk').onclick = async () => {
      $('#loginErr').textContent = '';
-     try {
-       await _au.signInWithEmailAndPassword(auth, $('#inEmail').value.trim(), $('#inPass').value);
-     } catch (e) {
-       $('#loginErr').textContent = '❌ Gagal masuk: ' + (e.code || e.message);
-     }
+     try { await _au.signInWithEmailAndPassword(auth, $('#inEmail').value.trim(), $('#inPass').value); }
+     catch (e) { $('#loginErr').textContent = '❌ Gagal masuk: ' + (e.code || e.message); }
    };
    $('#btnKeluar').onclick = () => _au.signOut(auth);
    
@@ -177,16 +187,16 @@
      if (!confirm('Simpan perubahan ke Firebase? Website warga akan langsung berubah.')) return;
      try {
        await _fb.set(_fb.ref(db, 'data'), collect($('#formRoot')));
-       status('✅ Tersimpan ke Firebase — website live sudah ter-update.');
+       status('✅ Tersimpan ke Firebase — struktur data kini lengkap & website live ter-update.');
      } catch (e) { status('❌ ' + e.message); }
    };
    
    $('#btnMigrasi').onclick = async () => {
-     if (!confirm('Kirim ISI data.json lokal ke Firebase (menimpa data Firebase)? Lakukan sekali saat pertama.')) return;
+     if (!confirm('Kirim ISI data.json lokal ke Firebase (menimpa)? Lakukan sekali saat pertama.')) return;
      try {
        const r = await fetch('../data/data.json');
        await _fb.set(_fb.ref(db, 'data'), await r.json());
-       status('✅ data.json lokal berhasil dimigrasikan ke Firebase.');
+       status('✅ data.json lokal dimigrasikan ke Firebase.');
        muatKeForm();
      } catch (e) { status('❌ ' + e.message); }
    };

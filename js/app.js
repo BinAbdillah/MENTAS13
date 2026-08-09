@@ -1,7 +1,6 @@
 /* =========================================================
-   app.js (module) — sumber data: Firebase Realtime Database,
-   fallback ke data/data.json. Beranda terbuka ikut berubah
-   saat admin menyimpan (listener onValue).
+   app.js (module) — Firebase + fallback lokal + live update
+   + normalisasi(): data bolong tetap aman dirender
    ========================================================= */
 
    const FB = window.FIREBASE_CONFIG || null;
@@ -13,10 +12,35 @@
        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
        _fb = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js');
        db = _fb.getDatabase(initializeApp(FB));
-     } catch (e) {
-       console.warn('Firebase gagal dimuat → pakai data lokal.', e);
-       db = null;
-     }
+     } catch (e) { console.warn('Firebase gagal dimuat → pakai data lokal.', e); db = null; }
+   }
+   
+   /* ---------- Normalisasi: isi default bila field hilang ---------- */
+   function normalisasi(d) {
+     d = d || {};
+     d.identitas = d.identitas || {};
+     d.identitas.sosmed = d.identitas.sosmed || {};
+     d.hero = d.hero || { foto: '', judul: '', sambutan: '', periode: '' };
+     d.wilayah = d.wilayah || {};
+     d.wilayah.luasM2 = d.wilayah.luasM2 || 0;
+     d.wilayah.penduduk = d.wilayah.penduduk || 0;
+     d.wilayah.jumlahRT = d.wilayah.jumlahRT || 0;
+     d.wilayah.perbatasan = d.wilayah.perbatasan || [];
+     d.penasehat = d.penasehat || [];
+     d.strukturRW = d.strukturRW || {};
+     d.strukturRW.inti = d.strukturRW.inti || [];
+     d.strukturRW.seksi = d.strukturRW.seksi || [];
+     d.strukturRW.seksi.forEach((s) => { s.anggota = s.anggota || []; });
+     d.rt = d.rt || [];
+     d.rt.forEach((r) => { r.pengurus = r.pengurus || {}; });
+     d.mitra = d.mitra || [];
+     d.mitra.forEach((m) => { m.struktur = m.struktur || []; });
+     d.agenda = d.agenda || [];
+     d.fasilitas = d.fasilitas || [];
+     d.peta = d.peta || {};
+     d.banner = d.banner || {};
+     d.batasRW = d.batasRW || [];
+     return d;
    }
    
    /* ---------- Muat data: Firebase dulu, lalu lokal ---------- */
@@ -32,8 +56,9 @@
      return r.json();
    }
    
-   /* ---------- Render seluruh halaman (dipakai load awal & live update) ---------- */
-   function renderSemua(DATA) {
+   /* ---------- Render seluruh halaman ---------- */
+   function renderSemua(input) {
+     const DATA = normalisasi(input);
      window.DATA = DATA;
      document.title = DATA.identitas.namaRW + ' — Website Resmi';
      renderBanner(DATA);
@@ -48,7 +73,7 @@
      jalankanCounter();
    }
    
-   /* ---------- Spanduk HUT RI (ke slot sendiri, aman dari duplikat) ---------- */
+   /* ---------- Spanduk HUT RI (slot sendiri, aman duplikat) ---------- */
    function renderBanner(d) {
      const slot = $('#banner-slot');
      if (!slot) return;
@@ -70,7 +95,7 @@
        window._lastJson = JSON.stringify(DATA);
        renderSemua(DATA);
    
-       // Live update: data berubah di Firebase → halaman ikut berubah
+       // Live update dari Firebase
        if (db) {
          _fb.onValue(_fb.ref(db, 'data'), (snap) => {
            const v = snap.val();
