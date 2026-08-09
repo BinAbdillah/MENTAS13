@@ -1,0 +1,93 @@
+{
+  "_catatan": "DATA SEMENTARA — diperbarui berkala. Field berawalan '_' tidak ditampilkan.",
+  "_catatanLogo": "Rename file 'logo rw.png' di folder assets menjadi 'logo-rw.png'. Bila file tidak ada, logo otomatis fallback ke emoji.",
+
+  "identitas": {
+    "namaRW": "RW 013 Menteng Atas",
+    "tagline": "Mandiri • Rukun • Sejahtera",
+    "logo": "assets/logo-rw.png",
+    "kecamatan": "Kecamatan Setiabudi",
+    "kota": "Jakarta Selatan",
+    "alamat": "Sekretariat RW 013 (Pos RW 13), Menteng Atas, Jakarta Selatan",
+    "koordinat": [-6.2138, 106.8478],
+    "telepon": "",
+    "email": "",
+    "jamLayanan": "Sabtu • 19.30–21.00 WIB (tentatif)",
+    "sosmed": { "instagram": "", "facebook": "", "whatsapp": "" }
+  },
+
+  "hero": {
+    "foto": "https://images.unsplash.com/photo-1449844174353-612b95733a6b?auto=format&fit=crop&w=1600&q=60",
+    "judul": "Selamat Datang di Website Resmi",
+    "sambutan": "Website ini menjadi sarana informasi dan silaturahmi warga RW 013 Menteng Atas. Mari bersama menjaga lingkungan yang aman, bersih, dan guyub.",
+    "periode": "2023–2028"
+  },
+
+  "wilayah": {
+    "luasM2": 4200,
+    "penduduk": 1782,
+    "jumlahRT": 9,
+    "perbatasan": [
+      { "arah": "Timur",   "dengan": "Jl. Subur Ujung RW.015" },
+      { "arah": "Selatan", "dengan": "Pemakaman Menteng Pulo" },
+      { "arah": "Selatan", "dengan": "Jl. Menteng Atas Selatan III, RW.004 & RW.006" },
+      { "arah": "Barat",   "dengan": "Gg. 3 RW.005" }
+    ]
+  },
+
+  "penasehat": [
+    { "nama": "" }, { "nama": "" }, { "nama": "" }, { "nama": "" }, { "nama": "" }
+  ],
+
+  "strukturRW": {
+    "inti": [
+      { "jabatan": "Ketua",      "nama": "Abdillah A. Rahman" },
+      { "jabatan": "Sekretaris", "nama": "Syamsuddin" },
+      { "jabatan": "Bendahara",  "nama": "H. Tamin Heru" }
+    ],
+    "seksi": [
+      { "nama": "Keamanan",   "ikon": "🛡️", "anggota": ["Tatang", "Endy"] },
+      { "nama": "Kerohanian", "ikon": "🕌", "anggota": ["Ust. Ade Rizky"] },
+      { "nama": "Kebersihan & Lingkungan", "ikon": "🌱", "anggota": [] },
+      { "nama": "Sosial & Kesejahteraan",  "ikon": "🤝", "anggota": [] }
+    ]
+  },
+
+  "rt": [
+    { "no": "001", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
+    { "no": "002", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
+    { "no": "003", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
+    { "no": "004", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
+    { "no": "005", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
+    { "no": "006", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
+    { "no": "007", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
+    { "no": "008", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
+    { "no": "009", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } }
+  ],
+
+  "mitra": [
+    { "nama": "TP PKK RW 013", "ikon": "👩‍👧", "deskripsi": "Gerakan pemberdayaan & kesejahteraan keluarga.",
+      "struktur": [ { "jabatan": "Ketua", "nama": "" }, { "jabatan": "Sekretaris", "nama": "" }, { "jabatan": "Bendahara", "nama": "" } ] },
+    { "nama": "Karang Taruna Unit 13", "ikon": "🧑‍🤝‍🧑", "deskripsi": "Wadah kreativitas & kegiatan pemuda wilayah.",
+      "struktur": [ { "jabatan": "Ketua", "nama": "" }, { "jabatan": "Wakil Ketua", "nama": "" }, { "jabatan": "Sekretaris", "nama": "" } ] },
+    { "nama": "LMK", "ikon": "🏘️", "deskripsi": "Lembaga Musyawarah Kelurahan — mitra pembangunan warga.",
+      "struktur": [ { "jabatan": "Ketua", "nama": "" } ] }
+  ],
+
+  "agenda": [],
+
+  "fasilitas": [
+    { "nama": "Masjid Jami' Al Barkah",       "ikon": "🕌", "jenis": "Ibadah",     "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21360, 106.84760] },
+    { "nama": "Yayasan Ar Rizky As Salafiyyah", "ikon": "🏫", "jenis": "Pendidikan", "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21365, 106.84795] },
+    { "nama": "Saung Warga RW 13",            "ikon": "🛖", "jenis": "Ruang Publik", "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21390, 106.84760] },
+    { "nama": "RPTRA Kebon Sawo",             "ikon": "🌳", "jenis": "Ruang Hijau",  "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21400, 106.84790] },
+    { "nama": "PAUD ASTERIA",                 "ikon": "🎓", "jenis": "Pendidikan",   "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21395, 106.84800] },
+    { "nama": "Pos RW 13",                    "ikon": "🏠", "jenis": "Administrasi", "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21375, 106.84775] }
+  ],
+
+  "_catatanPeta": "Koordinat fasilitas & polygon batas masih PERKIRAAN — perbarui bila sudah ada data GPS akurat.",
+  "batasRW": [
+    [-6.21355, 106.84755], [-6.21350, 106.84800], [-6.21380, 106.84812],
+    [-6.21410, 106.84800], [-6.21415, 106.84755], [-6.21385, 106.84743]
+  ]
+}
