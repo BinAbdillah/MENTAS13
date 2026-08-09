@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — RW 013 Menteng Atas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../js/tailwind-config.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* Style khusus halaman admin */
+    .inp { width:100%; border:1px solid #cbd5e1; border-radius:.5rem; padding:.5rem .75rem; font-size:.95rem; background:#fff; }
+    .inp:focus { outline:2px solid #10b981; border-color:#10b981; }
+    .lbl { display:block; font-size:.78rem; font-weight:700; color:#475569; margin:.7rem 0 .3rem; text-transform:capitalize; }
+    .hint { font-weight:400; color:#94a3b8; text-transform:none; }
+    .mono { font-family:ui-monospace,monospace; font-size:.8rem; }
+    fieldset.obj, fieldset.arr { border:1px solid #e2e8f0; border-radius:.75rem; padding:1rem 1.25rem 1.25rem; margin-top:1rem; background:#fff; }
+    fieldset.obj fieldset.obj { background:#f8fafc; }
+    fieldset.item { border:1px dashed #cbd5e1; border-radius:.75rem; padding:.75rem 1rem; margin-top:.75rem; background:#f8fafc; position:relative; }
+    legend.lbl2 { font-weight:800; font-size:.95rem; color:#065f46; padding:0 .4rem; text-transform:capitalize; }
+    .leaf { margin:.15rem 0; }
+    .btnx { border-radius:.6rem; padding:.55rem 1rem; font-size:.85rem; font-weight:700; }
+  </style>
+</head>
+
+<body class="bg-slate-100 font-sans text-slate-800">
+  <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <div class="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-3">
+      <b class="text-lg text-emerald-700">🛠️ Admin RW 013</b>
+      <span id="statusAuth" class="text-sm text-slate-500"></span>
+      <span class="ml-auto flex flex-wrap gap-2">
+        <button id="btnMigrasi" class="btnx bg-amber-500 text-white hidden">📤 Kirim data.json lokal</button>
+        <button id="btnDownload" class="btnx bg-slate-600 text-white hidden">💾 Download</button>
+        <button id="btnSimpan"   class="btnx bg-emerald-600 text-white hidden">🚀 Simpan ke Firebase</button>
+        <button id="btnKeluar"   class="btnx bg-red-600 text-white hidden">🚪 Keluar</button>
+      </span>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-4 py-8">
+    <!-- Kartu login -->
+    <div id="loginCard" class="kartu mx-auto max-w-md p-8 text-center">
+      <div class="text-4xl">🔐</div>
+      <b class="mt-2 block text-lg">Masuk Pengurus</b>
+      <p class="mb-4 text-sm text-slate-500">Sesi hanya tersimpan di browser ini.</p>
+      <input id="inEmail" type="email" placeholder="email pengurus" class="inp mb-3">
+      <input id="inPass"  type="password" placeholder="kata sandi" class="inp mb-4">
+      <button id="btnMasuk" class="btnx w-full bg-emerald-600 py-3 text-white">Masuk</button>
+      <p id="loginErr" class="mt-3 text-sm text-red-600"></p>
+    </div>
+
+    <!-- Peringatan config kosong -->
+    <div id="cfgWarn" class="kartu mx-auto mt-4 max-w-md hidden border-amber-300 bg-amber-50 p-6 text-center">
+      <b class="block text-amber-700">⚙️ Firebase belum dikonfigurasi</b>
+      <p class="mt-1 text-sm text-amber-700">Isi <code>js/firebase-config.js</code> dengan config dari Firebase Console, lalu push & muat ulang.</p>
+    </div>
+
+    <!-- Area form (dibangun otomatis dari struktur data) -->
+    <fieldset id="formRoot" data-tipe="obj" class="hidden"></fieldset>
+
+    <p id="statusLine" class="mt-6 text-center text-sm text-slate-500"></p>
+  </main>
+
+  <script src="../js/firebase-config.js"></script>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
