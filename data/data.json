@@ -90,7 +90,14 @@
       "struktur": [ { "jabatan": "Ketua", "nama": "" } ] }
   ],
 
-  "agenda": [],
+  "agenda": [
+    { "tanggal": "2026-08-16", "waktu": "19.30–21.00", "judul": "Malam Tirakatan & Doa Bersama", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "Tasyakuran HUT RI ke-81 bersama seluruh warga." },
+    { "tanggal": "2026-08-17", "waktu": "07.00–12.00", "judul": "Upacara & Lomba 17 Agustus", "tempat": "Lapangan RW 013", "kategori": "Kegiatan", "deskripsi": "Upacara bendera dilanjutkan lomba balita hingga dewasa. Tema: Menjaga Alam, Membangun Bangsa." },
+    { "tanggal": "2026-08-23", "waktu": "06.30–09.00", "judul": "Kerja Bakti & Tanam Tanaman", "tempat": "RT 001–009 & RPTRA Kebon Sawo", "kategori": "Kerja Bakti", "deskripsi": "Bersih selokan antisipasi hujan + gerakan Indonesia Hijau: tanam tanaman di RPTRA." },
+    { "tanggal": "2026-08-30", "waktu": "08.00–11.00", "judul": "Posyandu Balita & Lansia", "tempat": "Posyandu Melati", "kategori": "Kesehatan", "deskripsi": "Penimbangan balita, cek tensi & gula darah gratis untuk lansia." },
+    { "tanggal": "2026-09-05", "waktu": "19.30–21.00", "judul": "Rapat Pleno Pengurus RW", "tempat": "Pos RW 13", "kategori": "Rapat", "deskripsi": "Evaluasi kegiatan Agustus dan rencana program September." },
+    { "tanggal": "2026-09-12", "waktu": "07.00–10.00", "judul": "Senam Sehat & Bank Sampah", "tempat": "RPTRA Kebon Sawo", "kategori": "Kegiatan", "deskripsi": "Senam bersama dilanjutkan penukaran bank sampah tiap RT." }
+  ],
 
   "fasilitas": [
     { "nama": "Masjid Jami' Al Barkah",       "ikon": "🕌", "jenis": "Ibadah",     "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21360, 106.84760] },
