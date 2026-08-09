@@ -1,46 +1,68 @@
 /* =========================================================
-   style.css — CSS murni (TANPA @apply) + skala diperbesar
+   style.css — CSS murni + TEMA "SAGE HIJAU" + font display
    ========================================================= */
 
-/* font-size root 17px → SELURUH satuan rem Tailwind (teks, padding,
-   kartu, tombol) ikut membesar ±6% tanpa mengubah template JS.
-   Bila masih kurang, naikkan ke 17.5px / 18px. */
+/* ---------- Variabel tema (ganti di sini bila ingin ganti suasana) ---------- */
+:root {
+  --bg:        #F2F5F1;   /* latar halaman */
+  --surface:   #FBFCFA;   /* kartu / header */
+  --fill:      #E7EEE5;   /* isian lembut (avatar, kotak kecil) */
+  --line:      #DCE5DA;   /* garis tepi */
+  --line-soft: #E9F0E7;   /* garis tepi halus */
+}
+
 html { scroll-behavior: smooth; font-size: 17px; }
 
-/* Overlay gelap di atas foto hero agar teks terbaca */
+/* ---------- Font judul (opsi 1: Bricolage Grotesque) ---------- */
+h1, h2, h3 {
+  font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', system-ui, sans-serif;
+  letter-spacing: -0.015em;
+}
+
+/* ---------- Lapisan tema: remap utility Tailwind ke palet sage,
+              tanpa menyentuh render.js ---------- */
+body            { background-color: var(--bg) !important; }
+.bg-white       { background-color: var(--surface) !important; }
+.bg-white\/90   { background-color: color-mix(in srgb, var(--surface) 92%, transparent) !important; }
+.bg-slate-50    { background-color: var(--bg) !important; }
+.bg-slate-100   { background-color: var(--fill) !important; }
+.border-slate-200 { border-color: var(--line) !important; }
+.border-slate-100 { border-color: var(--line-soft) !important; }
+
+/* ---------- Overlay gelap foto hero ---------- */
 .hero-overlay {
   background: linear-gradient(135deg, rgb(6 78 59 / .88), rgb(2 6 23 / .82));
 }
 
-/* Kartu dasar */
+/* ---------- Kartu dasar ---------- */
 .kartu {
   border-radius: 1rem;
-  border: 1px solid #e2e8f0;                 /* slate-200 */
-  background: #ffffff;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / .05);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: 0 1px 2px 0 rgb(60 80 60 / .06);
 }
 
-/* Efek angkat saat hover */
+/* ---------- Efek hover kartu ---------- */
 .kartu-hover { transition: transform .2s ease, box-shadow .2s ease; }
 .kartu-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);
+  box-shadow: 0 4px 6px -1px rgb(60 80 60 / .12), 0 2px 4px -2px rgb(60 80 60 / .1);
 }
 
-/* Tautan navigasi — besar & nyaman disentuh di HP */
+/* ---------- Navigasi ---------- */
 .nav-link {
   border-radius: .5rem;
   padding: .6rem 1rem;
   font-size: 1rem;
   font-weight: 600;
-  color: #475569;                            /* slate-600 */
+  color: #475569;
 }
 .nav-link:hover { background: #ecfdf5; color: #047857; }
 
-/* Nilai yang belum diisi */
+/* ---------- Nilai belum diisi ---------- */
 .nilai-kosong { font-style: italic; color: #94a3b8; }
 
-/* Pin marker fasilitas pada peta */
+/* ---------- Pin marker peta ---------- */
 .pin-f {
   display: flex; align-items: center; justify-content: center;
   width: 38px; height: 38px;
