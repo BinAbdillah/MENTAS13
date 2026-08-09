@@ -1,0 +1,50 @@
+/* =========================================================
+   style.css — style custom dengan CSS murni (TANPA @apply).
+   @apply tidak didukung Tailwind Play CDN di file .css eksternal.
+   ========================================================= */
+
+html { scroll-behavior: smooth; }
+
+/* Overlay gelap di atas foto hero agar teks terbaca */
+.hero-overlay {
+  background: linear-gradient(135deg, rgb(6 78 59 / .88), rgb(2 6 23 / .82));
+}
+
+/* Kartu dasar (setara rounded-2xl + border + bg-white + shadow-sm) */
+.kartu {
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;                 /* slate-200 */
+  background: #ffffff;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / .05);
+}
+
+/* Efek angkat saat hover */
+.kartu-hover { transition: transform .2s ease, box-shadow .2s ease; }
+.kartu-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);
+}
+
+/* Tautan navigasi header */
+.nav-link {
+  border-radius: .5rem;
+  padding: .5rem .75rem;
+  font-size: .875rem;
+  font-weight: 500;
+  color: #475569;                            /* slate-600 */
+}
+.nav-link:hover { background: #ecfdf5; color: #047857; }  /* emerald-50/700 */
+
+/* Nilai yang belum diisi */
+.nilai-kosong { font-style: italic; color: #94a3b8; }      /* slate-400 */
+
+/* Pin marker fasilitas pada peta */
+.pin-f {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px;
+  background: #fff; border: 2px solid #059669;
+  border-radius: 50% 50% 50% 6px;
+  box-shadow: 0 4px 10px rgb(0 0 0 / .35);
+  font-size: 16px;
+}
+.leaflet-popup-content { font-family: inherit; }
