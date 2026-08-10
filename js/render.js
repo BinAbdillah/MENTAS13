@@ -1,5 +1,5 @@
 /* =========================================================
-   render.js — renderer tiap bagian halaman dari DATA
+   render.js — renderer halaman (hero parallax + etalase pin)
    ========================================================= */
 
    const NAV = [
@@ -7,7 +7,7 @@
     ['#agenda', 'Agenda'], ['#fasilitas', 'Fasilitas'], ['#peta-cuaca', 'Peta'], ['#kontak', 'Kontak']
   ];
   
-  /* ---------- 1) HEADER (logo diperbesar, tanpa kotak hijau) ---------- */
+  /* ---------- 1) HEADER ---------- */
   function renderHeader(d) {
     const i = d.identitas;
     $('#header').innerHTML = `
@@ -33,80 +33,90 @@
       a.addEventListener('click', () => $('#navMobile').classList.add('hidden')));
   }
   
-  /* ---------- 2) HERO (opsional: latar spanduk HUT bila diaktifkan) ---------- */
+  /* ---------- 2) HERO (kelas hero-foto & hero-judul untuk parallax) ---------- */
   function renderHero(d) {
     const { hero, identitas: i, wilayah: w } = d;
     const ketua = d.strukturRW.inti.find((p) => p.jabatan === 'Ketua') || {};
-  
-    // Bila banner.gantiFotoHero = true dan periode aktif → pakai spanduk sebagai latar
     const fotoHero = (bannerAktif(d.banner) && d.banner.gantiFotoHero) ? d.banner.gambar : hero.foto;
+  
+    const kata = ['GOTONG ROYONG', 'MANDIRI', 'RUKUN', 'SEJAHTERA', 'INDONESIA HIJAU', 'MENJAGA ALAM'];
+    const setengah = kata.map((k) => `<span class="mx-6 text-sm font-bold tracking-[0.25em]">${k}</span><span aria-hidden="true">✦</span>`).join('');
   
     $('#hero').innerHTML = `
       <section class="relative overflow-hidden bg-slate-900 text-white">
         <img src="${fotoHero}" alt="Foto wilayah ${i.namaRW}" onerror="this.remove()"
-             class="absolute inset-0 h-full w-full object-cover opacity-40">
+             class="hero-foto absolute inset-0 h-full w-full object-cover opacity-40">
         <div class="hero-overlay absolute inset-0"></div>
   
-        <div class="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-20 md:grid-cols-[1.2fr_.8fr] md:py-28">
-          <div>
-            <span class="rounded-full bg-emerald-500/20 px-4 py-2 text-sm font-semibold text-emerald-300 ring-1 ring-emerald-400/40">
-              ${i.kecamatan} • ${i.kota}
-            </span>
-            <h1 class="mt-5 text-4xl font-extrabold leading-tight md:text-6xl">
-              ${hero.judul}<br><span class="text-emerald-400">${i.namaRW}</span>
-            </h1>
-            <blockquote class="mt-6 border-l-4 border-emerald-400 pl-4 text-base leading-relaxed text-slate-200 md:text-lg">
-              “${hero.sambutan}”
-            </blockquote>
-            <div class="mt-6 flex items-center gap-4">
-              <span class="grid h-14 w-14 place-items-center rounded-full bg-emerald-500 text-lg font-extrabold text-slate-900">${inisial(ketua.nama)}</span>
-              <span>
-                <span class="block text-lg font-bold">${namaAtau(ketua.nama)}</span>
-                <span class="block text-sm text-emerald-300">Ketua RW • Periode ${hero.periode}</span>
-              </span>
-            </div>
-            <div class="mt-8 flex flex-wrap gap-3">
-              <a href="#struktur" class="w-full rounded-xl bg-emerald-500 px-7 py-3.5 text-center text-base font-bold text-slate-900 shadow-lg shadow-emerald-500/30 hover:bg-emerald-400 sm:w-auto">Struktur Pengurus</a>
-              <a href="#kontak" class="w-full rounded-xl border border-white/30 px-7 py-3.5 text-center text-base font-bold hover:bg-white/10 sm:w-auto">Kontak</a>
-            </div>
-          </div>
+        <div class="relative mx-auto max-w-6xl px-4 pb-20 pt-20 md:pb-24 md:pt-28">
+          <div class="grid items-end gap-12 md:grid-cols-[1.25fr_.75fr]">
+            <div>
+              <p class="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-300">
+                ${i.kecamatan} • ${i.kota}
+              </p>
+              <h1 class="hero-judul mt-6 font-extrabold uppercase leading-[0.95] tracking-tight text-[clamp(2.6rem,7.5vw,6rem)]">
+                <span class="text-outline">RW 013</span><br>Menteng Atas
+              </h1>
+              <p class="mt-6 max-w-xl text-base leading-relaxed text-slate-200 md:text-lg">“${hero.sambutan}”</p>
   
-          <div class="rounded-2xl border border-white/15 bg-white/10 p-6 backdrop-blur md:p-7">
-            <h3 class="mb-4 text-base font-bold uppercase tracking-wider text-emerald-300">Sekilas Wilayah</h3>
-            ${[['👥', 'Penduduk', fmtNum(w.penduduk) + ' jiwa'],
-               ['📐', 'Luas Wilayah', fmtNum(w.luasM2) + ' m²'],
-               ['🚩', 'Jumlah RT', w.jumlahRT + ' RT'],
-               ['🏗️', 'Fasilitas', d.fasilitas.length + ' unit']]
-              .map(([ik, l, v]) => `
-              <div class="flex items-center justify-between border-b border-white/10 py-3.5 text-base last:border-0">
-                <span class="text-slate-200">${ik} ${l}</span><b class="text-lg">${v}</b>
-              </div>`).join('')}
+              <div class="mt-6 flex items-center gap-4">
+                <span class="grid h-14 w-14 place-items-center rounded-full bg-emerald-500 text-lg font-extrabold text-slate-900">${inisial(ketua.nama)}</span>
+                <span>
+                  <span class="block text-lg font-bold">${namaAtau(ketua.nama)}</span>
+                  <span class="block text-sm text-emerald-300">Ketua RW • Periode ${hero.periode}</span>
+                </span>
+              </div>
+  
+              <div class="mt-8 flex flex-wrap gap-3">
+                <a href="#struktur" class="group w-full rounded-full bg-emerald-500 px-7 py-3.5 text-center text-base font-bold text-slate-900 shadow-lg shadow-emerald-500/30 hover:bg-emerald-400 sm:w-auto">
+                  Struktur Pengurus <span class="inline-block transition-transform group-hover:translate-x-1.5">→</span>
+                </a>
+                <a href="#kontak" class="group w-full rounded-full border border-white/30 px-7 py-3.5 text-center text-base font-bold hover:bg-white/10 sm:w-auto">
+                  Kontak <span class="inline-block transition-transform group-hover:translate-x-1.5">→</span>
+                </a>
+              </div>
+            </div>
+  
+            <aside class="rounded-2xl border border-white/15 bg-white/10 p-6 backdrop-blur md:p-7">
+              <h3 class="mb-4 text-base font-bold uppercase tracking-widest text-emerald-300">Sekilas Wilayah</h3>
+              ${[['👥', 'Penduduk', fmtNum(w.penduduk) + ' jiwa'],
+                 ['📐', 'Luas Wilayah', fmtNum(w.luasM2) + ' m²'],
+                 ['🚩', 'Jumlah RT', w.jumlahRT + ' RT'],
+                 ['🏗️', 'Fasilitas', d.fasilitas.length + ' unit']]
+                .map(([ik, l, v]) => `
+                <div class="flex items-center justify-between border-b border-white/10 py-3.5 text-base last:border-0">
+                  <span class="text-slate-200">${ik} ${l}</span><b class="text-xl">${v}</b>
+                </div>`).join('')}
+            </aside>
           </div>
+        </div>
+  
+        <div class="marquee relative border-t border-white/10 bg-emerald-600/90 text-emerald-50">
+          <div class="marquee-track">${setengah}${setengah}</div>
         </div>
       </section>`;
   }
   
-  /* ---------- 3) PROFIL WILAYAH ---------- */
+  /* ---------- 3) PROFIL ---------- */
   function renderProfil(d) {
     const w = d.wilayah;
     const panah = { Timur: '➡️', Selatan: '⬇️', Barat: '⬅️', Utara: '⬆️' };
     $('#profil').innerHTML = `
-      <section class="mx-auto max-w-6xl px-4 py-16 md:py-20">
-        ${judulSeksi('📊', 'Profil Wilayah', 'Statistik warga dan batas-batas wilayah RW 013')}
+      <section class="mx-auto max-w-6xl px-4 py-16 md:py-24">
+        ${judulSeksi('01', 'Profil Wilayah', 'Statistik warga dan batas-batas wilayah RW 013')}
   
-        <div class="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-          ${[['👥', 'Penduduk', w.penduduk, 'jiwa'], ['📐', 'Luas', w.luasM2, 'm²'],
-             ['🚩', 'Rukun Tetangga', w.jumlahRT, 'RT'], ['🏗️', 'Fasilitas', d.fasilitas.length, 'unit']]
-            .map(([ik, l, v, u]) => `
-            <div class="kartu kartu-hover p-6 text-center">
-              <div class="text-3xl">${ik}</div>
-              <div class="counter mt-2 text-3xl font-extrabold text-emerald-700 md:text-4xl" data-target="${v}">0</div>
-              <div class="mt-1 text-sm text-slate-500">${l} (${u})</div>
+        <div class="reveal grid grid-cols-2 gap-10 md:grid-cols-4">
+          ${[['👥', w.penduduk, 'Penduduk (jiwa)'], ['📐', w.luasM2, 'Luas (m²)'],
+             ['🚩', w.jumlahRT, 'Rukun Tetangga'], ['🏗️', d.fasilitas.length, 'Fasilitas']]
+            .map(([ik, v, l]) => `
+            <div class="border-l-2 border-emerald-700/40 pl-5">
+              <div class="counter text-5xl font-extrabold text-emerald-800 md:text-6xl" data-target="${v}">0</div>
+              <div class="mt-2 text-xs uppercase tracking-[0.2em] text-slate-500">${ik} ${l}</div>
             </div>`).join('')}
         </div>
   
-        <div class="kartu mt-8 p-6 md:p-7">
-          <h3 class="mb-5 text-lg font-bold text-slate-900">🧭 Batas-Batas Wilayah</h3>
+        <div class="kartu reveal mt-12 p-6 md:p-8">
+          <h3 class="mb-5 text-xl font-bold text-slate-900">🧭 Batas-Batas Wilayah</h3>
           <div class="grid gap-3 sm:grid-cols-2">
             ${w.perbatasan.map((p) => `
             <div class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3.5 text-base">
@@ -118,7 +128,7 @@
       </section>`;
   }
   
-  /* ---------- 4) STRUKTUR ORGANISASI ---------- */
+  /* ---------- 4) STRUKTUR ---------- */
   function renderStruktur(d) {
     const s = d.strukturRW;
     const barisJabatan = (jab, nama) => `
@@ -128,13 +138,12 @@
       </div>`;
   
     $('#struktur').innerHTML = `
-      <section class="bg-white py-16 md:py-20">
+      <section class="bg-white py-16 md:py-24">
         <div class="mx-auto max-w-6xl px-4">
-          ${judulSeksi('🧑‍💼', 'Struktur Organisasi', 'Penasihat, pengurus RW, pengurus RT, dan mitra')}
+          ${judulSeksi('02', 'Struktur Organisasi', 'Penasihat, pengurus RW, pengurus RT, dan mitra')}
   
-          <!-- Penasihat (5 orang) -->
           <h3 class="mb-5 text-xl font-bold text-slate-900">Penasihat RW</h3>
-          <div class="grid grid-cols-2 gap-4 sm:grid-cols-5">
+          <div class="reveal grid grid-cols-2 gap-4 sm:grid-cols-5">
             ${d.penasehat.map((p, i) => `
             <div class="kartu kartu-hover p-5 text-center">
               <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-slate-100 text-lg font-extrabold text-slate-500">${inisial(p.nama)}</span>
@@ -143,9 +152,8 @@
             </div>`).join('')}
           </div>
   
-          <!-- Pengurus harian RW -->
-          <h3 class="mb-5 mt-12 text-xl font-bold text-slate-900">Pengurus Harian RW</h3>
-          <div class="grid gap-5 sm:grid-cols-3">
+          <h3 class="mb-5 mt-14 text-xl font-bold text-slate-900">Pengurus Harian RW</h3>
+          <div class="reveal grid gap-5 sm:grid-cols-3">
             ${s.inti.map((p, i) => `
             <div class="kartu kartu-hover p-6 text-center ${i === 0 ? 'ring-2 ring-emerald-500' : ''}">
               <span class="mx-auto grid h-16 w-16 place-items-center rounded-full ${i === 0 ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700'} text-xl font-extrabold">${inisial(p.nama)}</span>
@@ -154,9 +162,8 @@
             </div>`).join('')}
           </div>
   
-          <!-- Seksi-seksi -->
-          <h3 class="mb-5 mt-12 text-xl font-bold text-slate-900">Seksi-Seksi</h3>
-          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <h3 class="mb-5 mt-14 text-xl font-bold text-slate-900">Seksi-Seksi</h3>
+          <div class="reveal grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             ${s.seksi.map((sk) => `
             <div class="kartu kartu-hover p-6">
               <div class="text-3xl">${sk.ikon}</div>
@@ -169,9 +176,8 @@
             </div>`).join('')}
           </div>
   
-          <!-- Pengurus RT 001–009 -->
-          <h3 class="mb-5 mt-12 text-xl font-bold text-slate-900">Pengurus RT 001–009</h3>
-          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <h3 class="mb-5 mt-14 text-xl font-bold text-slate-900">Pengurus RT 001–009</h3>
+          <div class="reveal grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             ${d.rt.map((r) => `
             <div class="kartu p-6">
               <span class="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-bold text-white">RT ${r.no}</span>
@@ -181,9 +187,8 @@
             </div>`).join('')}
           </div>
   
-          <!-- Mitra -->
-          <h3 class="mb-5 mt-12 text-xl font-bold text-slate-900">Mitra & Unsur Pendukung</h3>
-          <div class="grid gap-5 lg:grid-cols-3">
+          <h3 class="mb-5 mt-14 text-xl font-bold text-slate-900">Mitra & Unsur Pendukung</h3>
+          <div class="reveal grid gap-5 lg:grid-cols-3">
             ${d.mitra.map((m) => `
             <div class="kartu kartu-hover p-6">
               <div class="flex items-center gap-4">
@@ -200,19 +205,19 @@
       </section>`;
   }
   
-  /* ---------- 5) AGENDA (empty-state bila kosong) ---------- */
+  /* ---------- 5) AGENDA ---------- */
   function renderAgenda(d) {
     const kosong = !d.agenda || d.agenda.length === 0;
     $('#agenda').innerHTML = `
-      <section class="mx-auto max-w-6xl px-4 py-16 md:py-20">
-        ${judulSeksi('📅', 'Agenda Kegiatan', 'Informasi kegiatan warga RW 013')}
+      <section class="mx-auto max-w-6xl px-4 py-16 md:py-24">
+        ${judulSeksi('03', 'Agenda Kegiatan', 'Informasi kegiatan warga RW 013')}
         ${kosong ? `
-          <div class="kartu mx-auto max-w-md p-10 text-center">
+          <div class="kartu reveal mx-auto max-w-md p-10 text-center">
             <div class="text-5xl">📭</div>
             <b class="mt-4 block text-lg text-slate-900">Belum ada agenda terdaftar</b>
-            <p class="mt-2 text-base text-slate-500">Agenda terbaru otomatis tampil di sini setelah ditambahkan pada <code class="rounded bg-slate-100 px-1">data/data.json</code>.</p>
+            <p class="mt-2 text-base text-slate-500">Agenda terbaru otomatis tampil di sini setelah ditambahkan lewat halaman admin.</p>
           </div>` : `
-          <div class="grid gap-5 md:grid-cols-2">
+          <div class="reveal grid gap-5 md:grid-cols-2">
             ${[...d.agenda].sort((a, b) => a.tanggal.localeCompare(b.tanggal)).map((a) => {
               const t = new Date(a.tanggal + 'T00:00:00');
               const bulan = new Intl.DateTimeFormat('id-ID', { month: 'short' }).format(t);
@@ -233,16 +238,19 @@
       </section>`;
   }
   
-  /* ---------- 6) FASILITAS ---------- */
+  /* ---------- 6) FASILITAS: etalase horizontal saat pinned ---------- */
   function renderFasilitas(d) {
     $('#fasilitas').innerHTML = `
-      <section class="bg-white py-16 md:py-20">
+      <section class="bg-white py-16 md:py-24">
         <div class="mx-auto max-w-6xl px-4">
-          ${judulSeksi('🏗️', 'Fasilitas Warga', 'Fasilitas yang tersedia di wilayah RW 013')}
-          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          ${judulSeksi('04', 'Fasilitas Warga', 'Etalase fasilitas RW 013 — terus gulir, etalase akan bergerak mendatar.')}
+        </div>
+  
+        <div id="fasWrap" class="relative">
+          <div id="fasTrack" class="fas-track mx-auto max-w-6xl px-4">
             ${d.fasilitas.map((f) => `
-            <div class="kartu kartu-hover flex items-start gap-4 p-6">
-              <span class="grid h-14 w-14 flex-none place-items-center rounded-xl bg-emerald-100 text-3xl">${f.ikon}</span>
+            <div class="kartu kartu-hover fas-card group flex items-start gap-4 p-6">
+              <span class="grid h-14 w-14 flex-none place-items-center rounded-xl bg-emerald-100 text-3xl transition-transform group-hover:scale-110">${f.ikon}</span>
               <div>
                 <b class="text-base text-slate-900 md:text-lg">${f.nama}</b>
                 <span class="ml-2 rounded-full bg-emerald-600/10 px-2.5 py-1 text-xs font-semibold text-emerald-700">${f.jenis}</span>
@@ -251,6 +259,7 @@
             </div>`).join('')}
           </div>
         </div>
+        <p class="mt-8 hidden text-center text-xs uppercase tracking-[0.3em] text-slate-400 lg:block">Terus gulir ↓</p>
       </section>`;
   }
   
@@ -283,19 +292,22 @@
             </ul>
           </div>
         </div>
+        <div class="mx-auto max-w-6xl select-none px-4">
+          <div class="text-outline-dark text-[clamp(3rem,10vw,7.5rem)] font-extrabold uppercase leading-none opacity-60">RW 013</div>
+        </div>
         <div class="border-t border-slate-800 py-5 text-center text-sm text-slate-500">
           © ${new Date().getFullYear()} ${i.namaRW} — dibangun gotong royong oleh warga.
         </div>
       </footer>`;
   }
   
-  /* ---------- Animasi angka statistik ---------- */
+  /* ---------- Animasi angka ---------- */
   function jalankanCounter() {
     const io = new IntersectionObserver((entries) => entries.forEach((e) => {
       if (!e.isIntersecting) return;
       const el = e.target, target = +el.dataset.target, t0 = performance.now();
       (function step(t) {
-        const p = Math.min((t - t0) / 1200, 1);
+        const p = Math.min((t - t0) / 1400, 1);
         el.textContent = fmtNum(Math.round(target * p));
         if (p < 1) requestAnimationFrame(step);
       })(t0);
