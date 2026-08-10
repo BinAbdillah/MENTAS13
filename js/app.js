@@ -1,5 +1,5 @@
 /* =========================================================
-   app.js — Firebase + Lenis + GSAP + reveal (diperbaiki)
+   app.js — Firebase + Lenis + GSAP (pin v2 + stagger + skew)
    ========================================================= */
 
    const FB = window.FIREBASE_CONFIG || null;
@@ -14,7 +14,6 @@
      } catch (e) { console.warn('Firebase gagal dimuat → pakai data lokal.', e); db = null; }
    }
    
-   /* ---------- Setup efek ---------- */
    const ADA_GSAP = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
    const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
    const EFEK_AKTIF = ADA_GSAP && !REDUCED;
@@ -31,34 +30,35 @@
      }
    }
    
-   /* ---------- Reveal AMAN (gating .fx) ---------- */
+   /* ---------- Reveal aman ---------- */
    function jalankanReveal() {
      const els = document.querySelectorAll('.reveal');
      if (REDUCED || !('IntersectionObserver' in window)) {
-       els.forEach((el) => el.classList.add('on'));   // tanpa efek: tampilkan semua
+       els.forEach((el) => el.classList.add('on'));
        return;
      }
-     document.documentElement.classList.add('fx');    // baru boleh sembunyi
+     document.documentElement.classList.add('fx');
      const io = new IntersectionObserver((es) => es.forEach((e) => {
        if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
      }), { threshold: .12 });
      els.forEach((el) => io.observe(el));
    }
    
-   /* ---------- Efek GSAP (dibungkus try/catch: efek boleh gagal,
-                 konten tidak boleh) ---------- */
+   /* ---------- Efek GSAP v2 ---------- */
    function initEfek() {
      if (!EFEK_AKTIF) return;
      try {
        gsap.registerPlugin(ScrollTrigger);
        ScrollTrigger.getAll().forEach((t) => t.kill());
    
+       // Parallax hero
        if ($('#hero .hero-foto')) {
          gsap.timeline({ scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true } })
            .to('#hero .hero-foto', { yPercent: 16, ease: 'none' }, 0)
            .to('#hero .hero-judul', { yPercent: -10, autoAlpha: .3, ease: 'none' }, 0);
        }
    
+       // Line-mask reveal
        gsap.utils.toArray('.mask-line').forEach((el) => {
          gsap.fromTo(el, { yPercent: 115 }, {
            yPercent: 0, duration: 1, ease: 'power4.out',
@@ -66,19 +66,32 @@
          });
        });
    
+       // Etalase fasilitas v2: pin 1 layar, judul ikut ter-pin,
+       // kartu masuk berurutan (stagger) + miring mengikuti kecepatan (skew)
        const wrap = $('#fasWrap'), track = $('#fasTrack');
        if (wrap && track && window.matchMedia('(min-width: 1024px)').matches) {
-         const jarak = () => Math.max(0, track.scrollWidth - wrap.clientWidth);
+         const jarak = () => Math.max(0, track.scrollWidth - window.innerWidth);
+   
          gsap.to(track, {
            x: () => -jarak(),
            ease: 'none',
            scrollTrigger: {
-             trigger: wrap, start: 'top 15%', end: () => '+=' + jarak(),
-             pin: true, scrub: 1, anticipatePin: 1, invalidateOnRefresh: true
+             trigger: wrap, start: 'top 76', end: () => '+=' + jarak(),
+             pin: true, scrub: 1, anticipatePin: 1, invalidateOnRefresh: true,
+             onUpdate: (self) => {                       // respons kecepatan
+               const v = self.getVelocity();
+               gsap.to(track, { skewY: gsap.utils.clamp(-4, 4, v / 400), duration: .4, ease: 'power2.out', overwrite: 'auto' });
+             }
            }
+         });
+   
+         gsap.from(track.children, {                    // stagger masuk
+           y: 60, opacity: 0, stagger: .08, duration: .8, ease: 'power3.out',
+           scrollTrigger: { trigger: wrap, start: 'top 70%' }
          });
        }
    
+       // Marquee mengikuti ritme scroll
        const mq = document.querySelector('.marquee-track');
        if (mq && lenis) {
          lenis.on('scroll', ({ velocity }) => {
@@ -88,7 +101,7 @@
    
        ScrollTrigger.refresh();
      } catch (e) {
-       console.warn('Efek scroll dinonaktifkan:', e);   // konten tetap aman
+       console.warn('Efek scroll dinonaktifkan:', e);
      }
    }
    
@@ -132,7 +145,6 @@
      return r.json();
    }
    
-   /* ---------- Render semua (reveal & counter DIPASTIKAN jalan) ---------- */
    function renderSemua(input) {
      const DATA = normalisasi(input);
      window.DATA = DATA;
@@ -146,9 +158,9 @@
      renderFasilitas(DATA);
      renderPetaCuaca(DATA);
      renderFooter(DATA);
-     jalankanReveal();    // ← perbaikan utama
+     jalankanReveal();
      jalankanCounter();
-     initEfek();          // boleh gagal, konten tetap aman
+     initEfek();
    }
    
    function renderBanner(d) {
@@ -165,7 +177,6 @@
        </a>`;
    }
    
-   /* ---------- Anchor mulus ---------- */
    document.addEventListener('click', (e) => {
      const a = e.target.closest('a[href^="#"]');
      if (!a) return;
@@ -178,7 +189,6 @@
      else target.scrollIntoView({ behavior: 'smooth' });
    });
    
-   /* ---------- Inisialisasi ---------- */
    (async function main() {
      try {
        addEventListener('scroll', () => {
