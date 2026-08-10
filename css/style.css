@@ -1,5 +1,5 @@
 /* =========================================================
-   style.css — SAGE v2 + award + reveal aman (gating .fx)
+   style.css — SAGE v2 + award + etalase fasilitas v2
    ========================================================= */
 
    :root {
@@ -59,19 +59,33 @@
   }
   @keyframes mq { to { transform: translateX(-50%); } }
   
-  /* ---------- Scroll reveal AMAN:
-     hanya disembunyikan bila <html> punya class .fx (dipasang JS).
-     Bila JS efek gagal/tak ada → konten tetap terlihat. ---------- */
+  /* Reveal aman (gating .fx) */
   .fx .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
   .fx .reveal.on { opacity: 1; transform: none; }
   
-  /* Etalase fasilitas */
+  /* ---------- Etalase fasilitas v2 ----------
+     Mobile: grid biasa. Desktop: 1 layar penuh, judul ikut ter-pin,
+     track rata kiri container, tanpa ruang kosong. ---------- */
   .fas-track { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
   @media (min-width: 640px) { .fas-track { grid-template-columns: 1fr 1fr; } }
   @media (min-width: 1024px) {
-    #fasWrap { height: 72vh; display: flex; align-items: center; overflow: hidden; }
-    .fas-track { display: flex; width: max-content; max-width: none; gap: 1.5rem; }
+    #fasWrap {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; gap: 2.5rem; overflow: hidden;
+    }
+    .fas-track {
+      display: flex; width: max-content; max-width: none; gap: 1.5rem;
+      padding-left: max(1.25rem, calc((100vw - 72rem) / 2 + 1.25rem));
+      padding-right: 2rem;
+      perspective: 1200px;               /* untuk tilt 3D hover */
+    }
     .fas-card { width: 360px; flex: none; }
+    /* Hover kaya ala situs award: angkat + tilt 3D halus */
+    .fas-card { transition: transform .35s ease, box-shadow .35s ease; }
+    .fas-card:hover {
+      transform: translateY(-8px) rotateX(3deg) rotateY(-3deg) scale(1.03);
+      box-shadow: 0 18px 30px -10px rgb(50 80 40 / .25);
+    }
   }
   
   /* Hero overlay */
