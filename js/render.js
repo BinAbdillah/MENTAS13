@@ -1,5 +1,5 @@
 /* =========================================================
-   render.js — renderer halaman (hero parallax + etalase pin)
+   render.js — renderer halaman (etalase v2: judul ikut ter-pin)
    ========================================================= */
 
    const NAV = [
@@ -33,7 +33,7 @@
       a.addEventListener('click', () => $('#navMobile').classList.add('hidden')));
   }
   
-  /* ---------- 2) HERO (kelas hero-foto & hero-judul untuk parallax) ---------- */
+  /* ---------- 2) HERO ---------- */
   function renderHero(d) {
     const { hero, identitas: i, wilayah: w } = d;
     const ketua = d.strukturRW.inti.find((p) => p.jabatan === 'Ketua') || {};
@@ -238,18 +238,18 @@
       </section>`;
   }
   
-  /* ---------- 6) FASILITAS: etalase horizontal saat pinned ---------- */
+  /* ---------- 6) FASILITAS v2: judul DI DALAM area pin ---------- */
   function renderFasilitas(d) {
     $('#fasilitas').innerHTML = `
       <section class="bg-white py-16 md:py-24">
-        <div class="mx-auto max-w-6xl px-4">
-          ${judulSeksi('04', 'Fasilitas Warga', 'Etalase fasilitas RW 013 — terus gulir, etalase akan bergerak mendatar.')}
-        </div>
-  
         <div id="fasWrap" class="relative">
-          <div id="fasTrack" class="fas-track mx-auto max-w-6xl px-4">
+          <div class="mx-auto max-w-6xl px-4">
+            ${judulSeksi('04', 'Fasilitas Warga', 'Etalase fasilitas RW 013 — terus gulir, etalase bergerak mendatar.')}
+          </div>
+  
+          <div id="fasTrack" class="fas-track">
             ${d.fasilitas.map((f) => `
-            <div class="kartu kartu-hover fas-card group flex items-start gap-4 p-6">
+            <div class="kartu fas-card group flex items-start gap-4 p-6">
               <span class="grid h-14 w-14 flex-none place-items-center rounded-xl bg-emerald-100 text-3xl transition-transform group-hover:scale-110">${f.ikon}</span>
               <div>
                 <b class="text-base text-slate-900 md:text-lg">${f.nama}</b>
@@ -258,8 +258,9 @@
               </div>
             </div>`).join('')}
           </div>
+  
+          <p class="mt-8 hidden text-center text-xs uppercase tracking-[0.3em] text-slate-400 lg:block">Terus gulir ↓</p>
         </div>
-        <p class="mt-8 hidden text-center text-xs uppercase tracking-[0.3em] text-slate-400 lg:block">Terus gulir ↓</p>
       </section>`;
   }
   
