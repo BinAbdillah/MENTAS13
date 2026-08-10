@@ -1,16 +1,14 @@
 /* =========================================================
-   peta-cuaca.js — peta interaktif + cuaca real-time
-   (dengan pengaman: peta di-reinit & cuaca di-cache saat
-    halaman dirender ulang oleh live update)
+   peta-cuaca.js — peta + cuaca (judul section gaya baru)
    ========================================================= */
 
    function renderPetaCuaca(d) {
     const pakaiGoogle = d.peta && d.peta.mode === 'google' && d.peta.googleEmbed;
   
     $('#peta-cuaca').innerHTML = `
-      <section class="mx-auto max-w-6xl px-4 py-16 md:py-20">
-        ${judulSeksi('🗺️', 'Peta Wilayah & Cuaca', 'Peta interaktif RW 013 dan cuaca real-time sekitar wilayah')}
-        <div class="grid gap-6 lg:grid-cols-3">
+      <section class="mx-auto max-w-6xl px-4 py-16 md:py-24">
+        ${judulSeksi('05', 'Peta & Cuaca', 'Peta interaktif RW 013 dan cuaca real-time sekitar wilayah')}
+        <div class="reveal grid gap-6 lg:grid-cols-3">
           ${pakaiGoogle ? `
           <div class="overflow-hidden rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
             <iframe src="${d.peta.googleEmbed}" title="Peta Wilayah RW 013 Menteng Atas"
@@ -23,19 +21,15 @@
           </div>
         </div>
         ${pakaiGoogle ? `
-        <p class="mt-4 text-sm text-slate-500">
-          🗺️ Peta & titik fasilitas dikelola melalui <b>Google My Maps pengurus</b>.
-        </p>` : ''}
+        <p class="mt-4 text-sm text-slate-500">🗺️ Peta & titik fasilitas dikelola melalui <b>Google My Maps pengurus</b>.</p>` : ''}
       </section>`;
   
     if (!pakaiGoogle) initPeta(d);
     renderCuaca(d);
   }
   
-  /* ---------- Leaflet (mode 'leaflet') ---------- */
   function initPeta(d) {
-    if (window._peta) { window._peta.remove(); window._peta = null; }  // cegah duplikat saat live update
-  
+    if (window._peta) { window._peta.remove(); window._peta = null; }
     const peta = L.map('peta', { scrollWheelZoom: false });
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
       { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(peta);
@@ -56,23 +50,20 @@
     window._peta = peta;
   }
   
-  /* ---------- Cuaca real-time (hasil di-cache agar hemat) ---------- */
   async function renderCuaca(d) {
     const [lat, lon] = d.identitas.koordinat;
     const key = lat + ',' + lon;
-  
-    if (window._cuacaCache && window._cuacaKey === key) {   // pakai cache saat live update
+    if (window._cuacaCache && window._cuacaKey === key) {
       $('#cuacaCard').innerHTML = window._cuacaCache;
       return;
     }
-  
     try {
       const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code&timezone=auto`);
       const c = (await r.json()).current;
       const [ikon, teks] = labelCuaca(c.weather_code);
       window._cuacaKey = key;
       window._cuacaCache = `
-        <h3 class="text-base font-bold uppercase tracking-wider text-slate-500">Cuaca ${d.identitas.kota}</h3>
+        <h3 class="text-base font-bold uppercase tracking-widest text-slate-500">Cuaca ${d.identitas.kota}</h3>
         <div class="mt-5 flex items-center gap-5">
           <span class="text-6xl">${ikon}</span>
           <div>

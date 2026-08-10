@@ -1,77 +1,83 @@
 /* =========================================================
-   style.css — CSS murni + TEMA "SAGE HIJAU" v2 (lebih terasa)
+   style.css — TEMA SAGE + gaya "award-worthy"
    ========================================================= */
 
-/* ---------- Variabel tema: sage v2, hijau lebih hadir ---------- */
-:root {
-  --bg:        #EAF0E6;   /* latar halaman — hijau lembut yang terlihat */
-  --surface:   #F8FBF5;   /* kartu / header — putih kehijauan */
-  --fill:      #DCE8D6;   /* isian lembut — sage jelas */
-  --line:      #C7D8C0;   /* garis tepi — sage */
-  --line-soft: #D6E3CF;   /* garis halus */
-}
-
-html { scroll-behavior: smooth; font-size: 17px; }
-
-/* ---------- Font judul (Bricolage Grotesque) ---------- */
-h1, h2, h3 {
-  font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', system-ui, sans-serif;
-  letter-spacing: -0.015em;
-}
-h2 { color: #16301f; }   /* judul section: hijau-tua yang elegan */
-
-/* ---------- Seleksi teks senada tema ---------- */
-::selection { background: #bbf7d0; color: #052e16; }
-
-/* ---------- Lapisan tema: remap utility Tailwind ---------- */
-body            { background-color: var(--bg) !important; }
-.bg-white       { background-color: var(--surface) !important; }
-.bg-white\/90   { background-color: color-mix(in srgb, var(--surface) 92%, transparent) !important; }
-.bg-slate-50    { background-color: var(--bg) !important; }
-.bg-slate-100   { background-color: var(--fill) !important; }
-.border-slate-200 { border-color: var(--line) !important; }
-.border-slate-100 { border-color: var(--line-soft) !important; }
-
-/* ---------- Overlay gelap foto hero ---------- */
-.hero-overlay {
-  background: linear-gradient(135deg, rgb(6 78 59 / .88), rgb(2 6 23 / .82));
-}
-
-/* ---------- Kartu dasar ---------- */
-.kartu {
-  border-radius: 1rem;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  box-shadow: 0 1px 3px 0 rgb(50 80 40 / .08);
-}
-
-/* ---------- Efek hover kartu ---------- */
-.kartu-hover { transition: transform .2s ease, box-shadow .2s ease; }
-.kartu-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 14px -4px rgb(50 80 40 / .18), 0 2px 4px -2px rgb(50 80 40 / .1);
-}
-
-/* ---------- Navigasi ---------- */
-.nav-link {
-  border-radius: .5rem;
-  padding: .6rem 1rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #44584a;
-}
-.nav-link:hover { background: #dce8d6; color: #14532d; }
-
-/* ---------- Nilai belum diisi ---------- */
-.nilai-kosong { font-style: italic; color: #8aa08f; }
-
-/* ---------- Pin marker peta ---------- */
-.pin-f {
-  display: flex; align-items: center; justify-content: center;
-  width: 38px; height: 38px;
-  background: #fff; border: 2px solid #059669;
-  border-radius: 50% 50% 50% 6px;
-  box-shadow: 0 4px 10px rgb(0 0 0 / .35);
-  font-size: 18px;
-}
-.leaflet-popup-content { font-family: inherit; }
+   :root {
+    --bg:        #EAF0E6;
+    --surface:   #F8FBF5;
+    --fill:      #DCE8D6;
+    --line:      #C7D8C0;
+    --line-soft: #D6E3CF;
+  }
+  
+  html { scroll-behavior: smooth; font-size: 17px; }
+  
+  /* ---------- Font judul ---------- */
+  h1, h2, h3 {
+    font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', system-ui, sans-serif;
+    letter-spacing: -0.015em;
+  }
+  h2 { color: #16301f; }
+  
+  ::selection { background: #bbf7d0; color: #052e16; }
+  
+  /* ---------- Noise halus ala situs award ---------- */
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: 80; pointer-events: none; opacity: .045;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  }
+  
+  /* ---------- Lapisan tema (remap utility Tailwind) ---------- */
+  body            { background-color: var(--bg) !important; }
+  .bg-white       { background-color: var(--surface) !important; }
+  .bg-white\/90   { background-color: color-mix(in srgb, var(--surface) 92%, transparent) !important; }
+  .bg-slate-50    { background-color: var(--bg) !important; }
+  .bg-slate-100   { background-color: var(--fill) !important; }
+  .border-slate-200 { border-color: var(--line) !important; }
+  .border-slate-100 { border-color: var(--line-soft) !important; }
+  
+  /* ---------- Header saat scroll ---------- */
+  #header.scrolled { box-shadow: 0 6px 20px rgb(50 80 40 / .12); }
+  
+  /* ---------- Teks outline (gaya display) ---------- */
+  .text-outline { -webkit-text-stroke: 2px rgb(52 211 153 / .9); color: transparent; }
+  .text-outline-dark { -webkit-text-stroke: 1.5px rgb(255 255 255 / .35); color: transparent; }
+  
+  /* ---------- Marquee ---------- */
+  .marquee { overflow: hidden; }
+  .marquee-track {
+    display: flex; align-items: center; white-space: nowrap; width: max-content;
+    padding: .7rem 0; animation: mq 26s linear infinite; will-change: transform;
+  }
+  @keyframes mq { to { transform: translateX(-50%); } }
+  
+  /* ---------- Scroll reveal ---------- */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.on { opacity: 1; transform: none; }
+  
+  /* ---------- Overlay hero ---------- */
+  .hero-overlay { background: linear-gradient(135deg, rgb(6 78 59 / .88), rgb(2 6 23 / .82)); }
+  
+  /* ---------- Kartu ---------- */
+  .kartu {
+    border-radius: 1rem; border: 1px solid var(--line); background: var(--surface);
+    box-shadow: 0 1px 3px 0 rgb(50 80 40 / .08);
+  }
+  .kartu-hover { transition: transform .2s ease, box-shadow .2s ease; }
+  .kartu-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 22px -6px rgb(50 80 40 / .2), 0 2px 4px -2px rgb(50 80 40 / .1);
+  }
+  
+  /* ---------- Navigasi ---------- */
+  .nav-link { border-radius: .5rem; padding: .6rem 1rem; font-size: 1rem; font-weight: 600; color: #44584a; }
+  .nav-link:hover { background: #dce8d6; color: #14532d; }
+  
+  /* ---------- Lain-lain ---------- */
+  .nilai-kosong { font-style: italic; color: #8aa08f; }
+  .pin-f {
+    display: flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px; background: #fff; border: 2px solid #059669;
+    border-radius: 50% 50% 50% 6px; box-shadow: 0 4px 10px rgb(0 0 0 / .35); font-size: 18px;
+  }
+  .leaflet-popup-content { font-family: inherit; }

@@ -1,6 +1,6 @@
 /* =========================================================
-   app.js (module) — Firebase + fallback lokal + live update
-   + normalisasi(): data bolong tetap aman dirender
+   app.js — Firebase + Lenis (smooth) + GSAP (pin/parallax/mask)
+   Efek otomatis NONAKTIF bila pengguna memilih reduced-motion.
    ========================================================= */
 
    const FB = window.FIREBASE_CONFIG || null;
@@ -15,7 +15,70 @@
      } catch (e) { console.warn('Firebase gagal dimuat → pakai data lokal.', e); db = null; }
    }
    
-   /* ---------- Normalisasi: isi default bila field hilang ---------- */
+   /* ---------- Setup efek scroll ---------- */
+   const ADA_GSAP = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+   const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+   const EFEK_AKTIF = ADA_GSAP && !REDUCED;
+   
+   let lenis = null;
+   if (window.Lenis && !REDUCED) {
+     lenis = new Lenis({ duration: 1.15 });
+     if (ADA_GSAP) {
+       lenis.on('scroll', ScrollTrigger.update);
+       gsap.ticker.add((t) => lenis.raf(t * 1000));
+       gsap.ticker.lagSmoothing(0);
+     } else {
+       (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(performance.now());
+     }
+   }
+   
+   /* ---------- Inisialisasi efek (dipanggil tiap render) ---------- */
+   function initEfek() {
+     if (!EFEK_AKTIF) return;
+     gsap.registerPlugin(ScrollTrigger);
+     ScrollTrigger.getAll().forEach((t) => t.kill());   // bersihkan trigger lama
+   
+     // 1) Parallax hero: foto & judul kecepatan berbeda
+     if ($('#hero .hero-foto')) {
+       gsap.timeline({ scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true } })
+         .to('#hero .hero-foto', { yPercent: 16, ease: 'none' }, 0)
+         .to('#hero .hero-judul', { yPercent: -10, autoAlpha: .3, ease: 'none' }, 0);
+     }
+   
+     // 2) Line-mask reveal judul section
+     gsap.utils.toArray('.mask-line').forEach((el) => {
+       gsap.fromTo(el, { yPercent: 115 }, {
+         yPercent: 0, duration: 1, ease: 'power4.out',
+         scrollTrigger: { trigger: el, start: 'top 88%' }
+       });
+     });
+   
+     // 3) Etalase fasilitas: pinned + horizontal (desktop saja)
+     const wrap = $('#fasWrap'), track = $('#fasTrack');
+     if (wrap && track && window.matchMedia('(min-width: 1024px)').matches) {
+       const jarak = () => Math.max(0, track.scrollWidth - wrap.clientWidth);
+       gsap.to(track, {
+         x: () => -jarak(),
+         ease: 'none',
+         scrollTrigger: {
+           trigger: wrap, start: 'top 15%', end: () => '+=' + jarak(),
+           pin: true, scrub: 1, anticipatePin: 1, invalidateOnRefresh: true
+         }
+       });
+     }
+   
+     // 4) Marquee mengikuti ritme scroll
+     const mq = document.querySelector('.marquee-track');
+     if (mq && lenis) {
+       lenis.on('scroll', ({ velocity }) => {
+         mq.style.animationDuration = Math.max(9, 26 - Math.min(14, Math.abs(velocity) * 1.6)) + 's';
+       });
+     }
+   
+     ScrollTrigger.refresh();
+   }
+   
+   /* ---------- Normalisasi data ---------- */
    function normalisasi(d) {
      d = d || {};
      d.identitas = d.identitas || {};
@@ -43,7 +106,6 @@
      return d;
    }
    
-   /* ---------- Muat data: Firebase dulu, lalu lokal ---------- */
    async function muatData() {
      if (db) {
        try {
@@ -56,7 +118,6 @@
      return r.json();
    }
    
-   /* ---------- Render seluruh halaman ---------- */
    function renderSemua(input) {
      const DATA = normalisasi(input);
      window.DATA = DATA;
@@ -71,9 +132,9 @@
      renderPetaCuaca(DATA);
      renderFooter(DATA);
      jalankanCounter();
+     initEfek();   // efek scroll dipasang ulang (aman live update)
    }
    
-   /* ---------- Spanduk HUT RI (slot sendiri, aman duplikat) ---------- */
    function renderBanner(d) {
      const slot = $('#banner-slot');
      if (!slot) return;
@@ -88,14 +149,37 @@
        </a>`;
    }
    
+   /* ---------- Anchor mulus via Lenis ---------- */
+   document.addEventListener('click', (e) => {
+     const a = e.target.closest('a[href^="#"]');
+     if (!a) return;
+     const id = a.getAttribute('href');
+     if (id.length < 2) return;
+     const target = document.querySelector(id);
+     if (!target) return;
+     e.preventDefault();
+     if (lenis) lenis.scrollTo(target, { offset: -76 });
+     else target.scrollIntoView({ behavior: 'smooth' });
+   });
+   
    /* ---------- Inisialisasi ---------- */
    (async function main() {
      try {
+       addEventListener('scroll', () => {
+         const h = $('#header');
+         if (h) h.classList.toggle('scrolled', scrollY > 8);
+       }, { passive: true });
+   
+       let rT;
+       addEventListener('resize', () => {
+         clearTimeout(rT);
+         rT = setTimeout(() => ADA_GSAP && ScrollTrigger.refresh(), 250);
+       });
+   
        const DATA = await muatData();
        window._lastJson = JSON.stringify(DATA);
        renderSemua(DATA);
    
-       // Live update dari Firebase
        if (db) {
          _fb.onValue(_fb.ref(db, 'data'), (snap) => {
            const v = snap.val();

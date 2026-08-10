@@ -7,17 +7,20 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="js/tailwind-config.js"></script>
-  <!-- Font: Bricolage Grotesque (judul) + Plus Jakarta Sans (isi) -->
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400..800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+  <!-- Mesin scroll "award-level": Lenis (smooth) + GSAP (pin/parallax) -->
+  <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body class="bg-slate-50 font-sans text-slate-800">
-  <!-- Slot spanduk (di atas header) -->
   <div id="banner-slot"></div>
 
   <header id="header" class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur"></header>
