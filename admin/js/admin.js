@@ -20,7 +20,7 @@
    }
    
    /* ---------- Util ---------- */
-   const esc = (s) => String(s).replace(/&g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
    const escAttr = (s) => esc(s).replace(/"/g,'&quot;');
    const pretty = (k) => String(k).replace(/[_-]/g,' ');
    const status = (t) => { $('#statusLine').textContent = t; };
