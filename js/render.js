@@ -1,7 +1,7 @@
 /* =========================================================
-   render.js — FINAL v2
-   + urutan peran RT dikunci (Firebase mengurutkan key
-     object alfabetis; urutan ditampilkan dari URUTAN_RT)
+   render.js — FINAL v4
+   foto di SEMUA unsur kepengurusan + fasilitas
+   (fallback inisial bila foto kosong/gagal)
    ========================================================= */
 
    const NAV = [
@@ -10,10 +10,21 @@
     ['#peta-cuaca', 'Peta'], ['#kontak', 'Kontak']
   ];
   
-  /* Urutan tampilan peran pengurus RT (kebal dari sorting Firebase) */
   const URUTAN_RT = ['Ketua', 'Sekretaris', 'Bendahara', 'Bank Sampah'];
   
   const huruf = (teks) => teks.split('').map((c) => `<span class="huruf">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+  
+  /* orang: terima string lama ATAU objek {nama,foto} */
+  const orang = (x) => (x && typeof x === 'object') ? { nama: x.nama || '', foto: x.foto || '' } : { nama: (x || ''), foto: '' };
+  
+  /* avatar bulat + fallback inisial */
+  const avatar = (nama, foto, sizeCls = 'h-14 w-14', fallCls = 'bg-slate-100 text-slate-500', txt = 'text-lg') => ada(foto) ? `
+    <span class="relative block ${sizeCls} flex-none">
+      <img src="${foto}" alt="${nama}" class="absolute inset-0 h-full w-full rounded-full object-cover"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+      <span class="hidden h-full w-full place-items-center rounded-full ${fallCls} font-extrabold ${txt}">${inisial(nama)}</span>
+    </span>`
+    : `<span class="grid ${sizeCls} flex-none place-items-center rounded-full ${fallCls} font-extrabold ${txt}">${inisial(nama)}</span>`;
   
   function agregatRT(d) {
     const list = (d.rt || []).map((r) => r.statistik).filter((s) => s && typeof s.jiwa === 'number');
@@ -48,7 +59,7 @@
       a.addEventListener('click', () => $('#navMobile').classList.add('hidden')));
   }
   
-  /* ---------- 2) PENGUMUMAN (marquee, pin dulu) ---------- */
+  /* ---------- 2) PENGUMUMAN ---------- */
   function renderPengumuman(d) {
     const slot = $('#pengumuman-slot');
     if (!slot) return;
@@ -65,7 +76,7 @@
       </div>`;
   }
   
-  /* ---------- 3) HERO ---------- */
+  /* ---------- 3) HERO (foto ketua) ---------- */
   function renderHero(d) {
     const { hero, identitas: i, wilayah: w } = d;
     const agg = agregatRT(d);
@@ -94,7 +105,7 @@
               <p class="mt-6 max-w-xl text-base leading-relaxed text-slate-200 md:text-lg">“${hero.sambutan}”</p>
   
               <div class="mt-6 flex items-center gap-4">
-                <span class="grid h-14 w-14 place-items-center rounded-full bg-emerald-500 text-lg font-extrabold text-slate-900">${inisial(ketua.nama)}</span>
+                <span class="overflow-hidden rounded-full">${avatar(ketua.nama, ketua.foto, 'h-14 w-14', 'bg-emerald-500 text-slate-900', 'text-lg')}</span>
                 <span>
                   <span class="block text-lg font-bold">${namaAtau(ketua.nama)}</span>
                   <span class="block text-sm text-emerald-300">Ketua RW • Periode ${hero.periode}</span>
@@ -135,7 +146,7 @@
   function renderProfil(d) {
     const w = d.wilayah;
     const agg = agregatRT(d);
-    const panah = { Timur: '➡️', Selatan: '⬇', Barat: '⬅️', Utara: '⬆️' };
+    const panah = { Timur: '➡️', Selatan: '⬇️', Barat: '⬅️', Utara: '⬆️' };
   
     const barisRT = (d.rt || []).map((r) => {
       const s = r.statistik || {};
@@ -212,17 +223,21 @@
       </section>`;
   }
   
-  /* ---------- 5) STRUKTUR (RT berurutan sesuai URUTAN_RT) ---------- */
+  /* ---------- 5) STRUKTUR (foto semua unsur) ---------- */
   function renderStruktur(d) {
     const s = d.strukturRW;
-    const barisJabatan = (jab, nama) => `
-      <div class="flex items-center justify-between gap-3 border-b border-slate-100 py-2.5 text-base last:border-0">
-        <span class="text-slate-500">${jab}</span>
-        <b class="text-right ${ada(nama) ? '' : 'nilai-kosong'}">${namaAtau(nama)}</b>
-      </div>`;
   
-    /* kunci urutan: Ketua → Sekretaris → Bendahara → Bank Sampah,
-       lalu peran tambahan lain (bila ada) di belakang */
+    const barisJabatan = (jab, person) => {
+      const o = orang(person);
+      return `<div class="flex items-center justify-between gap-3 border-b border-slate-100 py-2.5 text-base last:border-0">
+        <span class="text-slate-500">${jab}</span>
+        <b class="flex items-center gap-2.5 ${ada(o.nama) ? '' : 'nilai-kosong'}">
+          <span class="text-right">${namaAtau(o.nama)}</span>
+          ${avatar(o.nama, o.foto, 'h-8 w-8', 'bg-slate-100 text-slate-500', 'text-xs')}
+        </b>
+      </div>`;
+    };
+  
     const peranRT = (p) => {
       const keys = Object.keys(p || {});
       return URUTAN_RT.filter((k) => keys.includes(k))
@@ -237,19 +252,22 @@
   
           <h3 class="mb-5 text-xl font-bold text-slate-900">Penasehat RW</h3>
           <div class="reveal grid grid-cols-2 gap-4 sm:grid-cols-5">
-            ${d.penasehat.map((p, i) => `
-            <div class="kartu kartu-hover p-5 text-center">
-              <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-slate-100 text-lg font-extrabold text-slate-500">${inisial(p.nama)}</span>
-              <b class="mt-3 block text-base ${ada(p.nama) ? '' : 'nilai-kosong'}">${namaAtau(p.nama)}</b>
-              <span class="text-sm text-slate-500">Penasehat ${i + 1}</span>
-            </div>`).join('')}
+            ${d.penasehat.map((p, i) => {
+              const o = orang(p);
+              return `
+              <div class="kartu kartu-hover p-5 text-center">
+                <span class="mx-auto block w-fit">${avatar(o.nama, o.foto, 'h-14 w-14', 'bg-slate-100 text-slate-500', 'text-lg')}</span>
+                <b class="mt-3 block text-base ${ada(o.nama) ? '' : 'nilai-kosong'}">${namaAtau(o.nama)}</b>
+                <span class="text-sm text-slate-500">Penasehat ${i + 1}</span>
+              </div>`;
+            }).join('')}
           </div>
   
           <h3 class="mb-5 mt-14 text-xl font-bold text-slate-900">Pengurus RW</h3>
           <div class="reveal grid gap-5 sm:grid-cols-3">
             ${s.inti.map((p, i) => `
             <div class="kartu kartu-hover p-6 text-center ${i === 0 ? 'ring-2 ring-emerald-500' : ''}">
-              <span class="mx-auto grid h-16 w-16 place-items-center rounded-full ${i === 0 ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700'} text-xl font-extrabold">${inisial(p.nama)}</span>
+              <span class="mx-auto block w-fit">${avatar(p.nama, p.foto, 'h-16 w-16', i === 0 ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700', 'text-xl')}</span>
               <b class="mt-3 block text-lg text-slate-900">${namaAtau(p.nama)}</b>
               <span class="mt-1 block text-sm text-slate-500">${p.jabatan}</span>
             </div>`).join('')}
@@ -263,7 +281,12 @@
               <b class="mt-2 block text-base text-slate-900">${sk.nama}</b>
               <div class="mt-3 flex flex-wrap gap-2">
                 ${sk.anggota.length
-                  ? sk.anggota.map((a) => `<span class="rounded-full bg-emerald-600/10 px-3 py-1.5 text-sm font-medium text-emerald-700">${a}</span>`).join('')
+                  ? sk.anggota.map((a) => {
+                      const o = orang(a);
+                      return `<span class="flex items-center gap-1.5 rounded-full bg-emerald-600/10 py-1 pl-1 pr-3 text-sm font-medium text-emerald-700">
+                        ${avatar(o.nama, o.foto, 'h-6 w-6', 'bg-emerald-600/20 text-emerald-700', 'text-[10px]')}${o.nama}
+                      </span>`;
+                    }).join('')
                   : '<span class="nilai-kosong text-sm">Belum diisi</span>'}
               </div>
             </div>`).join('')}
@@ -296,7 +319,7 @@
                 <span class="text-sm text-slate-500">${m.deskripsi}</span></div>
               </div>
               <div class="mt-4">
-                ${m.struktur.map((p) => barisJabatan(p.jabatan, p.nama)).join('')}
+                ${m.struktur.map((p) => barisJabatan(p.jabatan, p)).join('')}
               </div>
             </div>`).join('')}
           </div>
@@ -337,7 +360,7 @@
       </section>`;
   }
   
-  /* ---------- 7) FASILITAS ---------- */
+  /* ---------- 7) FASILITAS (foto + ikon) ---------- */
   function renderFasilitas(d) {
     $('#fasilitas').innerHTML = `
       <section class="bg-white py-16 md:py-24">
@@ -347,12 +370,19 @@
           </div>
           <div id="fasTrack" class="fas-track">
             ${d.fasilitas.map((f) => `
-            <div class="kartu fas-card group flex items-start gap-4 p-6">
-              <span class="grid h-14 w-14 flex-none place-items-center rounded-xl bg-emerald-100 text-3xl transition-transform group-hover:scale-110">${f.ikon}</span>
-              <div>
-                <b class="text-base text-slate-900 md:text-lg">${f.nama}</b>
-                <span class="ml-2 rounded-full bg-emerald-600/10 px-2.5 py-1 text-xs font-semibold text-emerald-700">${f.jenis}</span>
-                <p class="mt-1.5 text-sm text-slate-500">📍 ${f.alamat}</p>
+            <div class="kartu fas-card group flex flex-col p-6">
+              ${ada(f.foto) ? `
+              <div class="mb-4 overflow-hidden rounded-xl">
+                <img src="${f.foto}" alt="${f.nama}" class="h-28 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                     onerror="this.parentElement.remove()">
+              </div>` : ''}
+              <div class="flex items-start gap-4">
+                <span class="grid h-14 w-14 flex-none place-items-center rounded-xl bg-emerald-100 text-3xl transition-transform group-hover:scale-110">${f.ikon}</span>
+                <div>
+                  <b class="text-base text-slate-900 md:text-lg">${f.nama}</b>
+                  <span class="ml-2 rounded-full bg-emerald-600/10 px-2.5 py-1 text-xs font-semibold text-emerald-700">${f.jenis}</span>
+                  <p class="mt-1.5 text-sm text-slate-500">📍 ${f.alamat}</p>
+                </div>
               </div>
             </div>`).join('')}
           </div>
@@ -361,7 +391,7 @@
       </section>`;
   }
   
-  /* ---------- 8) GALERI (masonry + lightbox) ---------- */
+  /* ---------- 8) GALERI ---------- */
   function renderGaleri(d) {
     const el = $('#galeri');
     if (!el) return;
@@ -408,7 +438,7 @@
     lb.addEventListener('click', (e) => { if (e.target === lb) tutup(); });
   }
   
-  /* ---------- 9) LAYANAN (list bernomor, detail lipat) ---------- */
+  /* ---------- 9) LAYANAN ---------- */
   function renderLayanan(d) {
     const el = $('#layanan');
     if (!el) return;
@@ -462,7 +492,7 @@
       </section>`;
   }
   
-  /* ---------- 11) FOOTER (+ kontak darurat) ---------- */
+  /* ---------- 11) FOOTER ---------- */
   function renderFooter(d) {
     const i = d.identitas;
     const darurat = d.kontakDarurat || [];

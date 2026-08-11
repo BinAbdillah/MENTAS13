@@ -1,5 +1,5 @@
 /* =========================================================
-   mitra.js — halaman khusus mitra (baca data yang sama)
+   mitra.js — foto pada struktur (fallback inisial)
    ========================================================= */
 
    const FB = window.FIREBASE_CONFIG || null;
@@ -24,6 +24,16 @@
      const r = await fetch('data/data.json');
      return r.json();
    }
+   
+   const orang = (x) => (x && typeof x === 'object') ? { nama: x.nama || '', foto: x.foto || '' } : { nama: (x || ''), foto: '' };
+   
+   const avatar = (nama, foto, sizeCls = 'h-8 w-8', fallCls = 'bg-slate-100 text-slate-500', txt = 'text-xs') => ada(foto) ? `
+     <span class="relative block ${sizeCls} flex-none">
+       <img src="${foto}" alt="${nama}" class="absolute inset-0 h-full w-full rounded-full object-cover"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+       <span class="hidden h-full w-full place-items-center rounded-full ${fallCls} font-extrabold ${txt}">${inisial(nama)}</span>
+     </span>`
+     : `<span class="grid ${sizeCls} flex-none place-items-center rounded-full ${fallCls} font-extrabold ${txt}">${inisial(nama)}</span>`;
    
    const linkKontak = (k) => {
      if (!k) return '';
@@ -51,9 +61,7 @@
            ${m.kontak ? `<a href="${linkKontak(m.kontak)}" class="rounded-full px-5 py-2.5 text-sm font-bold"
               style="background:var(--accent); color:var(--on-accent)">💬 Kontak</a>` : ''}
          </div>
-   
          ${m.foto ? `<img src="${m.foto}" alt="${m.nama}" class="mt-6 w-full rounded-xl object-cover" style="max-height:320px" onerror="this.remove()">` : ''}
-   
          <div class="mt-8 grid gap-8 md:grid-cols-2">
            <div>
              <h3 class="mb-3 text-lg font-bold" style="color:var(--heading)">Program Kerja</h3>
@@ -66,15 +74,18 @@
            </div>
            <div>
              <h3 class="mb-3 text-lg font-bold" style="color:var(--heading)">Struktur</h3>
-             ${(m.struktur || []).map((p) => `
-             <div class="flex items-center justify-between border-b py-2.5 text-base last:border-0" style="border-color:var(--line-soft)">
-               <span style="opacity:.7">${p.jabatan}</span>
-               <b class="${ada(p.nama) ? '' : 'nilai-kosong'}">${namaAtau(p.nama)}</b>
-             </div>`).join('')}
+             ${(m.struktur || []).map((p) => {
+               const o = orang(p);
+               return `<div class="flex items-center justify-between border-b py-2.5 text-base last:border-0" style="border-color:var(--line-soft)">
+                 <span style="opacity:.7">${p.jabatan}</span>
+                 <b class="flex items-center gap-2.5 ${ada(o.nama) ? '' : 'nilai-kosong'}">
+                   ${namaAtau(o.nama)} ${avatar(o.nama, o.foto)}
+                 </b>
+               </div>`;
+             }).join('')}
            </div>
          </div>
        </section>`).join('')}
-   
        <a href="index.html" class="group inline-block rounded-full border px-6 py-3 text-base font-bold"
           style="border-color:var(--accent); color:var(--accent-text)">
          ← Kembali ke beranda

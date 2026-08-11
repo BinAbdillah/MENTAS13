@@ -1,5 +1,5 @@
 {
-  "_catatan": "DATA SEMENTARA. Statistik per-RT dijumlahkan otomatis ke Profil. ronda: pola 3-hari berselang sesuai jadwal AGST'26 (TEBO/MONCOS).",
+  "_catatan": "DATA SEMENTARA. Semua orang = {nama, foto}; foto diunggah via admin (GitHub). Statistik per-RT dijumlahkan otomatis.",
 
   "identitas": {
     "namaRW": "RW 013 Menteng Atas",
@@ -18,12 +18,11 @@
   "tema": { "preset": "garuda", "custom": {} },
 
   "ronda": {
-    "_catatan": "mulai 2026-07-30 + pola 3 hari = cocok dgn jadwal AGST'26. Isi 'anggota' agar pin menampilkan nama petugas. 'jadwal' diisi tombol Generate di admin (365 entri).",
     "aktif": true,
     "mulai": "2026-07-30",
     "polahari": 3,
     "tim": [
-      { "nama": "TEBO",   "anggota": [] },
+      { "nama": "TEBO", "anggota": [] },
       { "nama": "MONCOS", "anggota": [] }
     ],
     "jadwal": []
@@ -56,53 +55,54 @@
     "penduduk": 1881,
     "jumlahRT": 9,
     "perbatasan": [
-      { "arah": "Timur",   "dengan": "Jl. Subur Ujung RW.015" },
+      { "arah": "Timur", "dengan": "Jl. Subur Ujung RW.015" },
       { "arah": "Selatan", "dengan": "Pemakaman Menteng Pulo" },
       { "arah": "Utara", "dengan": "Jl. Menteng Atas Selatan III, RW.004 & RW.006" },
-      { "arah": "Barat",   "dengan": "Gg. 3 RW.005" }
+      { "arah": "Barat", "dengan": "Gg. 3 RW.005" }
     ]
   },
 
   "penasehat": [
-    { "nama": "" }, { "nama": "" }, { "nama": "" }, { "nama": "" }, { "nama": "" }
+    { "nama": "", "foto": "" }, { "nama": "", "foto": "" }, { "nama": "", "foto": "" },
+    { "nama": "", "foto": "" }, { "nama": "", "foto": "" }
   ],
 
   "strukturRW": {
     "inti": [
-      { "jabatan": "Ketua",      "nama": "Abdillah A. Rahman" },
-      { "jabatan": "Sekretaris", "nama": "Syamsuddin" },
-      { "jabatan": "Bendahara",  "nama": "H. Tamin Heru" }
+      { "jabatan": "Ketua", "nama": "Abdillah A. Rahman", "foto": "" },
+      { "jabatan": "Sekretaris", "nama": "Syamsuddin", "foto": "" },
+      { "jabatan": "Bendahara", "nama": "H. Tamin Heru", "foto": "" }
     ],
     "seksi": [
-      { "nama": "Keamanan",   "ikon": "🛡️", "anggota": ["Tatang", "Endy"] },
-      { "nama": "Kerohanian", "ikon": "🕌", "anggota": ["Ust. Ade Rizky"] },
-      { "nama": "Kebersihan & Lingkungan", "ikon": "🌱", "anggota": [" "] },
-      { "nama": "Sosial & Kesejahteraan",  "ikon": "🤝", "anggota": [" "] }
+      { "nama": "Keamanan", "ikon": "🛡️", "anggota": [ { "nama": "Tatang", "foto": "" }, { "nama": "Endy", "foto": "" } ] },
+      { "nama": "Kerohanian", "ikon": "🕌", "anggota": [ { "nama": "Ust. Ade Rizky", "foto": "" } ] },
+      { "nama": "Kebersihan & Lingkungan", "ikon": "🌱", "anggota": [] },
+      { "nama": "Sosial & Kesejahteraan", "ikon": "🤝", "anggota": [] }
     ]
   },
 
   "rt": [
-    { "no": "001", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 62, "jiwa": 205, "laki": 104, "perempuan": 101, "balita": 18, "lansia": 22 } },
-    { "no": "002", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 58, "jiwa": 196, "laki": 99,  "perempuan": 97,  "balita": 16, "lansia": 20 } },
-    { "no": "003", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 60, "jiwa": 201, "laki": 102, "perempuan": 99,  "balita": 17, "lansia": 21 } },
-    { "no": "004", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 57, "jiwa": 192, "laki": 97,  "perempuan": 95,  "balita": 15, "lansia": 19 } },
-    { "no": "005", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 59, "jiwa": 199, "laki": 100, "perempuan": 99,  "balita": 16, "lansia": 20 } },
-    { "no": "006", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 56, "jiwa": 190, "laki": 96,  "perempuan": 94,  "balita": 14, "lansia": 18 } },
-    { "no": "007", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 58, "jiwa": 197, "laki": 99,  "perempuan": 98,  "balita": 15, "lansia": 21 } },
-    { "no": "008", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 57, "jiwa": 194, "laki": 98,  "perempuan": 96,  "balita": 16, "lansia": 19 } },
-    { "no": "009", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 60, "jiwa": 208, "laki": 106, "perempuan": 102, "balita": 17, "lansia": 22 } }
+    { "no": "001", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 62, "jiwa": 205, "laki": 104, "perempuan": 101, "balita": 18, "lansia": 22 } },
+    { "no": "002", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 58, "jiwa": 196, "laki": 99, "perempuan": 97, "balita": 16, "lansia": 20 } },
+    { "no": "003", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 60, "jiwa": 201, "laki": 102, "perempuan": 99, "balita": 17, "lansia": 21 } },
+    { "no": "004", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 57, "jiwa": 192, "laki": 97, "perempuan": 95, "balita": 15, "lansia": 19 } },
+    { "no": "005", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 59, "jiwa": 199, "laki": 100, "perempuan": 99, "balita": 16, "lansia": 20 } },
+    { "no": "006", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 56, "jiwa": 190, "laki": 96, "perempuan": 94, "balita": 14, "lansia": 18 } },
+    { "no": "007", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 58, "jiwa": 197, "laki": 99, "perempuan": 98, "balita": 15, "lansia": 21 } },
+    { "no": "008", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 57, "jiwa": 194, "laki": 98, "perempuan": 96, "balita": 16, "lansia": 19 } },
+    { "no": "009", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 60, "jiwa": 208, "laki": 106, "perempuan": 102, "balita": 17, "lansia": 22 } }
   ],
 
   "mitra": [
     { "nama": "TP PKK RW 013", "ikon": "👩", "deskripsi": "Gerakan pemberdayaan & kesejahteraan keluarga.",
       "foto": "", "kontak": "", "program": ["Dasawisma", "UP2K", "Kader Posyandu"],
-      "struktur": [ { "jabatan": "Ketua", "nama": "" }, { "jabatan": "Sekretaris", "nama": "" }, { "jabatan": "Bendahara", "nama": "" } ] },
+      "struktur": [ { "jabatan": "Ketua", "nama": "", "foto": "" }, { "jabatan": "Sekretaris", "nama": "", "foto": "" }, { "jabatan": "Bendahara", "nama": "", "foto": "" } ] },
     { "nama": "Karang Taruna Unit 13", "ikon": "🧑‍‍🧑", "deskripsi": "Wadah kreativitas & kegiatan pemuda wilayah.",
       "foto": "", "kontak": "", "program": ["Liga futsal antar-RT", "Bakti sosial", "Konten warga"],
-      "struktur": [ { "jabatan": "Ketua", "nama": "" }, { "jabatan": "Wakil Ketua", "nama": "" }, { "jabatan": "Sekretaris", "nama": "" } ] },
+      "struktur": [ { "jabatan": "Ketua", "nama": "", "foto": "" }, { "jabatan": "Wakil Ketua", "nama": "", "foto": "" }, { "jabatan": "Sekretaris", "nama": "", "foto": "" } ] },
     { "nama": "LMK", "ikon": "🏘️", "deskripsi": "Lembaga Musyawarah Kelurahan — mitra pembangunan warga.",
       "foto": "", "kontak": "", "program": ["Musyawarah pembangunan", "Advokasi warga"],
-      "struktur": [ { "jabatan": "Ketua", "nama": "" } ] }
+      "struktur": [ { "jabatan": "Ketua", "nama": "", "foto": "" } ] }
   ],
 
   "agenda": [
@@ -130,12 +130,12 @@
   "umkm": [],
 
   "fasilitas": [
-    { "nama": "Masjid Jami' Al Barkah",       "ikon": "🕌", "jenis": "Ibadah",     "alamat": "RT 01 RW 013 Menteng Atas", "koordinat": [-6.21360, 106.84760] },
-    { "nama": "Yayasan Ar Rizky As Salafiyyah", "ikon": "🏫", "jenis": "Pendidikan", "alamat": "RT 02 RW 013 Menteng Atas", "koordinat": [-6.21365, 106.84795] },
-    { "nama": "Saung Warga RW 13",            "ikon": "🛖", "jenis": "Ruang Publik", "alamat": "RT 02 RW 013 Menteng Atas", "koordinat": [-6.21390, 106.84760] },
-    { "nama": "RPTRA Kebon Sawo",             "ikon": "🌳", "jenis": "Ruang Hijau",  "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21400, 106.84790] },
-    { "nama": "PAUD ASTERIA",                 "ikon": "🎓", "jenis": "Pendidikan",   "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21395, 106.84800] },
-    { "nama": "Pos RW 13",                    "ikon": "🏠", "jenis": "Administrasi", "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21375, 106.84775] }
+    { "nama": "Masjid Jami' Al Barkah", "ikon": "🕌", "jenis": "Ibadah", "alamat": "RT 01 RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21360, 106.84760] },
+    { "nama": "Yayasan Ar Rizky As Salafiyyah", "ikon": "🏫", "jenis": "Pendidikan", "alamat": "RT 02 RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21365, 106.84795] },
+    { "nama": "Saung Warga RW 13", "ikon": "🛖", "jenis": "Ruang Publik", "alamat": "RT 02 RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21390, 106.84760] },
+    { "nama": "RPTRA Kebon Sawo", "ikon": "🌳", "jenis": "Ruang Hijau", "alamat": "RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21400, 106.84790] },
+    { "nama": "PAUD ASTERIA", "ikon": "🎓", "jenis": "Pendidikan", "alamat": "RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21395, 106.84800] },
+    { "nama": "Pos RW 13", "ikon": "🏠", "jenis": "Administrasi", "alamat": "RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21375, 106.84775] }
   ],
 
   "batasRW": [
