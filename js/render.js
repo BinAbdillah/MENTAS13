@@ -1,11 +1,14 @@
 /* =========================================================
-   render.js — renderer halaman (etalase v2: judul ikut ter-pin)
+   render.js — hero stagger per-karakter + profil sticky 2 kolom
    ========================================================= */
 
    const NAV = [
     ['#hero', 'Beranda'], ['#profil', 'Profil'], ['#struktur', 'Struktur'],
     ['#agenda', 'Agenda'], ['#fasilitas', 'Fasilitas'], ['#peta-cuaca', 'Peta'], ['#kontak', 'Kontak']
   ];
+  
+  /* Pecah teks jadi span per-huruf (untuk stagger) */
+  const huruf = (teks) => teks.split('').map((c) => `<span class="huruf">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
   
   /* ---------- 1) HEADER ---------- */
   function renderHeader(d) {
@@ -33,7 +36,7 @@
       a.addEventListener('click', () => $('#navMobile').classList.add('hidden')));
   }
   
-  /* ---------- 2) HERO ---------- */
+  /* ---------- 2) HERO (judul per-karakter) ---------- */
   function renderHero(d) {
     const { hero, identitas: i, wilayah: w } = d;
     const ketua = d.strukturRW.inti.find((p) => p.jabatan === 'Ketua') || {};
@@ -55,7 +58,8 @@
                 ${i.kecamatan} • ${i.kota}
               </p>
               <h1 class="hero-judul mt-6 font-extrabold uppercase leading-[0.95] tracking-tight text-[clamp(2.6rem,7.5vw,6rem)]">
-                <span class="text-outline">RW 013</span><br>Menteng Atas
+                <span class="text-outline block">${huruf('RW 013')}</span>
+                <span class="block">${huruf('Menteng Atas')}</span>
               </h1>
               <p class="mt-6 max-w-xl text-base leading-relaxed text-slate-200 md:text-lg">“${hero.sambutan}”</p>
   
@@ -97,32 +101,41 @@
       </section>`;
   }
   
-  /* ---------- 3) PROFIL ---------- */
+  /* ---------- 3) PROFIL (sticky two-column ala emilianmisera) ---------- */
   function renderProfil(d) {
     const w = d.wilayah;
     const panah = { Timur: '➡️', Selatan: '⬇️', Barat: '⬅️', Utara: '⬆️' };
     $('#profil').innerHTML = `
       <section class="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        ${judulSeksi('01', 'Profil Wilayah', 'Statistik warga dan batas-batas wilayah RW 013')}
+        <div class="grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:gap-16">
   
-        <div class="reveal grid grid-cols-2 gap-10 md:grid-cols-4">
-          ${[['👥', w.penduduk, 'Penduduk (jiwa)'], ['📐', w.luasM2, 'Luas (m²)'],
-             ['🚩', w.jumlahRT, 'Rukun Tetangga'], ['🏗️', d.fasilitas.length, 'Fasilitas']]
-            .map(([ik, v, l]) => `
-            <div class="border-l-2 border-emerald-700/40 pl-5">
-              <div class="counter text-5xl font-extrabold text-emerald-800 md:text-6xl" data-target="${v}">0</div>
-              <div class="mt-2 text-xs uppercase tracking-[0.2em] text-slate-500">${ik} ${l}</div>
-            </div>`).join('')}
-        </div>
+          <!-- KIRI: judul menempel (sticky) saat kanan digulir -->
+          <div class="lg:sticky lg:top-28 lg:self-start">
+            ${judulSeksi('01', 'Profil Wilayah', 'Statistik warga dan batas-batas wilayah RW 013 — gulir, kolom kiri tetap menempel.')}
+          </div>
   
-        <div class="kartu reveal mt-12 p-6 md:p-8">
-          <h3 class="mb-5 text-xl font-bold text-slate-900">🧭 Batas-Batas Wilayah</h3>
-          <div class="grid gap-3 sm:grid-cols-2">
-            ${w.perbatasan.map((p) => `
-            <div class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3.5 text-base">
-              <span class="flex-none rounded-lg bg-emerald-600/10 px-3 py-1.5 text-sm font-bold text-emerald-700">${panah[p.arah] || '🧭'} ${p.arah}</span>
-              <span>${p.dengan}</span>
-            </div>`).join('')}
+          <!-- KANAN: konten mengalir -->
+          <div class="space-y-10">
+            <div class="reveal grid grid-cols-2 gap-8">
+              ${[['👥', w.penduduk, 'Penduduk (jiwa)'], ['📐', w.luasM2, 'Luas (m²)'],
+                 ['🚩', w.jumlahRT, 'Rukun Tetangga'], ['🏗️', d.fasilitas.length, 'Fasilitas']]
+                .map(([ik, v, l]) => `
+                <div class="border-l-2 border-emerald-700/40 pl-5">
+                  <div class="counter text-5xl font-extrabold text-emerald-800 md:text-6xl" data-target="${v}">0</div>
+                  <div class="mt-2 text-xs uppercase tracking-[0.2em] text-slate-500">${ik} ${l}</div>
+                </div>`).join('')}
+            </div>
+  
+            <div class="kartu reveal p-6 md:p-8">
+              <h3 class="mb-5 text-xl font-bold text-slate-900">🧭 Batas-Batas Wilayah</h3>
+              <div class="grid gap-3">
+                ${w.perbatasan.map((p) => `
+                <div class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3.5 text-base">
+                  <span class="flex-none rounded-lg bg-emerald-600/10 px-3 py-1.5 text-sm font-bold text-emerald-700">${panah[p.arah] || '🧭'} ${p.arah}</span>
+                  <span>${p.dengan}</span>
+                </div>`).join('')}
+              </div>
+            </div>
           </div>
         </div>
       </section>`;
@@ -238,7 +251,7 @@
       </section>`;
   }
   
-  /* ---------- 6) FASILITAS v2: judul DI DALAM area pin ---------- */
+  /* ---------- 6) FASILITAS (etalase dua mode) ---------- */
   function renderFasilitas(d) {
     $('#fasilitas').innerHTML = `
       <section class="bg-white py-16 md:py-24">

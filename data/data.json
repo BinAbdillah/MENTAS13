@@ -3,7 +3,7 @@
 
   "identitas": {
     "namaRW": "RW 013 Menteng Atas",
-    "tagline": "Mandiri • Rukun • Sejahtera",
+    "tagline": "A.M.A.N.A.H",
     "logo": "assets/logo-rw.png",
     "kecamatan": "Kecamatan Setiabudi",
     "kota": "Jakarta Selatan",
@@ -15,15 +15,16 @@
     "sosmed": { "instagram": "", "facebook": "", "whatsapp": "" }
   },
 
+  "tema": { "preset": "garuda", "custom": {} },
+
   "hero": {
     "foto": "https://images.unsplash.com/photo-1449844174353-612b95733a6b?auto=format&fit=crop&w=1600&q=60",
     "judul": "Selamat Datang di Website Resmi",
     "sambutan": "Website ini menjadi sarana informasi dan silaturahmi warga RW 013 Menteng Atas. Mari bersama menjaga lingkungan yang aman, bersih, dan guyub.",
-    "periode": "2024–2029"
+    "periode": "2023–2028"
   },
 
   "banner": {
-    "_catatan": "Spanduk temporer: otomatis SEMBUNYI di luar rentang tanggal. Gambar dipakai apa adanya tanpa teks tambahan. Bila nama file berbeda, cukup ubah 'gambar'. Set 'gantiFotoHero': true bila spanduk ingin dipakai juga sebagai latar hero.",
     "aktif": true,
     "mulai": "2026-08-01",
     "selesai": "2026-08-31",
@@ -34,7 +35,6 @@
   },
 
   "peta": {
-    "_catatanMode": "mode 'google' = embed My Maps pengurus (posisi akurat). Ubah ke 'leaflet' bila koordinat fasilitas sudah diisi ulang.",
     "mode": "google",
     "googleEmbed": "https://www.google.com/maps/d/embed?mid=1_opObY1kFOyctMgN6jrozmqhc3j5bLg&ehbc=2E312F"
   },
@@ -90,25 +90,23 @@
       "struktur": [ { "jabatan": "Ketua", "nama": "" } ] }
   ],
 
-  "agenda": [
-    { "tanggal": "2026-08-16", "waktu": "19.30–21.00", "judul": "Malam Tirakatan & Doa Bersama", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "Tasyakuran HUT RI ke-81 bersama seluruh warga." },
-    { "tanggal": "2026-08-17", "waktu": "07.00–12.00", "judul": "Upacara & Lomba 17 Agustus", "tempat": "Lapangan RW 013", "kategori": "Kegiatan", "deskripsi": "Upacara bendera dilanjutkan lomba balita hingga dewasa. Tema: Menjaga Alam, Membangun Bangsa." },
-    { "tanggal": "2026-08-23", "waktu": "06.30–09.00", "judul": "Kerja Bakti & Tanam Tanaman", "tempat": "RT 001–009 & RPTRA Kebon Sawo", "kategori": "Kerja Bakti", "deskripsi": "Bersih selokan antisipasi hujan + gerakan Indonesia Hijau: tanam tanaman di RPTRA." },
-    { "tanggal": "2026-08-30", "waktu": "08.00–11.00", "judul": "Posyandu Balita & Lansia", "tempat": "Posyandu Melati", "kategori": "Kesehatan", "deskripsi": "Penimbangan balita, cek tensi & gula darah gratis untuk lansia." },
-    { "tanggal": "2026-09-05", "waktu": "19.30–21.00", "judul": "Rapat Pleno Pengurus RW", "tempat": "Pos RW 13", "kategori": "Rapat", "deskripsi": "Evaluasi kegiatan Agustus dan rencana program September." },
-    { "tanggal": "2026-09-12", "waktu": "07.00–10.00", "judul": "Senam Sehat & Bank Sampah", "tempat": "RPTRA Kebon Sawo", "kategori": "Kegiatan", "deskripsi": "Senam bersama dilanjutkan penukaran bank sampah tiap RT." }
-  ],
+  "agenda": [],
+
+  "pengumuman": [],
+  "galeri": [],
+  "layanan": [],
+  "kontakDarurat": [],
+  "umkm": [],
 
   "fasilitas": [
-    { "nama": "Masjid Jami' Al Barkah",       "ikon": "🕌", "jenis": "Ibadah",     "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21360, 106.84760] },
-    { "nama": "Yayasan Ar Rizky As Salafiyyah", "ikon": "🏫", "jenis": "Pendidikan", "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21365, 106.84795] },
-    { "nama": "Saung Warga RW 13",            "ikon": "🛖", "jenis": "Ruang Publik", "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21390, 106.84760] },
+    { "nama": "Masjid Jami' Al Barkah",       "ikon": "🕌", "jenis": "Ibadah",     "alamat": "RT 01 RW 013 Menteng Atas", "koordinat": [-6.21360, 106.84760] },
+    { "nama": "Yayasan Ar Rizky As Salafiyyah", "ikon": "🏫", "jenis": "Pendidikan", "alamat": "RT 02 RW 013 Menteng Atas", "koordinat": [-6.21365, 106.84795] },
+    { "nama": "Saung Warga RW 13",            "ikon": "🛖", "jenis": "Ruang Publik", "alamat": "RT 02 RW 013 Menteng Atas", "koordinat": [-6.21390, 106.84760] },
     { "nama": "RPTRA Kebon Sawo",             "ikon": "🌳", "jenis": "Ruang Hijau",  "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21400, 106.84790] },
     { "nama": "PAUD ASTERIA",                 "ikon": "🎓", "jenis": "Pendidikan",   "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21395, 106.84800] },
     { "nama": "Pos RW 13",                    "ikon": "🏠", "jenis": "Administrasi", "alamat": "RW 013 Menteng Atas", "koordinat": [-6.21375, 106.84775] }
   ],
 
-  "_catatanPeta": "Koordinat 'fasilitas' & 'batasRW' di bawah hanya dipakai mode 'leaflet' (saat ini perkiraan).",
   "batasRW": [
     [-6.21355, 106.84755], [-6.21350, 106.84800], [-6.21380, 106.84812],
     [-6.21410, 106.84800], [-6.21415, 106.84755], [-6.21385, 106.84743]

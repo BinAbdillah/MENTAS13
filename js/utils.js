@@ -1,63 +1,103 @@
 /* =========================================================
-   utils.js — pembantu umum + judul section editorial
+   utils.js — pembantu umum + MANAJER TEMA (preset & custom)
    ========================================================= */
 
-const $ = (s) => document.querySelector(s);
-const fmtNum = (n) => Number(n).toLocaleString('id-ID');
-const ada = (v) => v !== null && v !== undefined && String(v).trim() !== '';
-const namaAtau = (v) => ada(v) ? v : '—';
-
-const inisial = (nama) => {
-  if (!ada(nama)) return '•';
-  return nama
-    .replace(/^(H\.|Hj\.|Bpk\.|Ibu|Ust\.|Drs\.|Ir\.)\s*/g, '')
-    .split(' ').map((k) => k[0]).slice(0, 2).join('').toUpperCase();
-};
-
-const bannerAktif = (b) => {
-  if (!b || !b.aktif) return false;
-  const now = new Date();
-  return now >= new Date(b.mulai + 'T00:00:00') && now <= new Date(b.selesai + 'T23:59:59');
-};
-
-const renderLogo = (logo, cls = 'h-14 w-14 md:h-16 md:w-16') => {
-  if (/\.(png|jpe?g|svg|webp)$/i.test(String(logo))) {
-    return `
-      <span class="relative inline-block ${cls}">
-        <img src="${logo}" alt="Logo RW"
-             class="absolute inset-0 h-full w-full rounded-xl object-contain"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
-        <span class="hidden h-full w-full place-items-center rounded-xl bg-emerald-600 text-2xl shadow md:text-3xl">🏛️</span>
-      </span>`;
-  }
-  return `<span class="grid ${cls} place-items-center rounded-xl bg-emerald-600 text-2xl shadow md:text-3xl">${logo}</span>`;
-};
-
-const labelCuaca = (c) => {
-  if (c === 0) return ['☀️', 'Cerah'];
-  if (c <= 2)  return ['🌤️', 'Cerah Berawan'];
-  if (c === 3) return ['☁️', 'Mendung'];
-  if (c === 45 || c === 48) return ['🌫️', 'Berkabut'];
-  if (c <= 57) return ['🌦️', 'Gerimis'];
-  if (c <= 82) return ['🌧️', 'Hujan'];
-  return ['⛈️', 'Hujan Petir'];
-};
-
-const WARNA_KATEGORI = {
-  'Kegiatan':    'bg-emerald-100 text-emerald-700',
-  'Rapat':       'bg-blue-100 text-blue-700',
-  'Kesehatan':   'bg-purple-100 text-purple-700',
-  'Kerja Bakti': 'bg-amber-100 text-amber-700'
-};
-
-/* Judul section gaya editorial: nomor + garis + judul raksasa */
-const judulSeksi = (nomor, judul, sub) => `
-  <div class="reveal mb-10 md:mb-14">
-    <div class="flex items-center gap-4 text-emerald-700">
-      <span class="font-mono text-sm font-bold tracking-[0.3em]">${nomor}</span>
-      <span class="h-px flex-1 bg-emerald-700/30"></span>
-      <span class="text-xs uppercase tracking-[0.3em]">RW 013</span>
-    </div>
-    <h2 class="mt-4 text-4xl font-extrabold uppercase tracking-tight text-slate-900 md:text-5xl">${judul}</h2>
-    <p class="mt-3 max-w-2xl text-base text-slate-500 md:text-lg">${sub}</p>
-  </div>`;
+   const $ = (s) => document.querySelector(s);
+   const fmtNum = (n) => Number(n).toLocaleString('id-ID');
+   const ada = (v) => v !== null && v !== undefined && String(v).trim() !== '';
+   const namaAtau = (v) => ada(v) ? v : '—';
+   
+   const inisial = (nama) => {
+     if (!ada(nama)) return '•';
+     return nama
+       .replace(/^(H\.|Hj\.|Bpk\.|Ibu|Ust\.|Drs\.|Ir\.)\s*/g, '')
+       .split(' ').map((k) => k[0]).slice(0, 2).join('').toUpperCase();
+   };
+   
+   const bannerAktif = (b) => {
+     if (!b || !b.aktif) return false;
+     const now = new Date();
+     return now >= new Date(b.mulai + 'T00:00:00') && now <= new Date(b.selesai + 'T23:59:59');
+   };
+   
+   const renderLogo = (logo, cls = 'h-14 w-14 md:h-16 md:w-16') => {
+     if (/\.(png|jpe?g|svg|webp)$/i.test(String(logo))) {
+       return `
+         <span class="relative inline-block ${cls}">
+           <img src="${logo}" alt="Logo RW"
+                class="absolute inset-0 h-full w-full rounded-xl object-contain"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+           <span class="hidden h-full w-full place-items-center rounded-xl bg-emerald-600 text-2xl shadow md:text-3xl">🏛️</span>
+         </span>`;
+     }
+     return `<span class="grid ${cls} place-items-center rounded-xl bg-emerald-600 text-2xl shadow md:text-3xl">${logo}</span>`;
+   };
+   
+   const labelCuaca = (c) => {
+     if (c === 0) return ['☀️', 'Cerah'];
+     if (c <= 2)  return ['🌤️', 'Cerah Berawan'];
+     if (c === 3) return ['☁️', 'Mendung'];
+     if (c === 45 || c === 48) return ['🌫️', 'Berkabut'];
+     if (c <= 57) return ['🌦️', 'Gerimis'];
+     if (c <= 82) return ['🌧️', 'Hujan'];
+     return ['⛈️', 'Hujan Petir'];
+   };
+   
+   const WARNA_KATEGORI = {
+     'Kegiatan':    'bg-emerald-100 text-emerald-700',
+     'Rapat':       'bg-blue-100 text-blue-700',
+     'Kesehatan':   'bg-purple-100 text-purple-700',
+     'Kerja Bakti': 'bg-amber-100 text-amber-700'
+   };
+   
+   /* ---------- PRESET TEMA (dipakai beranda & admin) ---------- */
+   const PRESET_TEMA = {
+     garuda: { mode:'dark',  bg:'#0C0D0F', surface:'#15171A', fill:'#23262B', line:'#2E3238', lineSoft:'#23262B',
+               accent:'#DC2626', accentStrong:'#B91C1C', accentBright:'#EF4444', accentSoft:'#3B1214',
+               accentText:'#F87171', accentTextSoft:'#FCA5A5', onAccent:'#FFFFFF',
+               heading:'#F4F4F5', nav:'#CFD4DA', navHover:'#F87171', teks:'#E4E4E7' },
+     sage:   { mode:'light', bg:'#EAF0E6', surface:'#F8FBF5', fill:'#DCE8D6', line:'#C7D8C0', lineSoft:'#D6E3CF',
+               accent:'#059669', accentStrong:'#047857', accentBright:'#10B981', accentSoft:'#D1FAE5',
+               accentText:'#047857', accentTextSoft:'#059669', onAccent:'#FFFFFF',
+               heading:'#16301F', nav:'#44584A', navHover:'#14532D', teks:'#1F2937' },
+     biru:   { mode:'light', bg:'#EFF4F8', surface:'#FBFDFF', fill:'#E2EBF3', line:'#CBDCEA', lineSoft:'#DCE8F2',
+               accent:'#0369A1', accentStrong:'#075985', accentBright:'#0EA5E9', accentSoft:'#E0F2FE',
+               accentText:'#0369A1', accentTextSoft:'#0284C7', onAccent:'#FFFFFF',
+               heading:'#0C2A3D', nav:'#3D566B', navHover:'#075985', teks:'#1F2937' },
+     krem:   { mode:'light', bg:'#FAF6EE', surface:'#FFFCF7', fill:'#F1EADD', line:'#E4D9C3', lineSoft:'#EDE4D2',
+               accent:'#B45309', accentStrong:'#92400E', accentBright:'#D97706', accentSoft:'#F7E7C8',
+               accentText:'#92400E', accentTextSoft:'#B45309', onAccent:'#FFFFFF',
+               heading:'#3B2F1E', nav:'#5B4A32', navHover:'#92400E', teks:'#1F2937' }
+   };
+   
+   /* Terapkan tema ke <html> sebagai CSS variables (live) */
+   function terapkanTema(t) {
+     let p = PRESET_TEMA.garuda;
+     if (t) {
+       if (t.preset === 'custom') p = Object.assign({}, PRESET_TEMA.garuda, t.custom || {});
+       else if (PRESET_TEMA[t.preset]) p = PRESET_TEMA[t.preset];
+     }
+     const r = document.documentElement;
+     r.dataset.mode = p.mode || 'dark';
+     const map = {
+       '--bg': p.bg, '--surface': p.surface, '--fill': p.fill, '--line': p.line, '--line-soft': p.lineSoft,
+       '--accent': p.accent, '--accent-strong': p.accentStrong, '--accent-bright': p.accentBright,
+       '--accent-soft': p.accentSoft, '--accent-text': p.accentText, '--accent-text-soft': p.accentTextSoft,
+       '--on-accent': p.onAccent, '--heading': p.heading, '--nav': p.nav, '--nav-hover': p.navHover, '--teks': p.teks
+     };
+     Object.entries(map).forEach(([k, v]) => r.style.setProperty(k, v));
+   }
+   
+   /* Judul section editorial ber-masker */
+   const judulSeksi = (nomor, judul, sub) => `
+     <div class="reveal mb-10 md:mb-14">
+       <div class="flex items-center gap-4" style="color:var(--accent-text)">
+         <span class="font-mono text-sm font-bold tracking-[0.3em]">${nomor}</span>
+         <span class="h-px flex-1" style="background:color-mix(in srgb, var(--accent) 35%, transparent)"></span>
+         <span class="text-xs uppercase tracking-[0.3em]">RW 013</span>
+       </div>
+       <h2 class="mt-4 text-4xl font-extrabold uppercase tracking-tight md:text-5xl" style="color:var(--heading)">
+         <span class="mask"><span class="mask-line">${judul}</span></span>
+       </h2>
+       <p class="mt-3 max-w-2xl text-base md:text-lg" style="color:var(--teks); opacity:.75">${sub}</p>
+     </div>`;

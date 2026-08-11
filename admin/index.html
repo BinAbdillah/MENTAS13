@@ -57,13 +57,15 @@
       <p class="mt-1 text-sm text-amber-700">Isi <code>js/firebase-config.js</code> dengan config dari Firebase Console, lalu push & muat ulang.</p>
     </div>
 
-    <!-- Area form otomatis -->
-    <fieldset id="formRoot" data-tipe="obj" class="hidden"></fieldset>
+        <!-- Panel Manajer Tema (diisi oleh admin.js) -->
+        <div id="temaHost" class="hidden"></div>
 
+        <!-- Area form otomatis -->
+        <fieldset id="formRoot" data-tipe="obj" class="hidden"></fieldset>
     <p id="statusLine" class="mt-6 text-center text-sm text-slate-500"></p>
   </main>
 
   <script src="../js/firebase-config.js"></script>
-  <script type="module" src="js/admin.js"></script>
-</body>
+  <script src="../js/utils.js"></script>
+  <script type="module" src="js/admin.js"></script></body>
 </html>

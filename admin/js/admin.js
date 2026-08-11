@@ -1,8 +1,6 @@
 /* =========================================================
-   admin.js (module) — form otomatis + self-healing:
-   saat form dimuat, field yang hilang di data Firebase
-   otomatis dilengkapi dari data.json lokal (merge).
-   Sekali "Simpan" → data Firebase sembuh lengkap.
+   admin.js — + MANAJER TEMA (preset/custom, live preview)
+   + form otomatis untuk pengumuman/galeri/layanan/kontak/umkm
    ========================================================= */
 
    const $ = (s) => document.querySelector(s);
@@ -22,13 +20,11 @@
    }
    
    /* ---------- Util ---------- */
-   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-   const escAttr = (s) => esc(s).replace(/"/g, '&quot;');
-   const pretty = (k) => String(k).replace(/[_-]/g, ' ');
+   const esc = (s) => String(s).replace(/&g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+   const escAttr = (s) => esc(s).replace(/"/g,'&quot;');
+   const pretty = (k) => String(k).replace(/[_-]/g,' ');
    const status = (t) => { $('#statusLine').textContent = t; };
    
-   /* Merge: base = kerangka lokal, extra = data Firebase.
-      Field yang hilang di extra diisi dari base. */
    function mergeDeep(base, extra) {
      if (Array.isArray(extra)) return extra;
      if (extra && typeof extra === 'object' && base && typeof base === 'object' && !Array.isArray(base)) {
@@ -41,8 +37,14 @@
      return (typeof extra === 'undefined') ? base : extra;
    }
    
+   /* Template tombol "Tambah" untuk array kosong */
    const TEMPLATES = {
-     agenda: { tanggal: '2026-01-01', waktu: '', judul: '', tempat: '', kategori: 'Kegiatan', deskripsi: '' }
+     agenda:        { tanggal: '2026-01-01', waktu: '', judul: '', tempat: '', kategori: 'Kegiatan', deskripsi: '' },
+     pengumuman:    { tanggal: '2026-01-01', judul: '', isi: '', prioritas: 'Biasa', pin: true },
+     galeri:        { foto: 'assets/', keterangan: '', tanggal: '2026-01-01', kategori: 'Kegiatan' },
+     layanan:       { nama: '', syarat: '', penanggungJawab: '', biaya: 'Gratis', durasi: '' },
+     kontakDarurat: { nama: '', nomor: '', jabatan: '' },
+     umkm:          { nama: '', jenis: '', kontak: '', rt: '' }
    };
    const templates = {};
    
@@ -67,8 +69,8 @@
    function buildUI(key, value) {
      if (value === null || ['string', 'number', 'boolean'].includes(typeof value)) {
        const tipe = typeof value === 'boolean' ? 'bool' : typeof value === 'number' ? 'num' : 'str';
-       const v = value === null ? '' : value;                      // null → input kosong
-       const panjang = tipe === 'str' && (String(v).length > 60 || /sambutan|deskripsi|alamat/i.test(key));
+       const v = value === null ? '' : value;
+       const panjang = tipe === 'str' && (String(v).length > 60 || /sambutan|deskripsi|alamat|syarat|isi/i.test(key));
        const ctrl = tipe === 'bool'
          ? `<input type="checkbox" class="h-4 w-4 accent-emerald-600" ${v ? 'checked' : ''}>`
          : tipe === 'num'
@@ -83,7 +85,7 @@
    
      if (Array.isArray(value)) {
        if (value.length && Array.isArray(value[0])) {
-         return `<div data-key="${key}" data-tipe="json" class="leaf"><label class="lbl">${pretty(key)} <span class="hint">(JSON — hati-hati saat edit)</span></label><textarea class="inp mono" rows="4">${esc(JSON.stringify(value))}</textarea></div>`;
+         return `<div data-key="${key}" data-tipe="json" class="leaf"><label class="lbl">${pretty(key)} <span class="hint">(JSON — hati-hati)</span></label><textarea class="inp mono" rows="4">${esc(JSON.stringify(value))}</textarea></div>`;
        }
        if (!value.length || typeof value[0] !== 'object') {
          const nums = value.length && typeof value[0] === 'number';
@@ -118,7 +120,6 @@
      return null;
    }
    
-   /* ---------- Tambah / hapus item ---------- */
    $('#formRoot').addEventListener('click', (e) => {
      const b = e.target.closest('[data-aksi]');
      if (!b) return;
@@ -131,7 +132,66 @@
      }
    });
    
-   /* ---------- Muat data ke form (dengan merge penyembuh) ---------- */
+   /* =========================================================
+      MANAJER TEMA — preset + color picker + live preview
+      ========================================================= */
+   let temaAktif = { preset: 'garuda', custom: {} };
+   
+   function panelTemaHTML() {
+     const p = Object.keys(PRESET_TEMA);
+     return `
+       <div class="kartu mb-6 p-5">
+         <b class="block text-lg" style="color:var(--heading)">🎨 Manajer Tema</b>
+         <p class="mb-4 text-sm" style="color:var(--teks); opacity:.7">Ganti suasana website langsung dari sini — tersimpan & diterapkan real-time ke beranda.</p>
+         <div class="flex flex-wrap items-center gap-3">
+           <label class="text-sm font-bold">Preset
+             <select id="temaPreset" class="inp" style="width:auto">
+               ${p.map((k) => `<option value="${k}" ${temaAktif.preset === k ? 'selected' : ''}>${k[0].toUpperCase() + k.slice(1)}</option>`).join('')}
+               <option value="custom" ${temaAktif.preset === 'custom' ? 'selected' : ''}>Custom</option>
+             </select>
+           </label>
+           ${[['bg', 'Latar'], ['surface', 'Kartu'], ['accent', 'Aksen'], ['accentText', 'Teks aksen'], ['heading', 'Judul']]
+             .map(([k, l]) => `
+             <label class="text-sm font-bold">${l}
+               <input type="color" data-warna="${k}" class="h-9 w-12 cursor-pointer rounded border-0 bg-transparent p-0"
+                      value="${(temaAktif.preset === 'custom' ? (temaAktif.custom[k] || PRESET_TEMA.garuda[k]) : PRESET_TEMA[temaAktif.preset || 'garuda'][k]) || '#000000'}">
+             </label>`).join('')}
+           <button id="btnSimpanTema" class="btnx bg-emerald-600 text-white">🎨 Simpan Tema</button>
+         </div>
+       </div>`;
+   }
+   
+   function pasangPanelTema() {
+     const host = $('#temaHost');
+     host.innerHTML = panelTemaHTML();
+   
+     host.querySelector('#temaPreset').addEventListener('change', (e) => {
+       temaAktif = { preset: e.target.value, custom: {} };
+       terapkanTema(temaAktif);                     // live preview (halaman admin ikut berubah)
+       host.innerHTML = panelTemaHTML();            // refresh picker
+       pasangPanelTema();                           // pasang ulang listener
+     });
+   
+     host.querySelectorAll('input[data-warna]').forEach((inp) => {
+       inp.addEventListener('input', () => {
+         const base = PRESET_TEMA[temaAktif.preset] || PRESET_TEMA.garuda;
+         const custom = Object.assign({}, base, temaAktif.custom);
+         custom[inp.dataset.warna] = inp.value;
+         temaAktif = { preset: 'custom', custom };
+         terapkanTema(temaAktif);                   // preview langsung
+       });
+     });
+   
+     host.querySelector('#btnSimpanTema').addEventListener('click', async () => {
+       if (!confirm('Simpan tema ke Firebase? Beranda warga langsung berubah.')) return;
+       try {
+         await _fb.set(_fb.ref(db, 'data/tema'), temaAktif);
+         status('✅ Tema tersimpan & diterapkan real-time ke beranda.');
+       } catch (e) { status('❌ ' + e.message); }
+     });
+   }
+   
+   /* ---------- Muat data ke form (tema dipisah ke panel) ---------- */
    async function muatKeForm() {
      let lokal = null;
      try { const r = await fetch('../data/data.json'); lokal = await r.json(); } catch (e) {}
@@ -142,21 +202,27 @@
      }
      if (!v && lokal) { v = lokal; sumber = 'data.json lokal'; }
      if (!v) { status('❌ Tidak ada data untuk dimuat.'); return; }
-   
-     // SELF-HEALING: lengkapi field yang hilang dari kerangka lokal
      if (lokal && sumber === 'Firebase') v = mergeDeep(lokal, v);
+   
+     temaAktif = v.tema || { preset: 'garuda', custom: {} };
+     terapkanTema(temaAktif);
+     pasangPanelTema();
    
      Object.entries(v).forEach(([k, val]) => {
        if (Array.isArray(val) && val.length && typeof val[0] === 'object') templates[k] = templateOf(k, val[0]);
      });
    
-     $('#formRoot').innerHTML = Object.entries(v).map(([k, val]) => buildUI(k, val)).join('');
-     status('📂 Dimuat dari ' + sumber + '. Field yang kosong/bolong sudah dilengkapi otomatis — tekan Simpan untuk merapikan Firebase.');
+     // 'tema' dikelola panel khusus, bukan form otomatis
+     $('#formRoot').innerHTML = Object.entries(v)
+       .filter(([k]) => k !== 'tema')
+       .map(([k, val]) => buildUI(k, val)).join('');
+     status('📂 Dimuat dari ' + sumber + '. Form baru tersedia: pengumuman, galeri, layanan, kontakDarurat, umkm.');
    }
    
    /* ---------- Auth & aksi ---------- */
    function tampilEditor() {
      $('#loginCard').classList.add('hidden');
+     $('#temaHost').classList.remove('hidden');
      $('#formRoot').classList.remove('hidden');
      ['btnSimpan', 'btnDownload', 'btnKeluar', 'btnMigrasi'].forEach(id => $('#' + id).classList.remove('hidden'));
      $('#statusAuth').textContent = '✅ Masuk sebagai pengurus';
@@ -164,6 +230,7 @@
    }
    function tampilLogin() {
      $('#loginCard').classList.remove('hidden');
+     $('#temaHost').classList.add('hidden');
      $('#formRoot').classList.add('hidden');
      ['btnSimpan', 'btnDownload', 'btnKeluar', 'btnMigrasi'].forEach(id => $('#' + id).classList.add('hidden'));
      $('#statusAuth').textContent = '';
@@ -187,7 +254,7 @@
      if (!confirm('Simpan perubahan ke Firebase? Website warga akan langsung berubah.')) return;
      try {
        await _fb.set(_fb.ref(db, 'data'), collect($('#formRoot')));
-       status('✅ Tersimpan ke Firebase — struktur data kini lengkap & website live ter-update.');
+       status('✅ Tersimpan ke Firebase — struktur data lengkap & website live ter-update.');
      } catch (e) { status('❌ ' + e.message); }
    };
    
