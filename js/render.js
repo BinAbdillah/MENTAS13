@@ -150,7 +150,7 @@
       <section class="mx-auto max-w-6xl px-4 py-16 md:py-24">
         <div class="grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:gap-16">
           <div class="lg:sticky lg:top-28 lg:self-start">
-            ${judulSeksi('01', 'Profil Wilayah', 'Angka global dihitung OTOMATIS dari data per-RT — perbarui per-RT via admin, profil ikut berubah.')}
+            ${judulSeksi('01', 'Profil Wilayah', '')}
           </div>
   
           <div class="space-y-10">
@@ -178,7 +178,7 @@
             </div>
   
             <div class="kartu reveal overflow-x-auto p-6 md:p-8">
-              <h3 class="mb-5 text-xl font-bold text-slate-900">📊 Statistik per-RT</h3>
+              <h3 class="mb-5 text-xl font-bold text-slate-900">📊 Data Statistik RT</h3>
               <table class="w-full min-w-[560px] text-left text-sm md:text-base">
                 <thead>
                   <tr class="border-b" style="border-color:var(--line)">
@@ -201,7 +201,7 @@
                   </tr>
                 </tbody>
               </table>
-              <p class="mt-3 text-xs" style="opacity:.6">Sumber: pendataan pengurus • diperbarui via halaman admin.</p>
+              <p class="mt-3 text-xs" style="opacity:.6">Sumber: DAWIS 013.</p>
             </div>
           </div>
         </div>
@@ -296,7 +296,7 @@
     const kosong = !d.agenda || d.agenda.length === 0;
     $('#agenda').innerHTML = `
       <section class="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        ${judulSeksi('03', 'Agenda Kegiatan', 'Informasi kegiatan warga RW 013 — tambah lewat admin.')}
+        ${judulSeksi('03', 'Agenda Kegiatan.')}
         ${kosong ? `
           <div class="kartu reveal mx-auto max-w-md p-10 text-center">
             <div class="text-5xl">📭</div>
@@ -330,7 +330,7 @@
       <section class="bg-white py-16 md:py-24">
         <div id="fasWrap" class="relative">
           <div class="mx-auto max-w-6xl px-4">
-            ${judulSeksi('04', 'Fasilitas Warga', 'Etalase fasilitas RW 013.')}
+            ${judulSeksi('04', 'Fasilitas Warga')}
           </div>
           <div id="fasTrack" class="fas-track">
             ${d.fasilitas.map((f) => `
@@ -357,7 +357,7 @@
   
     el.innerHTML = `
       <section class="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        ${judulSeksi('05', 'Galeri Warga', 'Dokumentasi kegiatan — klik foto untuk memperbesar.')}
+        ${judulSeksi('05', 'Galeri Warga', 'Klik foto untuk memperbesar.')}
         <div class="reveal columns-1 gap-6 md:columns-2" id="galeriGrid">
           ${list.map((g, i) => `
           <figure class="galeri-item kartu mb-6 cursor-zoom-in break-inside-avoid overflow-hidden p-0 ${i % 2 ? 'md:translate-y-6' : ''}">
@@ -434,7 +434,7 @@
   
     el.innerHTML = `
       <section class="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        ${judulSeksi('07', 'UMKM Warga', 'Direktori usaha warga — dukung tetanggamu.')}
+        ${judulSeksi('07', 'UMKM Warga.')}
         <div class="reveal grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           ${list.map((u) => `
           <div class="kartu kartu-hover p-6">
