@@ -31,9 +31,9 @@
 
   "hero": {
     "foto": "https://images.unsplash.com/photo-1449844174353-612b95733a6b?auto=format&fit=crop&w=1600&q=60",
-    "judul": "Selamat Datang di Website Resmi",
-    "sambutan": "Website ini menjadi sarana informasi dan silaturahmi warga RW 013 Menteng Atas. Mari bersama menjaga lingkungan yang aman, bersih, dan guyub.",
-    "periode": "2023–2028"
+    "judul": "Selamat Datang di Portal Resmi",
+    "sambutan": "Ini menjadi sarana informasi bagi warga RW 013 Menteng Atas. Mari bersama menjaga lingkungan yang aman, bersih, dan guyub.",
+    "periode": "2024–2029"
   },
 
   "banner": {
@@ -53,12 +53,12 @@
 
   "wilayah": {
     "luasM2": 4200,
-    "penduduk": 1782,
+    "penduduk": 1881,
     "jumlahRT": 9,
     "perbatasan": [
       { "arah": "Timur",   "dengan": "Jl. Subur Ujung RW.015" },
       { "arah": "Selatan", "dengan": "Pemakaman Menteng Pulo" },
-      { "arah": "Selatan", "dengan": "Jl. Menteng Atas Selatan III, RW.004 & RW.006" },
+      { "arah": "Utara", "dengan": "Jl. Menteng Atas Selatan III, RW.004 & RW.006" },
       { "arah": "Barat",   "dengan": "Gg. 3 RW.005" }
     ]
   },
@@ -76,8 +76,8 @@
     "seksi": [
       { "nama": "Keamanan",   "ikon": "🛡️", "anggota": ["Tatang", "Endy"] },
       { "nama": "Kerohanian", "ikon": "🕌", "anggota": ["Ust. Ade Rizky"] },
-      { "nama": "Kebersihan & Lingkungan", "ikon": "🌱", "anggota": [] },
-      { "nama": "Sosial & Kesejahteraan",  "ikon": "🤝", "anggota": [] }
+      { "nama": "Kebersihan & Lingkungan", "ikon": "🌱", "anggota": [" "] },
+      { "nama": "Sosial & Kesejahteraan",  "ikon": "🤝", "anggota": [" "] }
     ]
   },
 

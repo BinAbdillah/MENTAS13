@@ -7,7 +7,7 @@
   
     $('#peta-cuaca').innerHTML = `
       <section class="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        ${judulSeksi('08', 'Peta & Cuaca', 'Peta interaktif RW 013 dan cuaca real-time sekitar wilayah')}
+        ${judulSeksi('08', 'Peta & Cuaca', 'Peta interaktif RW 013 dan cuaca real-time wilayah Jakarta Selatan')}
         <div class="reveal grid gap-6 lg:grid-cols-3">
           ${pakaiGoogle ? `
           <div class="overflow-hidden rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
@@ -21,7 +21,7 @@
           </div>
         </div>
         ${pakaiGoogle ? `
-        <p class="mt-4 text-sm text-slate-500">🗺️ Peta & titik fasilitas dikelola melalui <b>Google My Maps pengurus</b>.</p>` : ''}
+        <p class="mt-4 text-sm text-slate-500">🗺️ Supported by <b>Open-meteo & Google My Maps</b>.</p>` : ''}
       </section>`;
   
     if (!pakaiGoogle) initPeta(d);
@@ -76,7 +76,7 @@
           <div class="rounded-xl bg-slate-100 p-4">💧<br><b class="text-base">${c.relative_humidity_2m}%</b><br>Kelembapan</div>
           <div class="rounded-xl bg-slate-100 p-4">🌬️<br><b class="text-base">${Math.round(c.wind_speed_10m)}</b><br>km/jam</div>
         </div>
-        <p class="mt-5 text-xs text-slate-400">Sumber: Open-Meteo • diperbarui otomatis</p>`;
+        <p class="mt-5 text-xs text-slate-400">Open-Meteo</p>`;
       $('#cuacaCard').innerHTML = window._cuacaCache;
     } catch (e) {
       $('#cuacaCard').innerHTML = '<p class="text-base text-slate-500">⚠️ Cuaca tidak dapat dimuat. Periksa koneksi internet.</p>';

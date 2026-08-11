@@ -38,7 +38,7 @@
      const list = d.mitra || [];
      $('#mitraRoot').innerHTML = `
        <h1 class="mb-10 text-4xl font-extrabold uppercase tracking-tight md:text-5xl" style="color:var(--heading)">
-         Mitra & <span style="color:var(--accent-text)">Unsur Pendukung</span>
+         Mitra & <span style="color:var(--accent-text)">Susunan Pengurus</span>
        </h1>
        ${list.map((m) => `
        <section class="kartu mb-10 p-6 md:p-10">
