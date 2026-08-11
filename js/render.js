@@ -232,7 +232,7 @@
             </div>`).join('')}
           </div>
   
-          <h3 class="mb-5 mt-14 text-xl font-bold text-slate-900">Pengurus Harian RW</h3>
+          <h3 class="mb-5 mt-14 text-xl font-bold text-slate-900">Pengurus RW</h3>
           <div class="reveal grid gap-5 sm:grid-cols-3">
             ${s.inti.map((p, i) => `
             <div class="kartu kartu-hover p-6 text-center ${i === 0 ? 'ring-2 ring-emerald-500' : ''}">
@@ -268,7 +268,7 @@
           </div>
   
           <div class="mb-5 mt-14 flex flex-wrap items-center justify-between gap-3">
-            <h3 class="text-xl font-bold text-slate-900">Mitra & Unsur Pendukung</h3>
+            <h3 class="text-xl font-bold text-slate-900">Mitra</h3>
             <a href="mitra.html" class="group rounded-full border px-5 py-2.5 text-sm font-bold"
                style="border-color:var(--accent); color:var(--accent-text)">
               Halaman Mitra <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
@@ -330,7 +330,7 @@
       <section class="bg-white py-16 md:py-24">
         <div id="fasWrap" class="relative">
           <div class="mx-auto max-w-6xl px-4">
-            ${judulSeksi('04', 'Fasilitas Warga', 'Etalase fasilitas RW 013 — terus gulir, etalase bergerak mendatar.')}
+            ${judulSeksi('04', 'Fasilitas Warga', 'Etalase fasilitas RW 013.')}
           </div>
           <div id="fasTrack" class="fas-track">
             ${d.fasilitas.map((f) => `
