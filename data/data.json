@@ -1,5 +1,5 @@
 {
-  "_catatan": "DATA SEMENTARA. Statistik per-RT DIJUMLAHKAN OTOMATIS ke Profil Wilayah (global). Mitra akan punya halaman tersendiri (mitra.html) — strukturnya sudah disiapkan.",
+  "_catatan": "DATA SEMENTARA. Statistik per-RT dijumlahkan otomatis ke Profil. ronda: pola 3-hari berselang sesuai jadwal AGST'26 (TEBO/MONCOS).",
 
   "identitas": {
     "namaRW": "RW 013 Menteng Atas",
@@ -16,6 +16,18 @@
   },
 
   "tema": { "preset": "garuda", "custom": {} },
+
+  "ronda": {
+    "_catatan": "mulai 2026-07-30 + pola 3 hari = cocok dgn jadwal AGST'26. Isi 'anggota' agar pin menampilkan nama petugas. 'jadwal' diisi tombol Generate di admin (365 entri).",
+    "aktif": true,
+    "mulai": "2026-07-30",
+    "polahari": 3,
+    "tim": [
+      { "nama": "TEBO",   "anggota": [] },
+      { "nama": "MONCOS", "anggota": [] }
+    ],
+    "jadwal": []
+  },
 
   "hero": {
     "foto": "https://images.unsplash.com/photo-1449844174353-612b95733a6b?auto=format&fit=crop&w=1600&q=60",

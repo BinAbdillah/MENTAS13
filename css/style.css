@@ -153,3 +153,13 @@ summary::-webkit-details-marker { display: none; }
 /* ---------- Galeri ---------- */
 .galeri-item img { transition: transform .4s ease; }
 .galeri-item:hover img { transform: scale(1.04); }
+
+/* ---------- Pin ronda kiri-bawah ---------- */
+#pin-ronda {
+  position: fixed; left: 16px; bottom: 16px; z-index: 85;
+  max-width: 330px; border-radius: 1rem; padding: .8rem 1rem;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgb(0 0 0 / .35);
+}

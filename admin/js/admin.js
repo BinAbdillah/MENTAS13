@@ -1,9 +1,6 @@
 /* =========================================================
-   admin.js — v2: MODE DARURAT OFFLINE
-   • Login online berhasil → email+hash(SHA-256) di-cache.
-   • Tanpa koneksi → login terhadap cache = MODE OFFLINE.
-   • Editan offline → draft di localStorage (tahan restart).
-   • Online kembali → tombol 🔄 Sinkronkan mengirim draft.
+   admin.js — + PANEL RONDA: generate 1 tahun, jadwal
+   disimpan di data (tdk ikut form agar tak raksasa)
    ========================================================= */
 
    const $ = (s) => document.querySelector(s);
@@ -22,16 +19,15 @@
      } catch (e) { console.error('Firebase gagal dimuat:', e); }
    }
    
-   /* ---------- State mode & penyimpanan lokal ---------- */
-   let MODE = 'online';                       // 'online' | 'offline'
-   let DATA_DASAR = null;                     // data terakhir dimuat (basis merge)
+   let MODE = 'online';
+   let DATA_DASAR = null;
+   let JADWAL_TERSIMPAN = null;
    const K_CACHE = 'rw13_admin_cache';
    const K_DRAFT = 'rw13_draft';
    
    const bacaCache = () => { try { return JSON.parse(localStorage.getItem(K_CACHE)); } catch (e) { return null; } };
    const bacaDraft = () => { try { return JSON.parse(localStorage.getItem(K_DRAFT)); } catch (e) { return null; } };
    
-   /* Hash sandi (SHA-256; fallback djb2 bila subtle tak tersedia) */
    async function hashTeks(t) {
      try {
        if (crypto && crypto.subtle) {
@@ -44,7 +40,6 @@
      return 'x' + (h >>> 0).toString(16);
    }
    
-   /* ---------- Util ---------- */
    const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
    const escAttr = (s) => esc(s).replace(/"/g, '&quot;');
    const pretty = (k) => String(k).replace(/[_-]/g, ' ');
@@ -62,6 +57,13 @@
      return (typeof extra === 'undefined') ? base : extra;
    }
    
+   /* Rekatkan kembali jadwal ronda agar tidak hilang saat Simpan */
+   function rekatkanJadwal(data) {
+     data.ronda = data.ronda || {};
+     data.ronda.jadwal = JADWAL_TERSIMPAN || (DATA_DASAR && DATA_DASAR.ronda && DATA_DASAR.ronda.jadwal) || data.ronda.jadwal || [];
+     return data;
+   }
+   
    const TEMPLATES = {
      agenda:        { tanggal: '2026-01-01', waktu: '', judul: '', tempat: '', kategori: 'Kegiatan', deskripsi: '' },
      pengumuman:    { tanggal: '2026-01-01', judul: '', isi: '', prioritas: 'Biasa', pin: true },
@@ -72,7 +74,6 @@
    };
    const templates = {};
    
-   /* ---------- Pembangun form otomatis ---------- */
    function templateOf(key, sample) {
      if (TEMPLATES[key]) return JSON.parse(JSON.stringify(TEMPLATES[key]));
      const z = (v) => typeof v === 'number' ? 0
@@ -155,9 +156,7 @@
      }
    });
    
-   /* =========================================================
-      MANAJER TEMA (preset + picker + live preview)
-      ========================================================= */
+   /* ---------- MANAJER TEMA ---------- */
    let temaAktif = { preset: 'garuda', custom: {} };
    
    function panelTemaHTML() {
@@ -188,12 +187,12 @@
    
    function pasangPanelTema() {
      const host = $('#temaHost');
-     host.innerHTML = panelTemaHTML();
+     host.innerHTML = panelTemaHTML() + panelRondaHTML();
    
      host.querySelector('#temaPreset').addEventListener('change', (e) => {
        temaAktif = { preset: e.target.value, custom: {} };
        terapkanTema(temaAktif);
-       host.innerHTML = panelTemaHTML();
+       host.innerHTML = panelTemaHTML() + panelRondaHTML();
        pasangPanelTema();
      });
    
@@ -209,9 +208,9 @@
    
      host.querySelector('#btnSimpanTema').addEventListener('click', async () => {
        if (MODE === 'offline' || !navigator.onLine || !(auth && auth.currentUser)) {
-         const draft = Object.assign({}, DATA_DASAR || {}, collect($('#formRoot')), { tema: temaAktif });
+         const draft = rekatkanJadwal(Object.assign({}, DATA_DASAR || {}, collect($('#formRoot')), { tema: temaAktif }));
          localStorage.setItem(K_DRAFT, JSON.stringify(draft));
-         status('🟠 MODE OFFLINE: tema masuk draft perangkat. Sinkronkan saat online.');
+         status('🟠 MODE OFFLINE: tema masuk draft perangkat.');
          perbaruiBadge();
          return;
        }
@@ -221,11 +220,52 @@
          status('✅ Tema tersimpan & diterapkan real-time ke beranda.');
        } catch (e) { status('❌ ' + e.message); }
      });
+   
+     /* ---------- Panel Ronda ---------- */
+     const info = host.querySelector('#roInfo');
+     info.textContent = JADWAL_TERSIMPAN && JADWAL_TERSIMPAN.length
+       ? `${JADWAL_TERSIMPAN.length} entri tersimpan (s/d ${JADWAL_TERSIMPAN[JADWAL_TERSIMPAN.length - 1].tanggal})`
+       : 'belum digenerate — pin beranda tetap jalan via rumus otomatis.';
+   
+     host.querySelector('#btnGenRonda').addEventListener('click', async () => {
+       const r = (collect($('#formRoot')).ronda) || {};
+       const jadwal = buatJadwalRonda(r, 365);
+       if (!jadwal.length) { status('❌ Isi minimal 1 tim ronda dulu.'); return; }
+       if (!confirm(`Generate ${jadwal.length} entri jadwal (mulai ${r.mulai}, pola ${r.polahari} hari) dan simpan ke data?`)) return;
+       JADWAL_TERSIMPAN = jadwal;
+       const lengkap = Object.assign({}, r, { jadwal });
+       if (MODE === 'offline' || !navigator.onLine || !(auth && auth.currentUser)) {
+         const draft = Object.assign({}, DATA_DASAR || {}, collect($('#formRoot')), { tema: temaAktif, ronda: lengkap });
+         localStorage.setItem(K_DRAFT, JSON.stringify(draft));
+         status('🟠 OFFLINE: jadwal masuk draft perangkat.');
+       } else {
+         try {
+           await _fb.set(_fb.ref(db, 'data/ronda'), lengkap);
+           status('✅ Jadwal 1 tahun tersimpan di Firebase.');
+         } catch (e) { status('❌ ' + e.message); return; }
+       }
+       info.textContent = `${jadwal.length} entri tersimpan (s/d ${jadwal[jadwal.length - 1].tanggal})`;
+     });
    }
    
-   /* =========================================================
-      MODE OFFLINE: badge, tombol sync, draft
-      ========================================================= */
+   function panelRondaHTML() {
+     const r = (DATA_DASAR && DATA_DASAR.ronda) || {};
+     return `
+       <div class="kartu mb-6 p-5">
+         <b class="block text-lg" style="color:var(--heading)">🌙 Jadwal Ronda</b>
+         <p class="mb-3 text-sm" style="color:var(--teks); opacity:.7">
+           Pola <b>${r.polahari || 3} hari</b> berselang mulai <b>${r.mulai || '2026-07-30'}</b> (sesuai jadwal AGST'26: TEBO ↔ MONCOS).
+           Jadwal 1 tahun disimpan di data — <b>tidak tampil di beranda</b>, hanya pin kiri-bawah.
+           Isi nama anggota tim pada form "ronda → tim" di bawah agar pin menampilkan nama petugas.
+         </p>
+         <div class="flex flex-wrap items-center gap-3">
+           <button id="btnGenRonda" class="btnx bg-emerald-600 text-white">⚙️ Generate 1 Tahun</button>
+           <span id="roInfo" class="text-sm" style="opacity:.7"></span>
+         </div>
+       </div>`;
+   }
+   
+   /* ---------- MODE OFFLINE ---------- */
    function pasangTombolSync() {
      if ($('#btnSync')) return;
      $('#btnKeluar').insertAdjacentHTML('afterend',
@@ -261,13 +301,13 @@
        await _fb.set(_fb.ref(db, 'data'), draft);
        localStorage.removeItem(K_DRAFT);
        MODE = 'online';
-       status('✅ Draft tersinkron ke Firebase — website live ter-update.');
+       status('✅ Draft tersinkron ke Firebase.');
        perbaruiBadge();
        muatKeForm();
      } catch (e) { status('❌ Gagal sinkron: ' + e.message); }
    }
    
-   /* ---------- Muat data ke form (prioritas sesuai mode) ---------- */
+   /* ---------- Muat data ---------- */
    async function muatKeForm() {
      let lokal = null;
      try { const r = await fetch('../data/data.json'); lokal = await r.json(); } catch (e) {}
@@ -279,10 +319,11 @@
      if (!v && MODE === 'offline' && bacaDraft()) { v = bacaDraft(); sumber = 'draft offline'; }
      if (!v && lokal) { v = lokal; sumber = 'data.json lokal'; }
      if (!v) { status('❌ Tidak ada data untuk dimuat.'); return; }
-     if (lokal && sumber !== 'draft offline') v = mergeDeep(lokal, v);
-     if (sumber === 'draft offline' && lokal) v = mergeDeep(lokal, v);
+     if (lokal) v = mergeDeep(lokal, v);
    
      DATA_DASAR = v;
+     JADWAL_TERSIMPAN = (v.ronda && v.ronda.jadwal) || null;
+   
      temaAktif = v.tema || { preset: 'garuda', custom: {} };
      terapkanTema(temaAktif);
      pasangPanelTema();
@@ -291,13 +332,17 @@
        if (Array.isArray(val) && val.length && typeof val[0] === 'object') templates[k] = templateOf(k, val[0]);
      });
    
-     $('#formRoot').innerHTML = Object.entries(v)
+     // form: tanpa 'tema' (panel) dan tanpa ronda.jadwal (raksasa)
+     const vForm = JSON.parse(JSON.stringify(v));
+     if (vForm.ronda) delete vForm.ronda.jadwal;
+   
+     $('#formRoot').innerHTML = Object.entries(vForm)
        .filter(([k]) => k !== 'tema')
        .map(([k, val]) => buildUI(k, val)).join('');
      status('📂 Dimuat dari ' + sumber + '.');
    }
    
-   /* ---------- Tampil login / editor ---------- */
+   /* ---------- Tampil login/editor ---------- */
    function tampilEditor() {
      $('#loginCard').classList.add('hidden');
      $('#temaHost').classList.remove('hidden');
@@ -316,7 +361,7 @@
    }
    
    if (!firebaseSiap) {
-     if (bacaCache()) { /* tetap tampilkan login untuk mode offline */ }
+     if (bacaCache()) { /* login offline tersedia */ }
      else { $('#cfgWarn').classList.remove('hidden'); $('#loginCard').classList.add('hidden'); }
    } else {
      _au.onAuthStateChanged(auth, (u) => {
@@ -324,22 +369,19 @@
      });
    }
    
-   /* ---------- Login: online dulu, fallback offline ---------- */
    $('#btnMasuk').onclick = async () => {
      $('#loginErr').textContent = '';
      const email = $('#inEmail').value.trim(), pass = $('#inPass').value;
    
-     // 1) coba online
      if (firebaseSiap && navigator.onLine) {
        try {
          await _au.signInWithEmailAndPassword(auth, email, pass);
          localStorage.setItem(K_CACHE, JSON.stringify({ email, hash: await hashTeks(pass) }));
          MODE = 'online';
-         return;   // onAuthStateChanged menampilkan editor
-       } catch (e) { /* jatuh ke fallback offline */ }
+         return;
+       } catch (e) {}
      }
    
-     // 2) fallback offline terhadap cache
      const cache = bacaCache();
      const h = await hashTeks(pass);
      if (cache && cache.email === email && cache.hash === h) {
@@ -352,26 +394,25 @@
    
    $('#btnKeluar').onclick = () => { MODE = 'online'; if (_au) _au.signOut(auth); else tampilLogin(); };
    
-   /* ---------- Simpan: online → Firebase; offline → draft ---------- */
    $('#btnSimpan').onclick = async () => {
-     const data = collect($('#formRoot'));
+     const data = rekatkanJadwal(collect($('#formRoot')));
      if (MODE === 'offline' || !navigator.onLine || !(auth && auth.currentUser)) {
        const draft = Object.assign({}, DATA_DASAR || {}, data, { tema: temaAktif });
        localStorage.setItem(K_DRAFT, JSON.stringify(draft));
-       status('🟠 MODE OFFLINE: draft tersimpan di perangkat. Klik 🔄 Sinkronkan saat online.');
+       status('🟠 MODE OFFLINE: draft tersimpan di perangkat.');
        perbaruiBadge();
        return;
      }
      if (!confirm('Simpan perubahan ke Firebase? Website warga akan langsung berubah.')) return;
      try {
        await _fb.set(_fb.ref(db, 'data'), data);
-       status('✅ Tersimpan ke Firebase — website live ter-update.');
+       status('✅ Tersimpan ke Firebase.');
      } catch (e) { status('❌ ' + e.message); }
    };
    
    $('#btnMigrasi').onclick = async () => {
      if (MODE === 'offline' || !navigator.onLine) { status('❌ Migrasi butuh koneksi internet.'); return; }
-     if (!confirm('Kirim ISI data.json lokal ke Firebase (menimpa)? Lakukan sekali saat pertama.')) return;
+     if (!confirm('Kirim ISI data.json lokal ke Firebase (menimpa)?')) return;
      try {
        const r = await fetch('../data/data.json');
        await _fb.set(_fb.ref(db, 'data'), await r.json());
@@ -381,10 +422,10 @@
    };
    
    $('#btnDownload').onclick = () => {
-     const blob = new Blob([JSON.stringify(collect($('#formRoot')), null, 2)], { type: 'application/json' });
+     const blob = new Blob([JSON.stringify(rekatkanJadwal(collect($('#formRoot'))), null, 2)], { type: 'application/json' });
      const a = document.createElement('a');
      a.href = URL.createObjectURL(blob);
      a.download = 'data.json';
      a.click();
-     status('💾 data.json diunduh — bisa di-push ke GitHub sebagai cadangan.');
+     status('💾 data.json diunduh.');
    };

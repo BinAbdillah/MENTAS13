@@ -1,5 +1,5 @@
 /* =========================================================
-   utils.js — pembantu umum + MANAJER TEMA (preset & custom)
+   utils.js — tema + rumus ronda (3-hari berselang)
    ========================================================= */
 
    const $ = (s) => document.querySelector(s);
@@ -50,7 +50,7 @@
      'Kerja Bakti': 'bg-amber-100 text-amber-700'
    };
    
-   /* ---------- PRESET TEMA (dipakai beranda & admin) ---------- */
+   /* ---------- TEMA ---------- */
    const PRESET_TEMA = {
      garuda: { mode:'dark',  bg:'#0C0D0F', surface:'#15171A', fill:'#23262B', line:'#2E3238', lineSoft:'#23262B',
                accent:'#DC2626', accentStrong:'#B91C1C', accentBright:'#EF4444', accentSoft:'#3B1214',
@@ -70,7 +70,6 @@
                heading:'#3B2F1E', nav:'#5B4A32', navHover:'#92400E', teks:'#1F2937' }
    };
    
-   /* Terapkan tema ke <html> sebagai CSS variables (live) */
    function terapkanTema(t) {
      let p = PRESET_TEMA.garuda;
      if (t) {
@@ -86,6 +85,40 @@
        '--on-accent': p.onAccent, '--heading': p.heading, '--nav': p.nav, '--nav-hover': p.navHover, '--teks': p.teks
      };
      Object.entries(map).forEach(([k, v]) => r.style.setProperty(k, v));
+   }
+   
+   /* ---------- RONDA ---------- */
+   const isoLokal = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+   
+   /* Tim ronda untuk satu tanggal: cari di jadwal tersimpan,
+      bila tak ada hitung rumus blok (polahari berselang). */
+   function hitungTimRonda(r, iso) {
+     if (!r || !(r.tim || []).length) return null;
+     if (Array.isArray(r.jadwal) && r.jadwal.length) {
+       const hit = r.jadwal.find((j) => j.tanggal === iso);
+       if (hit) return r.tim.find((t) => t.nama === hit.tim) || { nama: hit.tim, anggota: [] };
+     }
+     const mulai = new Date((r.mulai || '2026-07-30') + 'T00:00:00');
+     const now = new Date(iso + 'T00:00:00');
+     const d = Math.floor((now - mulai) / 86400000);
+     const pol = Math.max(1, r.polahari || 3);
+     const block = Math.floor(d / pol);
+     const idx = ((block % r.tim.length) + r.tim.length) % r.tim.length;
+     return r.tim[idx];
+   }
+   
+   /* Generate jadwal N hari ke depan (disimpan via admin) */
+   function buatJadwalRonda(r, hari = 365) {
+     const tim = r.tim || [];
+     if (!tim.length) return [];
+     const pol = Math.max(1, r.polahari || 3);
+     const t0 = new Date((r.mulai || '2026-07-30') + 'T00:00:00');
+     const out = [];
+     for (let i = 0; i < hari; i++) {
+       const t = new Date(t0.getTime() + i * 86400000);
+       out.push({ tanggal: isoLokal(t), tim: tim[Math.floor(i / pol) % tim.length].nama });
+     }
+     return out;
    }
    
    /* Judul section editorial ber-masker */

@@ -1,5 +1,5 @@
 /* =========================================================
-   app.js — + render pengumuman/galeri/layanan/umkm
+   app.js — + renderPinRonda (kiri-bawah, hanya pin yg tampil)
    ========================================================= */
 
    const FB = window.FIREBASE_CONFIG || null;
@@ -105,6 +105,8 @@
      d.identitas = d.identitas || {};
      d.identitas.sosmed = d.identitas.sosmed || {};
      d.tema = d.tema || { preset: 'garuda', custom: {} };
+     d.ronda = d.ronda || { aktif: true, mulai: '2026-07-30', polahari: 3, tim: [], jadwal: [] };
+     d.ronda.tim = d.ronda.tim || [];
      d.hero = d.hero || { foto: '', judul: '', sambutan: '', periode: '' };
      d.wilayah = d.wilayah || {};
      d.wilayah.luasM2 = d.wilayah.luasM2 || 0;
@@ -145,6 +147,35 @@
      return r.json();
    }
    
+   /* ---------- PIN RONDA kiri-bawah ---------- */
+   function renderPinRonda(d) {
+     let host = $('#pin-ronda');
+     const r = d.ronda;
+     const mati = !r || r.aktif === false || !(r.tim || []).length;
+     if (mati) { if (host) host.remove(); return; }
+   
+     const tim = hitungTimRonda(r, isoLokal(new Date()));
+     if (!tim) { if (host) host.remove(); return; }
+   
+     const nama = (tim.anggota || []).filter(Boolean).join(', ');
+     const tgl = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
+   
+     if (!host) {
+       host = document.createElement('div');
+       host.id = 'pin-ronda';
+       document.body.appendChild(host);
+     }
+     host.innerHTML = `
+       <div class="flex items-center gap-3">
+         <span class="grid h-10 w-10 flex-none place-items-center rounded-full text-xl" style="background:var(--accent-soft)">🌙</span>
+         <div class="min-w-0">
+           <span class="block text-[11px] uppercase tracking-widest" style="opacity:.65">Petugas Ronda Hari Ini</span>
+           <b class="block text-sm" style="color:var(--heading)">${nama || ('Tim ' + tim.nama)}</b>
+           <span class="block text-[11px]" style="opacity:.6">${tgl} • giliran ${tim.nama}</span>
+         </div>
+       </div>`;
+   }
+   
    function renderSemua(input) {
      const DATA = normalisasi(input);
      window.DATA = DATA;
@@ -163,6 +194,7 @@
      renderUMKM(DATA);
      renderPetaCuaca(DATA);
      renderFooter(DATA);
+     renderPinRonda(DATA);
      jalankanReveal();
      jalankanCounter();
      initEfek();
