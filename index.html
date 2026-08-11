@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth" data-mode="dark"><head>
+<html lang="id" class="scroll-smooth" data-mode="dark">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Website Resmi RW 013 Menteng Atas</title>
@@ -11,13 +12,12 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Mesin scroll "award-level": Lenis (smooth) + GSAP (pin/parallax) -->
   <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/cursor.css"> 
+  <link rel="stylesheet" href="css/cursor.css">
 </head>
 
 <body class="bg-slate-50 font-sans text-slate-800">
@@ -25,12 +25,18 @@
 
   <header id="header" class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur"></header>
 
+  <!-- Strip pengumuman (diisi render.js bila ada data) -->
+  <div id="pengumuman-slot"></div>
+
   <main>
     <div id="hero"></div>
     <div id="profil"></div>
     <div id="struktur"></div>
     <div id="agenda"></div>
     <div id="fasilitas"></div>
+    <div id="galeri"></div>
+    <div id="layanan"></div>
+    <div id="umkm"></div>
     <div id="peta-cuaca"></div>
   </main>
 
@@ -40,7 +46,7 @@
   <script src="js/utils.js"></script>
   <script src="js/render.js"></script>
   <script src="js/peta-cuaca.js"></script>
-  <script src="js/cursor.js"></script> 
+  <script src="js/cursor.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

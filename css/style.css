@@ -146,3 +146,10 @@ html[data-mode="dark"] .text-slate-200 { color: #E5E7EB !important; }
   border-radius: 50% 50% 50% 6px; box-shadow: 0 4px 10px rgb(0 0 0 / .5); font-size: 18px;
 }
 .leaflet-popup-content { font-family: inherit; }
+
+/* ---------- Pengumuman strip ---------- */
+summary::-webkit-details-marker { display: none; }
+
+/* ---------- Galeri ---------- */
+.galeri-item img { transition: transform .4s ease; }
+.galeri-item:hover img { transform: scale(1.04); }

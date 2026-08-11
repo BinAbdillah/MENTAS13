@@ -1,5 +1,5 @@
 {
-  "_catatan": "DATA SEMENTARA — diperbarui berkala. Field berawalan '_' tidak ditampilkan.",
+  "_catatan": "DATA SEMENTARA. Statistik per-RT DIJUMLAHKAN OTOMATIS ke Profil Wilayah (global). Mitra akan punya halaman tersendiri (mitra.html) — strukturnya sudah disiapkan.",
 
   "identitas": {
     "namaRW": "RW 013 Menteng Atas",
@@ -70,30 +70,49 @@
   },
 
   "rt": [
-    { "no": "001", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
-    { "no": "002", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
-    { "no": "003", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
-    { "no": "004", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
-    { "no": "005", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
-    { "no": "006", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
-    { "no": "007", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
-    { "no": "008", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } },
-    { "no": "009", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" } }
+    { "no": "001", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 62, "jiwa": 205, "laki": 104, "perempuan": 101, "balita": 18, "lansia": 22 } },
+    { "no": "002", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 58, "jiwa": 196, "laki": 99,  "perempuan": 97,  "balita": 16, "lansia": 20 } },
+    { "no": "003", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 60, "jiwa": 201, "laki": 102, "perempuan": 99,  "balita": 17, "lansia": 21 } },
+    { "no": "004", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 57, "jiwa": 192, "laki": 97,  "perempuan": 95,  "balita": 15, "lansia": 19 } },
+    { "no": "005", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 59, "jiwa": 199, "laki": 100, "perempuan": 99,  "balita": 16, "lansia": 20 } },
+    { "no": "006", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 56, "jiwa": 190, "laki": 96,  "perempuan": 94,  "balita": 14, "lansia": 18 } },
+    { "no": "007", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 58, "jiwa": 197, "laki": 99,  "perempuan": 98,  "balita": 15, "lansia": 21 } },
+    { "no": "008", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 57, "jiwa": 194, "laki": 98,  "perempuan": 96,  "balita": 16, "lansia": 19 } },
+    { "no": "009", "pengurus": { "Ketua": "", "Sekretaris": "", "Bendahara": "", "Bank Sampah": "" }, "statistik": { "kk": 60, "jiwa": 208, "laki": 106, "perempuan": 102, "balita": 17, "lansia": 22 } }
   ],
 
   "mitra": [
     { "nama": "TP PKK RW 013", "ikon": "👩", "deskripsi": "Gerakan pemberdayaan & kesejahteraan keluarga.",
+      "foto": "", "kontak": "", "program": ["Dasawisma", "UP2K", "Kader Posyandu"],
       "struktur": [ { "jabatan": "Ketua", "nama": "" }, { "jabatan": "Sekretaris", "nama": "" }, { "jabatan": "Bendahara", "nama": "" } ] },
     { "nama": "Karang Taruna Unit 13", "ikon": "🧑‍‍🧑", "deskripsi": "Wadah kreativitas & kegiatan pemuda wilayah.",
+      "foto": "", "kontak": "", "program": ["Liga futsal antar-RT", "Bakti sosial", "Konten warga"],
       "struktur": [ { "jabatan": "Ketua", "nama": "" }, { "jabatan": "Wakil Ketua", "nama": "" }, { "jabatan": "Sekretaris", "nama": "" } ] },
     { "nama": "LMK", "ikon": "🏘️", "deskripsi": "Lembaga Musyawarah Kelurahan — mitra pembangunan warga.",
+      "foto": "", "kontak": "", "program": ["Musyawarah pembangunan", "Advokasi warga"],
       "struktur": [ { "jabatan": "Ketua", "nama": "" } ] }
   ],
 
-  "agenda": [],
+  "agenda": [
+    { "tanggal": "2026-08-16", "waktu": "19.30–21.00", "judul": "Malam Tirakatan & Doa Bersama", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "Tasyakuran HUT RI ke-81 bersama seluruh warga." },
+    { "tanggal": "2026-08-17", "waktu": "07.00–12.00", "judul": "Upacara & Lomba 17 Agustus", "tempat": "Lapangan RW 013", "kategori": "Kegiatan", "deskripsi": "Upacara bendera dilanjutkan lomba balita hingga dewasa. Tema: Menjaga Alam, Membangun Bangsa." },
+    { "tanggal": "2026-08-23", "waktu": "06.30–09.00", "judul": "Kerja Bakti & Tanam Tanaman", "tempat": "RT 001–009 & RPTRA Kebon Sawo", "kategori": "Kerja Bakti", "deskripsi": "Bersih selokan antisipasi hujan + gerakan Indonesia Hijau: tanam tanaman di RPTRA." },
+    { "tanggal": "2026-08-30", "waktu": "08.00–11.00", "judul": "Posyandu Balita & Lansia", "tempat": "Posyandu Melati", "kategori": "Kesehatan", "deskripsi": "Penimbangan balita, cek tensi & gula darah gratis untuk lansia." },
+    { "tanggal": "2026-09-05", "waktu": "19.30–21.00", "judul": "Rapat Pleno Pengurus RW", "tempat": "Pos RW 13", "kategori": "Rapat", "deskripsi": "Evaluasi kegiatan Agustus dan rencana program September." }
+  ],
 
-  "pengumuman": [],
-  "galeri": [],
+  "pengumuman": [
+    { "tanggal": "2026-08-10", "judul": "Pendaftaran lomba 17 Agustus dibuka", "isi": "Daftar melalui ketua RT masing-masing atau Pos RW sebelum 14 Agustus.", "prioritas": "Biasa", "pin": true },
+    { "tanggal": "2026-08-12", "judul": "Kerja bakti serentak Minggu pagi", "isi": "Fokus bersih selokan & tanam tanaman. Alat kebersihan disediakan per RT.", "prioritas": "Biasa", "pin": false },
+    { "tanggal": "2026-08-05", "judul": "Posyandu balita & lansia 30 Agustus", "isi": "Bawa KMS balita; lansia cek tensi & gula darah gratis.", "prioritas": "Penting", "pin": false }
+  ],
+
+  "galeri": [
+    { "foto": "assets/logo-HUT-RI-81.png", "keterangan": "Spanduk tema HUT RI ke-81 — Indonesia Hijau", "tanggal": "2026-08-01", "kategori": "Kegiatan" },
+    { "foto": "assets/logo-posyandu.png", "keterangan": "Kader Posyandu siap melayani warga", "tanggal": "2026-07-30", "kategori": "Kesehatan" },
+    { "foto": "assets/logo-rw.png", "keterangan": "Logo resmi RW 013 Menteng Atas", "tanggal": "2026-01-01", "kategori": "Dokumentasi" }
+  ],
+
   "layanan": [],
   "kontakDarurat": [],
   "umkm": [],

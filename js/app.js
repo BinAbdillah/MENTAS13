@@ -1,5 +1,5 @@
 /* =========================================================
-   app.js — final + terapkanTema() dari data (real-time)
+   app.js — + render pengumuman/galeri/layanan/umkm
    ========================================================= */
 
    const FB = window.FIREBASE_CONFIG || null;
@@ -119,7 +119,7 @@
      d.rt = d.rt || [];
      d.rt.forEach((r) => { r.pengurus = r.pengurus || {}; });
      d.mitra = d.mitra || [];
-     d.mitra.forEach((m) => { m.struktur = m.struktur || []; });
+     d.mitra.forEach((m) => { m.struktur = m.struktur || []; m.program = m.program || []; });
      d.agenda = d.agenda || [];
      d.pengumuman = d.pengumuman || [];
      d.galeri = d.galeri || [];
@@ -148,15 +148,19 @@
    function renderSemua(input) {
      const DATA = normalisasi(input);
      window.DATA = DATA;
-     terapkanTema(DATA.tema);                       // ← tema dari data, live
+     terapkanTema(DATA.tema);
      document.title = DATA.identitas.namaRW + ' — Website Resmi';
      renderBanner(DATA);
+     renderPengumuman(DATA);
      renderHeader(DATA);
      renderHero(DATA);
      renderProfil(DATA);
      renderStruktur(DATA);
      renderAgenda(DATA);
      renderFasilitas(DATA);
+     renderGaleri(DATA);
+     renderLayanan(DATA);
+     renderUMKM(DATA);
      renderPetaCuaca(DATA);
      renderFooter(DATA);
      jalankanReveal();

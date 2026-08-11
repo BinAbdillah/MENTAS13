@@ -7,7 +7,7 @@
   
     $('#peta-cuaca').innerHTML = `
       <section class="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        ${judulSeksi('05', 'Peta & Cuaca', 'Peta interaktif RW 013 dan cuaca real-time sekitar wilayah')}
+        ${judulSeksi('08', 'Peta & Cuaca', 'Peta interaktif RW 013 dan cuaca real-time sekitar wilayah')}
         <div class="reveal grid gap-6 lg:grid-cols-3">
           ${pakaiGoogle ? `
           <div class="overflow-hidden rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
