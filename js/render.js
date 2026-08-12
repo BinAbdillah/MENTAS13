@@ -83,7 +83,7 @@
     const ketua = d.strukturRW.inti.find((p) => p.jabatan === 'Ketua') || {};
     const fotoHero = (bannerAktif(d.banner) && d.banner.gantiFotoHero) ? d.banner.gambar : hero.foto;
   
-    const kata = ['GOTONG ROYONG', 'MANDIRI', 'RUKUN', 'SEJAHTERA', 'INDONESIA HIJAU', 'MENJAGA ALAM'];
+    const kata = [];
     const setengah = kata.map((k) => `<span class="mx-6 text-sm font-bold tracking-[0.25em]">${k}</span><span aria-hidden="true">✦</span>`).join('');
   
     $('#hero').innerHTML = `
