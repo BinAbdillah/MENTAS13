@@ -2,7 +2,7 @@
   "_catatan": "DATA SEMENTARA. Semua orang = {nama, foto}; foto diunggah via admin (GitHub). Statistik per-RT dijumlahkan otomatis.",
 
   "identitas": {
-    "namaRW": "R W  0 1 3   M e n t e n g   A t a s",
+    "namaRW": "RW 013|Menteng Atas",
     "tagline": "A.M.A.N.A.H",
     "logo": "assets/logo-rw.png",
     "kecamatan": "Kecamatan Setiabudi",
@@ -15,7 +15,7 @@
     "sosmed": { "instagram": "", "facebook": "", "whatsapp": "" }
   },
 
-  "tema": { "preset": "garuda", "custom": {} },
+  "tema": { "preset": "krem", "custom": {} },
 
   "ronda": {
     "aktif": true,
