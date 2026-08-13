@@ -6,21 +6,15 @@
   <script src="https://cdn.tailwindcss.com"></script><script src="js/tailwind-config.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400..800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/cursor.css">
-  <!-- hanya fasilitas.html: -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
-<body class="bg-slate-50 font-sans" data-mitra="1">
-  <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
-    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-      <a href="index.html" class="flex items-center gap-3">
-        <span id="logoHal"></span><b class="text-lg md:text-xl" style="color:var(--heading)" id="judulHal">JUDUL</b>
-      </a>
-      <a href="index.html" class="nav-link">← Beranda</a>
-    </div>
-  </header>
-  <main id="rootHal" class="mx-auto max-w-6xl px-4 py-12 md:py-16"></main>
-  <script src="js/firebase-config.js"></script><script src="js/utils.js"></script><script src="js/cursor.js"></script>
+<body class="bg-slate-50 font-sans">
+  <header id="headerHal" class="sticky top-0 z-40 border-b bg-white/90 backdrop-blur" style="border-color:var(--line)"></header>
+  <main id="rootHal" class="mx-auto max-w-6xl px-4 py-10 md:py-14"></main>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/cuaca-widget.js"></script>
+  <script src="js/halaman.js"></script>
+  <script src="js/cursor.js"></script>
   <script type="module" src="js/grup.js"></script>
 </body>
 </html>

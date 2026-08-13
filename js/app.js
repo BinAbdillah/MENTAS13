@@ -1,10 +1,9 @@
 /* =========================================================
-   app.js — MULTIPAGES v1: render halaman utama + pin ronda
+   app.js — utama v2 (tanpa peta-cuaca; cuaca = widget header)
    ========================================================= */
 
    const FB = window.FIREBASE_CONFIG || null;
    const firebaseSiap = !!(FB && FB.apiKey && FB.databaseURL);
-   
    let db = null, _fb = null;
    if (firebaseSiap) {
      try {
@@ -30,10 +29,8 @@
      }
    }
    
-   const RONDA_DEFAULT = {
-     aktif: true, mulai: '2026-07-30', polahari: 3,
-     tim: [{ nama: 'TEBO', anggota: [] }, { nama: 'MONCOS', anggota: [] }], jadwal: []
-   };
+   const RONDA_DEFAULT = { aktif: true, mulai: '2026-07-30', polahari: 3,
+     tim: [{ nama: 'TEBO', anggota: [] }, { nama: 'MONCOS', anggota: [] }], jadwal: [] };
    const isoL = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
    
    function timRonda(r, iso) {
@@ -58,12 +55,10 @@
      const tgl = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
      if (!host) { host = document.createElement('div'); host.id = 'pin-ronda'; document.body.appendChild(host); }
      host.innerHTML = `
-       <div class="flex items-center gap-3">
-         <div class="min-w-0">
-           <span class="block text-[11px] uppercase tracking-widest" style="opacity:.65">Petugas Ronda Hari Ini</span>
-           <b class="block text-sm" style="color:var(--heading)">${nama || ('Tim ' + tim.nama)}</b>
-           <span class="block text-[11px]" style="opacity:.6">${tgl} • giliran ${tim.nama}</span>
-         </div>
+       <div class="min-w-0">
+         <span class="block text-[11px] uppercase tracking-widest" style="opacity:.65">Petugas Ronda Hari Ini</span>
+         <b class="block text-sm" style="color:var(--heading)">${nama || ('Tim ' + tim.nama)}</b>
+         <span class="block text-[11px]" style="opacity:.6">${tgl} • giliran ${tim.nama}</span>
        </div>`;
    }
    
@@ -107,7 +102,7 @@
      d.ronda.polahari = d.ronda.polahari || RONDA_DEFAULT.polahari;
      d.ronda.tim = (d.ronda.tim && d.ronda.tim.length) ? d.ronda.tim : RONDA_DEFAULT.tim;
      d.ronda.jadwal = d.ronda.jadwal || [];
-     d.hero = d.hero || { foto: '', judul: '', sambutan: '', periode: '' };
+     d.hero = d.hero || { foto: '', sambutan: '', periode: '' };
      d.wilayah = d.wilayah || {}; d.wilayah.perbatasan = d.wilayah.perbatasan || [];
      d.penasehat = d.penasehat || [];
      d.strukturRW = d.strukturRW || {}; d.strukturRW.inti = d.strukturRW.inti || []; d.strukturRW.seksi = d.strukturRW.seksi || [];
@@ -115,10 +110,8 @@
      d.rt = d.rt || []; d.rt.forEach((r) => { r.pengurus = r.pengurus || {}; });
      d.mitra = d.mitra || []; d.mitra.forEach((m) => { m.struktur = m.struktur || []; m.program = m.program || []; });
      d.agenda = d.agenda || []; d.pengumuman = d.pengumuman || [];
-     d.galeri = d.galeri || []; d.layanan = d.layanan || [];
-     d.kontakDarurat = d.kontakDarurat || []; d.umkm = d.umkm || [];
-     d.fasilitas = d.fasilitas || []; d.peta = d.peta || {};
-     d.banner = d.banner || {}; d.batasRW = d.batasRW || [];
+     d.galeri = d.galeri || []; d.kontakDarurat = d.kontakDarurat || [];
+     d.fasilitas = d.fasilitas || []; d.banner = d.banner || {};
      return d;
    }
    
@@ -144,11 +137,11 @@
      renderHero(DATA);
      renderProfil(DATA);
      renderAgenda(DATA);
-     renderCuaca(DATA);
      renderFooter(DATA);
      renderPinRonda(DATA);
      jalankanReveal();
      jalankanCounter();
+     pasangDonat3D();
      initEfek();
    }
    
@@ -190,8 +183,7 @@
        $('#hero').innerHTML = `
          <section class="mx-auto max-w-lg px-4 py-24">
            <div class="kartu p-8 text-center">
-             <div class="text-4xl">⚠️</div>
-             <b class="mt-3 block text-lg" style="color:var(--heading)">Gagal memuat data</b>
+             <b class="block text-lg" style="color:var(--heading)">Gagal memuat data</b>
              <p class="mt-2 text-base" style="color:var(--teks)">Periksa koneksi atau ketersediaan data.</p>
            </div>
          </section>`;

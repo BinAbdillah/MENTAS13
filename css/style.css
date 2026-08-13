@@ -192,3 +192,18 @@ summary::-webkit-details-marker { display: none; }
 /* ---------- Donat RT ---------- */
 .donat-leg { display: flex; flex-direction: column; gap: .35rem; font-size: .85rem; }
 .donat-leg span { display: inline-block; width: .8rem; height: .8rem; border-radius: .25rem; margin-right: .5rem; }
+
+/* ---------- Widget cuaca header ---------- */
+.cuaca-widget {
+  display: flex; align-items: center; gap: .5rem; padding: .4rem .85rem;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+  font-size: .85rem; font-weight: 700; color: var(--heading);
+}
+
+/* ---------- Donat RT 3D interaktif ---------- */
+.donat-3d { perspective: 900px; }
+.donat-3d svg { transform-style: preserve-3d; transition: transform .12s ease-out; cursor: grab; }
+.donat-3d circle[stroke]:hover { stroke-width: 30; }
+
+/* ---------- Nav subpage (prev/next) ---------- */
+.nav-hal-bar { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
