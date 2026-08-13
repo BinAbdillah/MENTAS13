@@ -163,3 +163,32 @@ summary::-webkit-details-marker { display: none; }
   backdrop-filter: blur(8px);
   box-shadow: 0 8px 24px rgb(0 0 0 / .35);
 }
+
+/* ---------- Header diperbesar ---------- */
+#header .logo-besar { width: 5rem; height: 5rem; }
+@media (min-width: 768px) { #header .logo-besar { width: 6rem; height: 6rem; } }
+
+/* ---------- Menu pintasan kanan (popup hover) ---------- */
+.menu-kanan { position: fixed; right: 14px; top: 50%; transform: translateY(-50%); z-index: 70; text-align: right; }
+.menu-btn {
+  border-radius: 999px; padding: .8rem 1.1rem; font-weight: 800; font-size: .8rem; letter-spacing: .15em;
+  background: var(--accent); color: var(--on-accent); box-shadow: 0 8px 20px rgb(0 0 0 / .35);
+}
+.menu-popup {
+  position: absolute; right: 60px; top: 50%;
+  transform: translateY(-50%) translateX(10px);
+  opacity: 0; pointer-events: none; transition: .25s ease;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 1rem;
+  padding: .75rem; display: flex; flex-direction: column; gap: .2rem; min-width: 190px;
+  box-shadow: 0 12px 30px rgb(0 0 0 / .35); max-height: 80vh; overflow: auto;
+}
+.menu-kanan:hover .menu-popup, .menu-kanan.buka .menu-popup {
+  opacity: 1; transform: translateY(-50%); pointer-events: auto;
+}
+.menu-popup a { padding: .5rem .8rem; border-radius: .6rem; font-size: .9rem; font-weight: 600; color: var(--nav); }
+.menu-popup a:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--nav-hover); }
+.menu-popup .m-judul { font-size: .68rem; letter-spacing: .25em; opacity: .55; padding: .25rem .8rem .5rem; }
+
+/* ---------- Donat RT ---------- */
+.donat-leg { display: flex; flex-direction: column; gap: .35rem; font-size: .85rem; }
+.donat-leg span { display: inline-block; width: .8rem; height: .8rem; border-radius: .25rem; margin-right: .5rem; }

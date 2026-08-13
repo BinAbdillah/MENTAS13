@@ -1,0 +1,60 @@
+/* struktur.js — penasehat, pengurus RW, bidang (foto semua) */
+const FB = window.FIREBASE_CONFIG || null;
+let db = null, _fb = null;
+if (FB && FB.apiKey && FB.databaseURL) {
+  try {
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+    _fb = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js');
+    db = _fb.getDatabase(initializeApp(FB));
+  } catch (e) {}
+}
+async function muat() {
+  if (db) { try { const s = await _fb.get(_fb.ref(db, 'data')); if (s.val()) return s.val(); } catch (e) {} }
+  return (await fetch('data/data.json')).json();
+}
+const orang = (x) => (x && typeof x === 'object') ? { nama: x.nama || '', foto: x.foto || '' } : { nama: (x || ''), foto: '' };
+const avatar = (nama, foto, s = 'h-16 w-16', f = 'bg-slate-100 text-slate-500', t = 'text-xl') => ada(foto) ? `
+  <span class="relative mx-auto block ${s}"><img src="${foto}" class="absolute inset-0 h-full w-full rounded-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+  <span class="hidden h-full w-full place-items-center rounded-full ${f} font-extrabold ${t}">${inisial(nama)}</span></span>`
+  : `<span class="mx-auto grid ${s} place-items-center rounded-full ${f} font-extrabold ${t}">${inisial(nama)}</span>`;
+
+const d = await muat();
+terapkanTema(d.tema);
+$('#logoHal').innerHTML = renderLogo(d.identitas.logo, 'h-12 w-12');
+$('#judulHal').textContent = 'Struktur Organisasi';
+const s = d.strukturRW;
+
+$('#rootHal').innerHTML = `
+  <h2 class="mb-6 text-2xl font-extrabold" style="color:var(--heading)">Penasehat RW</h2>
+  <div class="grid grid-cols-2 gap-4 sm:grid-cols-5">
+    ${d.penasehat.map((p, i) => { const o = orang(p); return `
+    <div class="kartu kartu-hover p-5 text-center">
+      ${avatar(o.nama, o.foto, 'h-14 w-14', 'bg-slate-100 text-slate-500', 'text-lg')}
+      <b class="mt-3 block text-base ${ada(o.nama) ? '' : 'nilai-kosong'}">${namaAtau(o.nama)}</b>
+      <span class="text-sm" style="opacity:.6">Penasehat ${i + 1}</span>
+    </div>`; }).join('')}
+  </div>
+
+  <h2 class="mb-6 mt-14 text-2xl font-extrabold" style="color:var(--heading)">Pengurus RW</h2>
+  <div class="grid gap-5 sm:grid-cols-3">
+    ${s.inti.map((p, i) => `
+    <div class="kartu kartu-hover p-6 text-center ${i === 0 ? 'ring-2 ring-emerald-500' : ''}">
+      ${avatar(p.nama, p.foto, 'h-16 w-16', i === 0 ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700', 'text-xl')}
+      <b class="mt-3 block text-lg" style="color:var(--heading)">${namaAtau(p.nama)}</b>
+      <span class="mt-1 block text-sm" style="opacity:.6">${p.jabatan}</span>
+    </div>`).join('')}
+  </div>
+
+  <h2 class="mb-6 mt-14 text-2xl font-extrabold" style="color:var(--heading)">Bidang-Bidang</h2>
+  <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    ${s.seksi.map((sk) => `
+    <div class="kartu kartu-hover p-6">
+      <b class="block text-base" style="color:var(--heading)">${sk.nama}</b>
+      <div class="mt-3 flex flex-wrap gap-2">
+        ${sk.anggota.length ? sk.anggota.map((a) => { const o = orang(a); return `
+          <span class="flex items-center gap-1.5 rounded-full bg-emerald-600/10 py-1 pl-1 pr-3 text-sm font-medium text-emerald-700">
+            ${avatar(o.nama, o.foto, 'h-6 w-6', 'bg-emerald-600/20 text-emerald-700', 'text-[10px]')}${o.nama}
+          </span>`; }).join('') : '<span class="nilai-kosong text-sm">Belum diisi</span>'}
+      </div>
+    </div>`).join('')}
+  </div>`;
