@@ -429,7 +429,7 @@
      if (!v && lokal) { v = lokal; sumber = 'data.json lokal'; }
      if (!v) { status('❌ Tidak ada data untuk dimuat.'); return; }
      if (lokal) v = mergeDeep(lokal, v);
-   
+     v = rapikan(v);
      DATA_DASAR = v;
      JADWAL_TERSIMPAN = (v.ronda && v.ronda.jadwal) || null;
    

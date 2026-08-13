@@ -1,5 +1,6 @@
 /* =========================================================
-   app.js — utama v2 (tanpa peta-cuaca; cuaca = widget header)
+   app.js — v2.1: render AMAN (tak akan blank walau ada
+   script/section yang belum sinkron)
    ========================================================= */
 
    const FB = window.FIREBASE_CONFIG || null;
@@ -62,6 +63,18 @@
        </div>`;
    }
    
+   function renderBanner(d) {
+     const slot = $('#banner-slot');
+     if (!slot) return;
+     const b = d.banner;
+     if (!bannerAktif(b)) { slot.innerHTML = ''; return; }
+     slot.innerHTML = `
+       <a href="${b.link || '#agenda'}" class="block w-full md:mx-auto md:max-w-4xl md:px-4 md:pt-4 md:pb-1" aria-label="${b.teks}">
+         <img src="${b.gambar}" alt="${b.teks}" class="h-32 w-full object-cover object-center sm:h-40 md:h-auto md:rounded-2xl md:shadow-lg"
+              onerror="this.parentElement.remove()">
+       </a>`;
+   }
+   
    function jalankanReveal() {
      const els = document.querySelectorAll('.reveal');
      if (REDUCED || !('IntersectionObserver' in window)) { els.forEach((el) => el.classList.add('on')); return; }
@@ -116,32 +129,37 @@
    }
    
    async function muatData() {
-     if (db) {
-       try { const snap = await _fb.get(_fb.ref(db, 'data')); if (snap.val()) return snap.val(); }
-       catch (e) { console.warn('Baca Firebase gagal → fallback lokal.', e); }
-     }
-     const r = await fetch('data/data.json');
-     if (!r.ok) throw new Error('data.json tidak ditemukan (' + r.status + ')');
-     return r.json();
+    if (db) {
+      try { const snap = await _fb.get(_fb.ref(db, 'data')); if (snap.val()) return rapikan(snap.val()); }
+      catch (e) { console.warn('Baca Firebase gagal → fallback lokal.', e); }
+    }
+    const r = await fetch('data/data.json');
+    if (!r.ok) throw new Error('data.json tidak ditemukan (' + r.status + ')');
+    return rapikan(await r.json());
+  }
+   
+   /* pemanggil aman untuk fungsi global (render.js) */
+   function panggil(nama, DATA) {
+     const fn = window[nama];
+     if (typeof fn !== 'function') { console.warn('[' + nama + '] belum tersedia — dilewati.'); return; }
+     try { fn(DATA); } catch (e) { console.warn('[' + nama + '] gagal:', e); }
    }
    
    function renderSemua(input) {
      const DATA = normalisasi(input);
      window.DATA = DATA;
-     terapkanTema(DATA.tema);
-     document.title = DATA.identitas.namaRW + ' — Website Resmi';
+     try { terapkanTema(DATA.tema); } catch (e) {}
+     document.title = (DATA.identitas.namaRW || 'RW 013 Menteng Atas') + ' — Website Resmi';
+   
      renderBanner(DATA);
-     renderPengumuman(DATA);
-     renderHeader(DATA);
-     renderMenuKanan();
-     renderHero(DATA);
-     renderProfil(DATA);
-     renderAgenda(DATA);
-     renderFooter(DATA);
      renderPinRonda(DATA);
+   
+     ['renderPengumuman', 'renderHeader', 'renderMenuKanan', 'renderHero', 'renderProfil',
+      'renderAgenda', 'renderFooter'].forEach((n) => panggil(n, DATA));
+   
      jalankanReveal();
-     jalankanCounter();
-     pasangDonat3D();
+     panggil('jalankanCounter', DATA);
+     if (typeof pasangDonat3D === 'function') pasangDonat3D();
      initEfek();
    }
    

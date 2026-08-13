@@ -134,3 +134,14 @@
        </h2>
        <p class="mt-3 max-w-2xl text-base md:text-lg" style="color:var(--teks); opacity:.75">${sub}</p>
      </div>`;
+     /* ---------- Pembersih data: pangkas spasi key & value ---------- */
+function rapikan(x) {
+  if (Array.isArray(x)) return x.map(rapikan);
+  if (x && typeof x === 'object') {
+    const o = {};
+    for (const [k, v] of Object.entries(x)) o[String(k).trim()] = rapikan(v);
+    return o;
+  }
+  if (typeof x === 'string') return x.trim();
+  return x;
+}

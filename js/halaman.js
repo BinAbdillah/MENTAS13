@@ -1,5 +1,7 @@
-/* halaman.js — subpage: logo TANPA tautan + shortcut prev/next */
-const DAFTAR_HALAMAN = [
+/* =========================================================
+   halaman.js — header subpage: logo TANPA tautan + prev/next
+   ========================================================= */
+   const DAFTAR_HALAMAN = [
     ['struktur.html', 'Struktur'], ['rt.html', 'RT 001–009'], ['pkk.html', 'TP PKK'],
     ['karangtaruna.html', 'Karang Taruna'], ['lmk.html', 'LMK'],
     ['fasilitas.html', 'Fasilitas'], ['galeri.html', 'Galeri']
@@ -15,7 +17,7 @@ const DAFTAR_HALAMAN = [
         if (s.val()) return s.val();
       } catch (e) {}
     }
-    return (await fetch('data/data.json')).json();
+    return (await (await fetch('data/data.json')).json());
   }
   
   async function setupHalaman(judul) {
@@ -42,7 +44,6 @@ const DAFTAR_HALAMAN = [
     return d;
   }
   
-  /* helper avatar bersama untuk subpage */
   const orangHal = (x) => (x && typeof x === 'object') ? { nama: x.nama || '', foto: x.foto || '' } : { nama: (x || ''), foto: '' };
   const avatarHal = (nama, foto, s = 'h-9 w-9', f = 'bg-slate-100 text-slate-500', t = 'text-xs') => ada(foto) ? `
     <span class="relative block ${s} flex-none">
