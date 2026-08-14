@@ -144,4 +144,14 @@ function rapikan(x) {
   }
   if (typeof x === 'string') return x.trim();
   return x;
+}/* ---------- Pembersih data: pangkas spasi key & value ---------- */
+function rapikan(x) {
+  if (Array.isArray(x)) return x.map(rapikan);
+  if (x && typeof x === 'object') {
+    const o = {};
+    for (const [k, v] of Object.entries(x)) o[String(k).trim()] = rapikan(v);
+    return o;
+  }
+  if (typeof x === 'string') return x.trim();
+  return x;
 }

@@ -54,10 +54,10 @@
         const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
         const _fb = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js');
         const s = await _fb.get(_fb.ref(_fb.getDatabase(initializeApp(FB)), 'data'));
-        if (s.val()) return s.val();
+        if (s.val()) return rapikan(s.val());
       } catch (e) {}
     }
-    return (await (await fetch('data/data.json')).json());
+    return rapikan(await (await fetch('data/data.json')).json());
   }
   
   async function setupHalaman(judul) {

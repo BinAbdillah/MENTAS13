@@ -15,15 +15,11 @@
    }
    
    async function muatData() {
-     if (db) {
-       try {
-         const snap = await _fb.get(_fb.ref(db, 'data'));
-         if (snap.val()) return snap.val();
-       } catch (e) {}
-     }
-     const r = await fetch('data/data.json');
-     return r.json();
-   }
+    if (db) {
+      try { const snap = await _fb.get(_fb.ref(db, 'data')); if (snap.val()) return rapikan(snap.val()); } catch (e) {}
+    }
+    return rapikan(await (await fetch('data/data.json')).json());
+  }
    
    const orang = (x) => (x && typeof x === 'object') ? { nama: x.nama || '', foto: x.foto || '' } : { nama: (x || ''), foto: '' };
    

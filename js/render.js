@@ -237,7 +237,10 @@
   
   /* ---------- AGENDA ---------- */
   function renderAgenda(d) {
-    const kosong = !d.agenda || d.agenda.length === 0;
+    const list = (d.agenda || [])
+      .filter((a) => a && !isNaN(new Date((a.tanggal || '') + 'T00:00:00')))
+      .sort((a, b) => a.tanggal.localeCompare(b.tanggal));
+    const kosong = !list.length;
     $('#agenda').innerHTML = `
       <section class="mx-auto max-w-6xl px-4 py-16 md:py-24">
         ${judulSeksi('03', 'A G E N D A ', 'Dan informasi kegiatan warga RW 013')}
@@ -245,10 +248,10 @@
           <div class="kartu reveal mx-auto max-w-md p-10 text-center">
             <div class="text-5xl">📭</div>
             <b class="mt-4 block text-lg text-slate-900">Belum ada agenda terdaftar</b>
-            <p class="mt-2 text-base text-slate-500">Agenda terbaru otomatis tampil setelah ditambahkan lewat admin.</p>
+            <p class="mt-2 text-base text-slate-500">Agenda terbaru otomatis tampil setelah ditambahkan lewat halaman admin.</p>
           </div>` : `
           <div class="reveal grid gap-5 md:grid-cols-2">
-            ${[...d.agenda].sort((a, b) => a.tanggal.localeCompare(b.tanggal)).map((a) => {
+            ${list.map((a) => {
               const t = new Date(a.tanggal + 'T00:00:00');
               const bulan = new Intl.DateTimeFormat('id-ID', { month: 'short' }).format(t);
               return `
