@@ -1,6 +1,10 @@
 /* =========================================================
-   halaman.js — header subpage + prev/next + KARAKTER halaman
+   halaman.js — REFACTOR v1 (fondasi SUBPAGE)
+   header: logo + judul besar + prev/next + widget cuaca
+   karakter visual per halaman menimpa tema global
+   orangHal/avatarHal = alias utils (orang/avatar)
    ========================================================= */
+
    const DAFTAR_HALAMAN = [
     ['struktur.html', 'Struktur'], ['rt.html', 'RT 001–009'], ['pkk.html', 'TP PKK'],
     ['karangtaruna.html', 'Karang Taruna'], ['lmk.html', 'LMK'],
@@ -47,6 +51,7 @@
     Object.entries(map).forEach(([kk, v]) => { if (v) r.style.setProperty(kk, v); });
   }
   
+  /* ---------- Muat data subpage (Firebase → lokal, rapikan) ---------- */
   async function muatDataHal() {
     const FB = window.FIREBASE_CONFIG || null;
     if (FB && FB.apiKey && FB.databaseURL) {
@@ -55,25 +60,33 @@
         const _fb = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js');
         const s = await _fb.get(_fb.ref(_fb.getDatabase(initializeApp(FB)), 'data'));
         if (s.val()) return rapikan(s.val());
-      } catch (e) {}
+      } catch (e) { console.warn('Firebase gagal → fallback lokal.', e); }
     }
-    return rapikan(await (await fetch('data/data.json')).json());
+    try { return rapikan(await (await fetch('data/data.json')).json()); }
+    catch (e) { console.error('data.json gagal dimuat.', e); return {}; }
   }
   
+  /* ---------- Setup header subpage + judul + prev/next ---------- */
   async function setupHalaman(judul) {
     const d = await muatDataHal();
-    terapkanTema(d.tema);
+    d.identitas = d.identitas || {};
+    try { terapkanTema(d.tema); } catch (e) {}
     const cur = (location.pathname.split('/').pop() || '').toLowerCase();
-    terapkanKarakter(cur);                      // karakter halaman menimpa tema global
+    terapkanKarakter(cur);                                   // karakter menimpa tema global
+    document.title = judul + ' — ' + (d.identitas.namaRW || 'RW 013 Menteng Atas');
+  
+    const host = $('#headerHal');
+    if (!host) return d;
+  
     const idx = DAFTAR_HALAMAN.findIndex(([h]) => h === cur);
     const prev = idx > 0 ? DAFTAR_HALAMAN[idx - 1] : null;
     const next = (idx >= 0 && idx < DAFTAR_HALAMAN.length - 1) ? DAFTAR_HALAMAN[idx + 1] : null;
   
-    $('#headerHal').innerHTML = `
+    host.innerHTML = `
       <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <span class="flex items-center gap-3">
           ${renderLogo(d.identitas.logo, 'h-12 w-12')}
-          <b class="text-lg md:text-xl" style="color:var(--heading)">${judul}</b>
+          <b class="judul-hal" style="color:var(--heading)">${judul}</b>
         </span>
         <div id="cuaca-widget"></div>
       </div>
@@ -85,11 +98,6 @@
     return d;
   }
   
-  const orangHal = (x) => (x && typeof x === 'object') ? { nama: x.nama || '', foto: x.foto || '' } : { nama: (x || ''), foto: '' };
-  const avatarHal = (nama, foto, s = 'h-9 w-9', f = 'bg-slate-100 text-slate-500', t = 'text-xs') => ada(foto) ? `
-    <span class="relative block ${s} flex-none">
-      <img src="${foto}" alt="${nama}" class="absolute inset-0 h-full w-full rounded-full object-cover"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
-      <span class="hidden h-full w-full place-items-center rounded-full ${f} font-extrabold ${t}">${inisial(nama)}</span>
-    </span>`
-    : `<span class="grid ${s} flex-none place-items-center rounded-full ${f} font-extrabold ${t}">${inisial(nama)}</span>`;
+  /* Alias backward-compatible untuk script subpage */
+  const orangHal = orang;
+  const avatarHal = avatar;

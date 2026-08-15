@@ -1,8 +1,8 @@
 {
-  "_catatan": "DATA SEMENTARA. Semua orang = {nama, foto}; foto diunggah via admin (GitHub). Statistik per-RT dijumlahkan otomatis.",
+  "_catatan": "KONTRAK v1 — orang={nama,foto}; tanggal=YYYY-MM-DD; koordinat=[lat,lng]; statistik=angka. Data bersih tanpa spasi liar. Statistik per-RT dijumlahkan otomatis ke Profil. ronda: pola 3-hari (TEBO/MONCOS) sesuai AGST'26.",
 
   "identitas": {
-    "namaRW": "R W  0 1 3   M e n t e n g   A t a s",
+    "namaRW": "RW 013 Menteng Atas",
     "tagline": "A.M.A.N.A.H",
     "logo": "assets/logo-rw.png",
     "kecamatan": "Kecamatan Setiabudi",
@@ -11,7 +11,7 @@
     "koordinat": [-6.2138, 106.8478],
     "telepon": "",
     "email": "RW013Mentas@gmail.com",
-    "jamLayanan": "Minggu~Jum'at • 20.00–22.00 WIB ",
+    "jamLayanan": "Minggu~Jum'at • 20.00–22.00 WIB",
     "sosmed": { "instagram": "", "facebook": "", "whatsapp": "" }
   },
 

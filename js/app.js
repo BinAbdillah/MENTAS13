@@ -1,6 +1,7 @@
 /* =========================================================
-   app.js — v2.1: render AMAN (tak akan blank walau ada
-   script/section yang belum sinkron)
+   app.js — REFACTOR v1 (orkestrator BERANDA)
+   muatData + rapikan • panggilan aman • pin ronda •
+   ronda & cuaca memakai helper utils (tanpa duplikat)
    ========================================================= */
 
    const FB = window.FIREBASE_CONFIG || null;
@@ -30,39 +31,32 @@
      }
    }
    
-   const RONDA_DEFAULT = { aktif: true, mulai: '2026-07-30', polahari: 3,
-     tim: [{ nama: 'TEBO', anggota: [] }, { nama: 'MONCOS', anggota: [] }], jadwal: [] };
-   const isoL = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+   /* ---------- RONDA: default sesuai AGST'26 ---------- */
+   const RONDA_DEFAULT = {
+     aktif: true, mulai: '2026-07-30', polahari: 3,
+     tim: [{ nama: 'TEBO', anggota: [] }, { nama: 'MONCOS', anggota: [] }],
+     jadwal: []
+   };
    
-   function timRonda(r, iso) {
-     if (!r || !(r.tim || []).length) return null;
-     if (Array.isArray(r.jadwal) && r.jadwal.length) {
-       const hit = r.jadwal.find((j) => j.tanggal === iso);
-       if (hit) return r.tim.find((t) => t.nama === hit.tim) || { nama: hit.tim, anggota: [] };
-     }
-     const mulai = new Date((r.mulai || '2026-07-30') + 'T00:00:00');
-     const d = Math.floor((new Date(iso + 'T00:00:00') - mulai) / 86400000);
-     const pol = Math.max(1, r.polahari || 3);
-     return r.tim[((Math.floor(d / pol) % r.tim.length) + r.tim.length) % r.tim.length];
-   }
-   
+   /* ---------- PIN RONDA (kanan-bawah via CSS; markup minimalis) ---------- */
    function renderPinRonda(d) {
      let host = $('#pin-ronda');
      const r = d.ronda;
      if (!r || r.aktif === false) { if (host) host.remove(); return; }
-     const tim = timRonda(r, isoL(new Date()));
+     const tim = hitungTimRonda(r, isoLokal(new Date()));      // helper utils
      if (!tim) { if (host) host.remove(); return; }
      const nama = (tim.anggota || []).filter(Boolean).join(', ');
      const tgl = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
      if (!host) { host = document.createElement('div'); host.id = 'pin-ronda'; document.body.appendChild(host); }
      host.innerHTML = `
        <div class="min-w-0">
-         <span class="block text-[11px] uppercase tracking-widest" style="opacity:.65">Petugas Ronda Hari Ini</span>
-         <b class="block text-sm" style="color:var(--heading)">${nama || ('Tim ' + tim.nama)}</b>
-         <span class="block text-[11px]" style="opacity:.6">${tgl} • giliran ${tim.nama}</span>
+         <span class="block text-[11px] uppercase tracking-widest">Petugas Ronda Hari Ini</span>
+         <b class="block">${nama || ('Tim ' + tim.nama)}</b>
+         <span class="block text-[11px]">${tgl} • giliran ${tim.nama}</span>
        </div>`;
    }
    
+   /* ---------- BANNER HUT ---------- */
    function renderBanner(d) {
      const slot = $('#banner-slot');
      if (!slot) return;
@@ -75,6 +69,7 @@
        </a>`;
    }
    
+   /* ---------- REVEAL ---------- */
    function jalankanReveal() {
      const els = document.querySelectorAll('.reveal');
      if (REDUCED || !('IntersectionObserver' in window)) { els.forEach((el) => el.classList.add('on')); return; }
@@ -85,11 +80,13 @@
      els.forEach((el) => io.observe(el));
    }
    
+   /* ---------- EFEK GSAP ---------- */
    function initEfek() {
      if (!EFEK_AKTIF) return;
      try {
        gsap.registerPlugin(ScrollTrigger);
        ScrollTrigger.getAll().forEach((t) => t.kill());
+   
        if ($('#hero .hero-foto')) {
          gsap.timeline({ scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true } })
            .to('#hero .hero-foto', { yPercent: 16, ease: 'none' }, 0)
@@ -101,50 +98,73 @@
        gsap.utils.toArray('.mask-line').forEach((el) => {
          gsap.fromTo(el, { yPercent: 115 }, { yPercent: 0, duration: 1, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
        });
+   
+       /* marquee Info Warga: durasi mengikuti kecepatan scroll */
+       const mq = document.querySelector('.marquee-track');
+       if (mq && lenis) {
+         lenis.on('scroll', ({ velocity }) => {
+           mq.style.animationDuration = Math.max(9, 26 - Math.min(14, Math.abs(velocity) * 1.6)) + 's';
+         });
+       }
        ScrollTrigger.refresh();
      } catch (e) { console.warn('Efek scroll dinonaktifkan:', e); }
    }
    
+   /* ---------- NORMALISASI (aman sebelum render) ---------- */
    function normalisasi(d) {
      d = d || {};
      d.identitas = d.identitas || {}; d.identitas.sosmed = d.identitas.sosmed || {};
      d.tema = d.tema || { preset: 'garuda', custom: {} };
+   
      d.ronda = d.ronda || {};
      d.ronda.aktif = d.ronda.aktif !== false;
      d.ronda.mulai = d.ronda.mulai || RONDA_DEFAULT.mulai;
      d.ronda.polahari = d.ronda.polahari || RONDA_DEFAULT.polahari;
      d.ronda.tim = (d.ronda.tim && d.ronda.tim.length) ? d.ronda.tim : RONDA_DEFAULT.tim;
      d.ronda.jadwal = d.ronda.jadwal || [];
+   
      d.hero = d.hero || { foto: '', sambutan: '', periode: '' };
-     d.wilayah = d.wilayah || {}; d.wilayah.perbatasan = d.wilayah.perbatasan || [];
+     d.wilayah = d.wilayah || {};
+     d.wilayah.luasM2 = d.wilayah.luasM2 || 0;
+     d.wilayah.penduduk = d.wilayah.penduduk || 0;
+     d.wilayah.jumlahRT = d.wilayah.jumlahRT || 0;
+     d.wilayah.perbatasan = d.wilayah.perbatasan || [];
+   
      d.penasehat = d.penasehat || [];
-     d.strukturRW = d.strukturRW || {}; d.strukturRW.inti = d.strukturRW.inti || []; d.strukturRW.seksi = d.strukturRW.seksi || [];
+     d.strukturRW = d.strukturRW || {};
+     d.strukturRW.inti = d.strukturRW.inti || [];
+     d.strukturRW.seksi = d.strukturRW.seksi || [];
      d.strukturRW.seksi.forEach((s) => { s.anggota = s.anggota || []; });
+   
      d.rt = d.rt || []; d.rt.forEach((r) => { r.pengurus = r.pengurus || {}; });
      d.mitra = d.mitra || []; d.mitra.forEach((m) => { m.struktur = m.struktur || []; m.program = m.program || []; });
+   
      d.agenda = d.agenda || []; d.pengumuman = d.pengumuman || [];
-     d.galeri = d.galeri || []; d.kontakDarurat = d.kontakDarurat || [];
+     d.galeri = d.galeri || []; d.layanan = d.layanan || []; d.umkm = d.umkm || [];
+     d.kontakDarurat = d.kontakDarurat || [];
      d.fasilitas = d.fasilitas || []; d.banner = d.banner || {};
      return d;
    }
    
+   /* ---------- MUAT DATA (Firebase → lokal; selalu rapikan) ---------- */
    async function muatData() {
-    if (db) {
-      try { const snap = await _fb.get(_fb.ref(db, 'data')); if (snap.val()) return rapikan(snap.val()); }
-      catch (e) { console.warn('Baca Firebase gagal → fallback lokal.', e); }
-    }
-    const r = await fetch('data/data.json');
-    if (!r.ok) throw new Error('data.json tidak ditemukan (' + r.status + ')');
-    return rapikan(await r.json());
-  }
+     if (db) {
+       try { const snap = await _fb.get(_fb.ref(db, 'data')); if (snap.val()) return rapikan(snap.val()); }
+       catch (e) { console.warn('Baca Firebase gagal → fallback lokal.', e); }
+     }
+     const r = await fetch('data/data.json');
+     if (!r.ok) throw new Error('data.json tidak ditemukan (' + r.status + ')');
+     return rapikan(await r.json());
+   }
    
-   /* pemanggil aman untuk fungsi global (render.js) */
+   /* ---------- PANGGILAN AMAN untuk renderer global ---------- */
    function panggil(nama, DATA) {
      const fn = window[nama];
      if (typeof fn !== 'function') { console.warn('[' + nama + '] belum tersedia — dilewati.'); return; }
      try { fn(DATA); } catch (e) { console.warn('[' + nama + '] gagal:', e); }
    }
    
+   /* ---------- RENDER SEMUA ---------- */
    function renderSemua(input) {
      const DATA = normalisasi(input);
      window.DATA = DATA;
@@ -154,15 +174,16 @@
      renderBanner(DATA);
      renderPinRonda(DATA);
    
-     ['renderPengumuman', 'renderHeader', 'renderMenuKanan', 'renderHero', 'renderProfil',
-      'renderAgenda', 'renderFooter'].forEach((n) => panggil(n, DATA));
+     ['renderPengumuman', 'renderHeader', 'renderHero', 'renderProfil',
+      'renderAgenda', 'renderPetaCuaca', 'renderFooter']
+       .forEach((n) => panggil(n, DATA));
    
      jalankanReveal();
      panggil('jalankanCounter', DATA);
-     if (typeof pasangDonat3D === 'function') pasangDonat3D();
      initEfek();
    }
    
+   /* ---------- NAVIGASI ANCHOR (Lenis) ---------- */
    document.addEventListener('click', (e) => {
      const a = e.target.closest('a[href^="#"]');
      if (!a) return;
@@ -175,12 +196,19 @@
      else target.scrollIntoView({ behavior: 'smooth' });
    });
    
+   /* ---------- MAIN ---------- */
    (async function main() {
      try {
        addEventListener('scroll', () => {
          const h = $('#header');
          if (h) h.classList.toggle('scrolled', scrollY > 8);
        }, { passive: true });
+   
+       let rT;
+       addEventListener('resize', () => {
+         clearTimeout(rT);
+         rT = setTimeout(() => ADA_GSAP && ScrollTrigger.refresh(), 250);
+       });
    
        const DATA = await muatData();
        window._lastJson = JSON.stringify(DATA);

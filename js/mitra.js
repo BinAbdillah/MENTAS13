@@ -1,89 +1,83 @@
 /* =========================================================
-   mitra.js — foto pada struktur (fallback inisial)
+   mitra.js — REFACTOR v1 (ringkasan M I T R A)
+   setupHalaman + helper utils; LMK satu orang = kartu tunggal;
+   tautan otomatis ke halaman khusus (pkk/karangtaruna/lmk)
    ========================================================= */
 
-   const FB = window.FIREBASE_CONFIG || null;
-   const firebaseSiap = !!(FB && FB.apiKey && FB.databaseURL);
-   
-   let db = null, _fb = null;
-   if (firebaseSiap) {
-     try {
-       const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
-       _fb = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js');
-       db = _fb.getDatabase(initializeApp(FB));
-     } catch (e) { db = null; }
-   }
-   
-   async function muatData() {
-    if (db) {
-      try { const snap = await _fb.get(_fb.ref(db, 'data')); if (snap.val()) return rapikan(snap.val()); } catch (e) {}
-    }
-    return rapikan(await (await fetch('data/data.json')).json());
-  }
-   
-   const orang = (x) => (x && typeof x === 'object') ? { nama: x.nama || '', foto: x.foto || '' } : { nama: (x || ''), foto: '' };
-   
-   const avatar = (nama, foto, sizeCls = 'h-8 w-8', fallCls = 'bg-slate-100 text-slate-500', txt = 'text-xs') => ada(foto) ? `
-     <span class="relative block ${sizeCls} flex-none">
-       <img src="${foto}" alt="${nama}" class="absolute inset-0 h-full w-full rounded-full object-cover"
-            onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
-       <span class="hidden h-full w-full place-items-center rounded-full ${fallCls} font-extrabold ${txt}">${inisial(nama)}</span>
-     </span>`
-     : `<span class="grid ${sizeCls} flex-none place-items-center rounded-full ${fallCls} font-extrabold ${txt}">${inisial(nama)}</span>`;
-   
-   const linkKontak = (k) => {
-     if (!k) return '';
-     return /^08/.test(k) ? `https://wa.me/62${k.replace(/^0/, '')}` : `tel:${k}`;
+   const d = await setupHalaman('M I T R A');
+
+   const HALAMAN_MITRA = [
+     ['TP PKK', 'pkk.html'],
+     ['Karang Taruna', 'karangtaruna.html'],
+     ['LMK', 'lmk.html']
+   ];
+   const tautanKhusus = (nama) => {
+     const hit = HALAMAN_MITRA.find(([k]) => (nama || '').includes(k));
+     return hit ? hit[1] : '';
    };
    
-   (async function main() {
-     const d = await muatData();
-     terapkanTema(d.tema);
-     $('#logoMitra').innerHTML = renderLogo(d.identitas.logo, 'h-12 w-12');
-   
-     const list = d.mitra || [];
-     $('#mitraRoot').innerHTML = `
-       <h1 class="mb-10 text-4xl font-extrabold uppercase tracking-tight md:text-5xl" style="color:var(--heading)">
-         Mitra & <span style="color:var(--accent-text)">Susunan Pengurus</span>
-       </h1>
-       ${list.map((m) => `
+   const list = d.mitra || [];
+   $('#rootHal').innerHTML = `
+     <p class="mb-8 max-w-3xl text-base md:text-lg" style="opacity:.8">
+       PKK • Karang Taruna • LMK — mitra pembangunan warga RW 013 Menteng Atas.
+     </p>
+     ${list.length ? list.map((m) => {
+       const struktur = m.struktur || [];
+       const tunggal = struktur.length <= 1;
+       const satu = tunggal ? orang(struktur[0]) : null;
+       const khusus = tautanKhusus(m.nama);
+       return `
        <section class="kartu mb-10 p-6 md:p-10">
          <div class="flex flex-wrap items-center gap-5">
-           <span class="grid h-16 w-16 place-items-center rounded-2xl text-3xl" style="background:var(--accent-soft)">${m.ikon}</span>
+           <span class="grid h-16 w-16 place-items-center rounded-2xl text-3xl" style="background:var(--accent-soft)">${m.ikon || ''}</span>
            <div class="min-w-0 flex-1">
-             <h2 class="text-2xl font-extrabold md:text-3xl" style="color:var(--heading)">${m.nama}</h2>
-             <p class="mt-1 text-base" style="opacity:.75">${m.deskripsi}</p>
+             <h2 class="text-2xl font-extrabold md:text-3xl" style="color:var(--heading)">${m.nama || ''}</h2>
+             <p class="mt-1 text-base" style="opacity:.75">${m.deskripsi || ''}</p>
            </div>
+           ${khusus ? `<a href="${khusus}" class="rounded-full border px-5 py-2.5 text-sm font-bold"
+              style="border-color:var(--accent); color:var(--accent-text)">Halaman khusus →</a>` : ''}
            ${m.kontak ? `<a href="${linkKontak(m.kontak)}" class="rounded-full px-5 py-2.5 text-sm font-bold"
               style="background:var(--accent); color:var(--on-accent)">💬 Kontak</a>` : ''}
          </div>
+   
          ${m.foto ? `<img src="${m.foto}" alt="${m.nama}" class="mt-6 w-full rounded-xl object-cover" style="max-height:320px" onerror="this.remove()">` : ''}
+   
          <div class="mt-8 grid gap-8 md:grid-cols-2">
            <div>
              <h3 class="mb-3 text-lg font-bold" style="color:var(--heading)">Program Kerja</h3>
              <div class="flex flex-wrap gap-2">
                ${(m.program || []).length
-                 ? m.program.map((p) => `<span class="rounded-full px-3 py-1.5 text-sm"
+                 ? (m.program || []).map((p) => `<span class="rounded-full px-3 py-1.5 text-sm"
                     style="background:color-mix(in srgb, var(--accent) 14%, transparent); color:var(--accent-text)">${p}</span>`).join('')
                  : '<span class="nilai-kosong text-sm">Belum diisi</span>'}
              </div>
            </div>
+   
+           ${tunggal ? `
            <div>
-             <h3 class="mb-3 text-lg font-bold" style="color:var(--heading)">Struktur</h3>
-             ${(m.struktur || []).map((p) => {
+             <div class="kartu p-8 text-center">
+               ${avatar(satu.nama, satu.foto, 'h-24 w-24', 'bg-slate-100 text-slate-500', 'text-3xl')}
+               <b class="mt-4 block text-xl" style="color:var(--heading)">${namaAtau(satu.nama)}</b>
+               <span class="text-sm" style="opacity:.7">${struktur[0] ? struktur[0].jabatan : 'Penanggung jawab'}</span>
+             </div>
+           </div>` : `
+           <div>
+             <h3 class="mb-3 text-lg font-bold" style="color:var(--heading)">Susunan Pengurus</h3>
+             ${struktur.map((p) => {
                const o = orang(p);
-               return `<div class="flex items-center justify-between border-b py-2.5 text-base last:border-0" style="border-color:var(--line-soft)">
-                 <span style="opacity:.7">${p.jabatan}</span>
+               return `
+               <div class="flex items-center justify-between border-b py-2.5 text-base last:border-0" style="border-color:var(--line-soft)">
+                 <span style="opacity:.7">${p.jabatan || ''}</span>
                  <b class="flex items-center gap-2.5 ${ada(o.nama) ? '' : 'nilai-kosong'}">
-                   ${namaAtau(o.nama)} ${avatar(o.nama, o.foto)}
+                   ${namaAtau(o.nama)} ${avatar(o.nama, o.foto, 'h-8 w-8', 'bg-slate-100 text-slate-500', 'text-xs')}
                  </b>
                </div>`;
              }).join('')}
-           </div>
+           </div>`}
          </div>
-       </section>`).join('')}
-       <a href="index.html" class="group inline-block rounded-full border px-6 py-3 text-base font-bold"
-          style="border-color:var(--accent); color:var(--accent-text)">
-         ← Kembali ke beranda
-       </a>`;
-   })();
+       </section>`;
+     }).join('') : `
+     <div class="kartu mx-auto max-w-md p-10 text-center">
+       <b class="block text-lg" style="color:var(--heading)">Data mitra belum terisi</b>
+       <p class="mt-2 text-base" style="opacity:.7">Lengkapi lewat halaman admin.</p>
+     </div>`}`;

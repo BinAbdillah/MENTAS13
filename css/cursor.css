@@ -1,36 +1,24 @@
 /* =========================================================
-   cursor.css — custom cursor ala situs award (hitam × merah)
-   Aktif hanya di pointer halus (desktop); HP tetap normal.
+   cursor.css — REFACTOR v1: warna mengikuti variabel tema
+   Aktif hanya di pointer halus; HP tetap normal.
    ========================================================= */
-
    .cur-dot, .cur-ring {
     position: fixed; left: 0; top: 0; z-index: 999;
     pointer-events: none; border-radius: 50%;
     transform: translate(-100px, -100px);
   }
-  
-  /* Titik merah kecil — presisi */
-  .cur-dot {
-    width: 6px; height: 6px; margin: -3px 0 0 -3px;
-    background: #EF4444;
-  }
-  
-  /* Cincin penyusul — halus */
+  .cur-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; background: var(--accent-bright, #EF4444); }
   .cur-ring {
     width: 34px; height: 34px; margin: -17px 0 0 -17px;
-    border: 1.5px solid rgb(239 68 68 / .55);
+    border: 1.5px solid color-mix(in srgb, var(--accent-bright, #EF4444) 55%, transparent);
     transition: width .25s ease, height .25s ease, margin .25s ease,
                 border-color .25s ease, background-color .25s ease;
   }
-  
-  /* Membesar saat menyentuh elemen interaktif */
   body.cur-aktif .cur-ring {
     width: 58px; height: 58px; margin: -29px 0 0 -29px;
-    background: rgb(239 68 68 / .12);
-    border-color: rgb(239 68 68 / .9);
+    background: color-mix(in srgb, var(--accent-bright, #EF4444) 12%, transparent);
+    border-color: color-mix(in srgb, var(--accent-bright, #EF4444) 90%, transparent);
   }
-  
-  /* Sembunyikan kursor native hanya bila kursor custom aktif */
   html.cur-on, html.cur-on a, html.cur-on button,
   html.cur-on .kartu, html.cur-on .nav-link, html.cur-on input,
   html.cur-on textarea, html.cur-on select { cursor: none; }

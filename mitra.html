@@ -3,33 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mitra RW 013 Menteng Atas — PKK, Karang Taruna, dan LMK.">
   <title>Mitra — RW 013 Menteng Atas</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🏛️%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400..800&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="js/tailwind-config.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400..800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/cursor.css">
 </head>
 
 <body class="bg-slate-50 font-sans text-slate-800">
-  <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
-    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5">
-      <span class="flex items-center gap-3">
-        <span id="logoMitra"></span>
-        <span>
-          <b class="block text-lg leading-tight" style="color:var(--heading)">M I T R A</b>
-          <span class="block text-sm text-slate-500">PKK • Karang Taruna • LMK</span>
-        </span>
-      </span>
-      <a href="index.html" class="nav-link">← Beranda</a>
-    </div>
-  </header>
+  <header id="headerHal" class="sticky top-0 z-40 border-b bg-white/90 backdrop-blur" style="border-color:var(--line)"></header>
+  <main id="rootHal" class="mx-auto max-w-6xl px-4 py-10 md:py-14"></main>
 
-  <main id="mitraRoot" class="mx-auto max-w-6xl px-4 py-12 md:py-16"></main>
-
+  <!-- Urutan wajib subpage -->
   <script src="js/firebase-config.js"></script>
   <script src="js/utils.js"></script>
+  <script src="js/cuaca-widget.js"></script>
+  <script src="js/halaman.js"></script>
   <script src="js/cursor.js"></script>
   <script type="module" src="js/mitra.js"></script>
 </body>

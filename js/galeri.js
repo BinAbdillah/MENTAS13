@@ -1,23 +1,22 @@
 /* =========================================================
-   galeri.js — halaman Galeri (masonry + lightbox)
-   pasangan galeri.html • butuh js/halaman.js (setupHalaman)
+   galeri.js — REFACTOR v1
+   masonry + lightbox (Esc/klik-luar) + empty state
    ========================================================= */
-
    const d = await setupHalaman('Galeri Warga');
-
    const list = d.galeri || [];
+   
    $('#rootHal').innerHTML = list.length ? `
      <div class="columns-1 gap-6 md:columns-2 lg:columns-3" id="galeriGrid">
        ${list.map((g) => `
        <figure class="galeri-item kartu mb-6 cursor-zoom-in break-inside-avoid overflow-hidden p-0">
-         <img src="${g.foto}" alt="${g.keterangan}" loading="lazy" class="w-full object-cover" style="aspect-ratio:4/3"
+         <img src="${g.foto || ''}" alt="${g.keterangan || ''}" loading="lazy" class="w-full object-cover" style="aspect-ratio:4/3"
               onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
          <div class="hidden place-items-center text-sm" style="aspect-ratio:4/3; background:var(--fill); opacity:.6">
            Foto tidak tersedia
          </div>
          <figcaption class="p-5">
-           <b class="block text-base" style="color:var(--heading)">${g.keterangan}</b>
-           <span class="text-sm" style="opacity:.6">${g.kategori} • ${g.tanggal}</span>
+           <b class="block text-base" style="color:var(--heading)">${g.keterangan || ''}</b>
+           <span class="text-sm" style="opacity:.6">${g.kategori || ''} • ${g.tanggal || ''}</span>
          </figcaption>
        </figure>`).join('')}
      </div>
@@ -34,11 +33,9 @@
        <p class="mt-2 text-base" style="opacity:.7">Tambahkan foto lewat halaman admin (📷 Upload).</p>
      </div>`;
    
-   /* ---------- lightbox ---------- */
    const lb = $('#lightbox');
    if (lb) {
      const tutup = () => { lb.classList.add('hidden'); lb.classList.remove('flex'); };
-   
      $('#galeriGrid').addEventListener('click', (e) => {
        const fig = e.target.closest('.galeri-item');
        if (!fig) return;
@@ -49,7 +46,6 @@
        lb.classList.remove('hidden');
        lb.classList.add('flex');
      });
-   
      $('#lbTutup').onclick = tutup;
      lb.addEventListener('click', (e) => { if (e.target === lb) tutup(); });
      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') tutup(); });
