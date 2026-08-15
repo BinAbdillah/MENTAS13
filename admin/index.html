@@ -1,37 +1,30 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-mode="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0C0D0F">
   <title>Admin — RW 013 Menteng Atas</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛠️%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400..800&display=swap" rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="../js/tailwind-config.js"></script>
-  <!-- Font sama dengan beranda -->
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400..800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
-  <style>
-    /* Style khusus admin — disesuaikan ke palet sage */
-    .inp { width:100%; border:1px solid var(--line); border-radius:.5rem; padding:.5rem .75rem; font-size:.95rem; background:var(--surface); }
-    .inp:focus { outline:2px solid #10b981; border-color:#10b981; }
-    .lbl { display:block; font-size:.78rem; font-weight:700; color:#52605a; margin:.7rem 0 .3rem; text-transform:capitalize; }
-    .hint { font-weight:400; color:#94a3b8; text-transform:none; }
-    .mono { font-family:ui-monospace,monospace; font-size:.8rem; }
-    fieldset.obj, fieldset.arr { border:1px solid var(--line); border-radius:.75rem; padding:1rem 1.25rem 1.25rem; margin-top:1rem; background:var(--surface); }
-    fieldset.obj fieldset.obj { background:var(--bg); }
-    fieldset.item { border:1px dashed var(--line); border-radius:.75rem; padding:.75rem 1rem; margin-top:.75rem; background:var(--bg); position:relative; }
-    legend.lbl2 { font-weight:800; font-size:.95rem; color:#065f46; padding:0 .4rem; text-transform:capitalize; }
-    .leaf { margin:.15rem 0; }
-    .btnx { border-radius:.6rem; padding:.55rem 1rem; font-size:.85rem; font-weight:700; }
-  </style>
+  <!-- Style khusus admin kini di style.css (seksi ADMIN, theme-aware) -->
 </head>
 
 <body class="bg-slate-50 font-sans text-slate-800">
-  <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
+  <header class="sticky top-0 z-40 border-b bg-white/90 backdrop-blur" style="border-color:var(--line)">
     <div class="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-3">
-      <b class="text-lg text-emerald-700">🛠️ Admin RW 013</b>
-      <span id="statusAuth" class="text-sm text-slate-500"></span>
+      <b class="text-lg" style="color:var(--accent-text)">🛠️ Admin RW 013</b>
+      <span id="statusAuth" class="text-sm" style="opacity:.7"></span>
       <span class="ml-auto flex flex-wrap gap-2">
-        <button id="btnMigrasi" class="btnx bg-amber-500 text-white hidden">📤 Kirim data.json lokal</button>
+        <button id="btnMigrasi"  class="btnx bg-amber-500 text-white hidden">📤 Kirim data.json lokal</button>
         <button id="btnDownload" class="btnx bg-slate-600 text-white hidden">💾 Download</button>
         <button id="btnSimpan"   class="btnx bg-emerald-600 text-white hidden">🚀 Simpan ke Firebase</button>
         <button id="btnKeluar"   class="btnx bg-red-600 text-white hidden">🚪 Keluar</button>
@@ -43,29 +36,33 @@
     <!-- Kartu login -->
     <div id="loginCard" class="kartu mx-auto max-w-md p-8 text-center">
       <div class="text-4xl">🔐</div>
-      <b class="mt-2 block text-lg">Masuk Pengurus</b>
-      <p class="mb-4 text-sm text-slate-500">Sesi hanya tersimpan di browser ini.</p>
-      <input id="inEmail" type="email" placeholder="email pengurus" class="inp mb-3">
-      <input id="inPass"  type="password" placeholder="kata sandi" class="inp mb-4">
+      <b class="mt-2 block text-lg" style="color:var(--heading)">Masuk Pengurus</b>
+      <p class="mb-4 text-sm" style="opacity:.6">Sesi hanya tersimpan di browser ini.</p>
+      <input id="inEmail" type="email" placeholder="email pengurus" class="inp mb-3" autocomplete="username">
+      <input id="inPass"  type="password" placeholder="kata sandi" class="inp mb-4" autocomplete="current-password">
       <button id="btnMasuk" class="btnx w-full bg-emerald-600 py-3 text-white">Masuk</button>
-      <p id="loginErr" class="mt-3 text-sm text-red-600"></p>
+      <p id="loginErr" class="mt-3 text-sm" style="color:var(--accent-text)"></p>
     </div>
 
     <!-- Peringatan config kosong -->
-    <div id="cfgWarn" class="kartu mx-auto mt-4 max-w-md hidden border-amber-300 bg-amber-50 p-6 text-center">
-      <b class="block text-amber-700">⚙️ Firebase belum dikonfigurasi</b>
-      <p class="mt-1 text-sm text-amber-700">Isi <code>js/firebase-config.js</code> dengan config dari Firebase Console, lalu push & muat ulang.</p>
+    <div id="cfgWarn" class="kartu mx-auto mt-4 max-w-md hidden p-6 text-center"
+         style="border-color:#F59E0B; background:color-mix(in srgb, #F59E0B 10%, var(--surface))">
+      <b class="block" style="color:#B45309">⚙️ Firebase belum dikonfigurasi</b>
+      <p class="mt-1 text-sm" style="color:#B45309">Isi <code>js/firebase-config.js</code> dengan config dari Firebase Console, lalu push & muat ulang.</p>
     </div>
 
-        <!-- Panel Manajer Tema (diisi oleh admin.js) -->
-        <div id="temaHost" class="hidden"></div>
+    <!-- Panel Manajer Tema / Ronda / Upload (diisi admin.js) -->
+    <div id="temaHost" class="hidden"></div>
 
-        <!-- Area form otomatis -->
-        <fieldset id="formRoot" data-tipe="obj" class="hidden"></fieldset>
-    <p id="statusLine" class="mt-6 text-center text-sm text-slate-500"></p>
+    <!-- Area form otomatis (WAJIB data-tipe="obj" untuk collect()) -->
+    <fieldset id="formRoot" data-tipe="obj" class="hidden"></fieldset>
+
+    <p id="statusLine" class="mt-6 text-center text-sm" style="opacity:.7"></p>
   </main>
 
+  <!-- Urutan wajib: config → utils (PRESET_TEMA/rapikan/buatJadwalRonda) → admin -->
   <script src="../js/firebase-config.js"></script>
   <script src="../js/utils.js"></script>
-  <script type="module" src="js/admin.js"></script></body>
+  <script type="module" src="js/admin.js"></script>
+</body>
 </html>
