@@ -1,5 +1,6 @@
 /* =========================================================
-   admin.js — REFACTOR v5.5 (Preview Atomic & Fix LocalStorage)
+   admin.js — REFACTOR v5.7 (Fix Deep Collect)
+   Mengubah fungsi collect() untuk menelusuri wrapper tab secara mendalam.
    ========================================================= */
 
    const $ = (s) => document.querySelector(s);
@@ -216,6 +217,7 @@
      return `<fieldset data-key="${key}" data-tipe="obj" class="obj"><legend class="lbl2">${pretty(key)}</legend>${inner}</fieldset>`;
    }
    
+   /* --- PERBAIKAN UTAMA DI SINI --- */
    function collect(el) {
      const t = el.dataset.tipe;
      if (t === 'str')  return el.querySelector('input[type="text"],textarea').value;
@@ -224,12 +226,28 @@
      if (t === 'csv')  return el.querySelector('input').value.split(',').map(s => s.trim()).filter(Boolean);
      if (t === 'csvnum') return el.querySelector('input').value.split(',').map(s => parseFloat(s.trim())).filter(v => !isNaN(v));
      if (t === 'json') { try { return JSON.parse(el.querySelector('textarea').value); } catch (e) { return []; } }
-     if (t === 'obj' || t === 'item') {
+     
+     if (t === 'arr') {
+       return [...el.querySelectorAll(':scope > [data-tipe="item"]')].map(it => collect(it));
+     }
+     
+     // DFS Deep Search untuk wrapper Tab yang membungkus data-key
+     if (t === 'obj' || t === 'item' || el.id === 'formRoot' || el.id === 'adminContent') {
        const o = {};
-       el.querySelectorAll(':scope > [data-key]').forEach(ch => { o[ch.dataset.key] = collect(ch); });
+       const walk = (node) => {
+         for (const child of node.children) {
+           if (child.dataset && child.dataset.key) {
+             o[child.dataset.key] = collect(child);
+           } else {
+             if (child.children.length > 0) {
+               walk(child);
+             }
+           }
+         }
+       };
+       walk(el);
        return o;
      }
-     if (t === 'arr') return [...el.querySelectorAll(':scope > [data-tipe="item"]')].map(it => collect(it));
      return null;
    }
    
@@ -653,14 +671,15 @@
      }
    }
    
+   /* --- PERBAIKAN: Kembalikan target collect ke $('#formRoot') --- */
    $('#btnSimpanDraft').onclick = async () => {
+     // Sekarang collect($('#formRoot')) akan menelusuri wrapper Tab secara mendalam
      const data = rapikan(window.rekatkanJadwal(collect($('#formRoot'))));
      
      const draftData = Object.assign({}, DATA_DASAR || {}, data, { tema: temaAktif, _lastSaved: new Date().toISOString() });
      localStorage.setItem(K_DRAFT, JSON.stringify(draftData));
      status('💾 Draft tersimpan di perangkat.');
    
-     // Jika online, coba simpan ke server. Jika gagal, tidak masalah, data lokal sudah aman.
      if (MODE === 'online' && auth && auth.currentUser && navigator.onLine) {
        try {
          await _fb.set(_fb.ref(db, 'drafts/' + auth.currentUser.uid), rapikan(draftData));
@@ -680,6 +699,7 @@
      
      if (!confirm('⚠️ Yakin ingin menerbitkan perubahan ini ke website publik?')) return;
      
+     // Sekarang collect($('#formRoot')) akan menelusuri wrapper Tab secara mendalam
      const data = rapikan(window.rekatkanJadwal(collect($('#formRoot'))));
      try {
        await _fb.set(_fb.ref(db, 'data'), data);
@@ -693,20 +713,15 @@
      }
    };
    
-   /* --- PERBAIKAN ATOMIC DI SINI --- */
    $('#btnPreview').onclick = () => {
-     // 1. Ambil data mentah dari form editor saat ini
+     // Sekarang collect($('#formRoot')) akan menelusuri wrapper Tab secara mendalam
      const dataFromForm = collect($('#formRoot'));
-     
-     // 2. Gabungkan dengan tema yang aktif
      const fullData = Object.assign({}, dataFromForm, { tema: temaAktif });
      
-     // 3. Simpan ke localStorage dengan key K_PREVIEW
      localStorage.setItem(K_PREVIEW, JSON.stringify(fullData));
      
-     console.log('📦 [Admin] Data dikunci ke localStorage untuk preview:', fullData);
+     console.log('📦 [Admin] Data dikunci ke localStorage untuk preview (Full):', fullData);
      
-     // 4. Buka jendela preview
      window.open('../index.html?preview=1', 'Preview RW 013', 'width=1200,height=800,scrollbars=yes');
      status('✅ Jendela pratinjau dibuka.');
    };
