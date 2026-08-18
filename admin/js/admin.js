@@ -1,6 +1,6 @@
 /* =========================================================
-   admin.js — REFACTOR v5.2 (Perbaikan ReferenceError global)
-   Mengekspos fungsi kunci ke window agar modul ES6 membacanya.
+   admin.js — REFACTOR v5.3 (Perbaikan URL Jendela Pratinjau)
+   Memastikan window.open mengarah ke root website, bukan folder admin.
    ========================================================= */
 
 const $ = (s) => document.querySelector(s);
@@ -363,7 +363,7 @@ function pasangPanelTema() {
     } catch (e) { status('❌ ' + e.message); }
   });
 
-  // PERBAIKAN: Tambahkan pengecekan eksistensi window.toggleCursor
+  // Pengecekan fungsi toggleCursor
   const toggleCursor = host.querySelector('#toggleCursor');
   if (toggleCursor) {
     toggleCursor.addEventListener('change', () => {
@@ -452,7 +452,7 @@ async function sinkronkan() {
 /* ---------- MUAT DATA ---------- */
 async function muatKeForm() {
   let lokal = null;
-  try { const r = await fetch('../data/data.json'); lokal = await r.json(); } catch (e) {}
+  try { const r = await fetch('/MENTAS13/data/data.json'); lokal = await r.json(); } catch (e) {}
 
   let v = null, sumber = '';
   
@@ -616,14 +616,13 @@ $('#btnKeluar').onclick = () => {
   else tampilLogin(); 
 };
 
-/* ---------- PERBAIKAN: Ekspor Fungsi ke Global Window ---------- */
+// Binding ke window untuk mencegah ReferenceError di lingkungan ES Module
 function rekatkanJadwal(data) {
   data.ronda = data.ronda || {};
   data.ronda.jadwal = JADWAL_TERSIMPAN ||
     (DATA_DASAR && DATA_DASAR.ronda && DATA_DASAR.ronda.jadwal) || data.ronda.jadwal || [];
   return data;
 }
-// Binding ke window untuk mencegah ReferenceError di lingkungan ES Module
 window.rekatkanJadwal = rekatkanJadwal;
 
 
@@ -663,7 +662,7 @@ if (headerActions) {
 }
 
 $('#btnSimpanDraft').onclick = async () => {
-  const data = rapikan(window.rekatkanJadwal(collect($('#formRoot')))); // Gunakan window.rekatkanJadwal
+  const data = rapikan(window.rekatkanJadwal(collect($('#formRoot'))));
   
   const draftData = Object.assign({}, DATA_DASAR || {}, data, { tema: temaAktif, _lastSaved: new Date().toISOString() });
   localStorage.setItem(K_DRAFT, JSON.stringify(draftData));
@@ -688,7 +687,7 @@ $('#btnTerbitkan').onclick = async () => {
   
   if (!confirm('⚠️ Yakin ingin menerbitkan perubahan ini ke website publik?')) return;
   
-  const data = rapikan(window.rekatkanJadwal(collect($('#formRoot')))); // Gunakan window.rekatkanJadwal
+  const data = rapikan(window.rekatkanJadwal(collect($('#formRoot'))));
   try {
     await _fb.set(_fb.ref(db, 'data'), data);
     await _fb.set(_fb.ref(db, 'drafts/' + auth.currentUser.uid), null);
@@ -705,6 +704,10 @@ $('#btnPreview').onclick = () => {
   const data = collect($('#formRoot'));
   const fullData = Object.assign({}, DATA_DASAR || {}, data, { tema: temaAktif });
   localStorage.setItem(K_PREVIEW, JSON.stringify(fullData));
-  window.open('index.html?preview=1', 'Preview RW 013', 'width=1200,height=800,scrollbars=yes');
+  
+  // --- PERBAIKAN UTAMA DI SINI ---
+  // Gunakan Path Absolut Root agar membuka index.html publik, bukan index.html di folder admin
+  window.open('/MENTAS13/index.html?preview=1', 'Preview RW 013', 'width=1200,height=800,scrollbars=yes');
+  
   status('✅ Jendela pratinjau dibuka.');
 };
