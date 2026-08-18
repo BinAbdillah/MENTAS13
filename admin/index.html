@@ -6,6 +6,10 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#0C0D0F">
   <title>Admin — RW 013 Menteng Atas</title>
+  
+  <!-- PERBAIKAN: Menambahkan base path agar gambar aset di folder root bisa terbaca dengan benar dari folder admin -->
+  <base href="/MENTAS13/">
+  
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛠️%3C/text%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +19,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="../js/tailwind-config.js"></script>
   <link rel="stylesheet" href="../css/style.css">
-  <!-- Style khusus admin kini di style.css (seksi ADMIN, theme-aware) -->
 </head>
 
 <body class="bg-slate-50 font-sans text-slate-800">
@@ -26,14 +29,14 @@
       <span class="ml-auto flex flex-wrap gap-2">
         <button id="btnMigrasi"  class="btnx bg-amber-500 text-white hidden">📤 Kirim data.json lokal</button>
         <button id="btnDownload" class="btnx bg-slate-600 text-white hidden">💾 Download</button>
-        <button id="btnSimpan"   class="btnx bg-emerald-600 text-white hidden">🚀 Simpan ke Firebase</button>
-        <button id="btnKeluar"   class="btnx bg-red-600 text-white hidden">🚪 Keluar</button>
+        <!-- Tombol Simpan Lama akan otomatis disembunyikan oleh JS -->
+        <button id="btnSimpan" class="btnx bg-emerald-600 text-white hidden">🚀 Simpan ke Firebase</button>
+        <button id="btnKeluar" class="btnx bg-red-600 text-white hidden">🚪 Keluar</button>
       </span>
     </div>
   </header>
 
   <main class="mx-auto max-w-5xl px-4 py-8">
-    <!-- Kartu login -->
     <div id="loginCard" class="kartu mx-auto max-w-md p-8 text-center">
       <div class="text-4xl">🔐</div>
       <b class="mt-2 block text-lg" style="color:var(--heading)">Masuk Pengurus</b>
@@ -44,25 +47,22 @@
       <p id="loginErr" class="mt-3 text-sm" style="color:var(--accent-text)"></p>
     </div>
 
-    <!-- Peringatan config kosong -->
     <div id="cfgWarn" class="kartu mx-auto mt-4 max-w-md hidden p-6 text-center"
          style="border-color:#F59E0B; background:color-mix(in srgb, #F59E0B 10%, var(--surface))">
       <b class="block" style="color:#B45309">⚙️ Firebase belum dikonfigurasi</b>
       <p class="mt-1 text-sm" style="color:#B45309">Isi <code>js/firebase-config.js</code> dengan config dari Firebase Console, lalu push & muat ulang.</p>
     </div>
 
-    <!-- Panel Manajer Tema / Ronda / Upload (diisi admin.js) -->
     <div id="temaHost" class="hidden"></div>
-
-    <!-- Area form otomatis (WAJIB data-tipe="obj" untuk collect()) -->
     <fieldset id="formRoot" data-tipe="obj" class="hidden"></fieldset>
 
     <p id="statusLine" class="mt-6 text-center text-sm" style="opacity:.7"></p>
   </main>
 
-  <!-- Urutan wajib: config → utils (PRESET_TEMA/rapikan/buatJadwalRonda) → admin -->
+  <!-- PERBAIKAN: Urutan JS. Tambahkan cursor.js agar window.toggleCursor tersedia -->
   <script src="../js/firebase-config.js"></script>
   <script src="../js/utils.js"></script>
+  <script src="../js/cursor.js"></script>
   <script type="module" src="js/admin.js"></script>
 </body>
 </html>
