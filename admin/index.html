@@ -15,9 +15,9 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- PERBAIKAN: Menggunakan Path Absolut (URL dimulai dengan /MENTAS13/) agar file terbaca dari mana saja -->
-  <script src="/MENTAS13/js/tailwind-config.js"></script>
-  <link rel="stylesheet" href="/MENTAS13/css/style.css">
+  <!-- PERBAIKAN: Menggunakan Path Relatif ke folder induk (../) -->
+  <script src="../js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body class="bg-slate-50 font-sans text-slate-800">
@@ -28,7 +28,6 @@
       <span class="ml-auto flex flex-wrap gap-2">
         <button id="btnMigrasi"  class="btnx bg-amber-500 text-white hidden">📤 Kirim data.json lokal</button>
         <button id="btnDownload" class="btnx bg-slate-600 text-white hidden">💾 Download</button>
-        <!-- Tombol Simpan Lama akan otomatis disembunyikan oleh JS -->
         <button id="btnSimpan" class="btnx bg-emerald-600 text-white hidden">🚀 Simpan ke Firebase</button>
         <button id="btnKeluar" class="btnx bg-red-600 text-white hidden">🚪 Keluar</button>
       </span>
@@ -58,11 +57,11 @@
     <p id="statusLine" class="mt-6 text-center text-sm" style="opacity:.7"></p>
   </main>
 
-  <!-- PERBAIKAN: Menggunakan Path Absolut (/MENTAS13/...) agar konsisten -->
-  <script src="/MENTAS13/js/firebase-config.js"></script>
-  <script src="/MENTAS13/js/utils.js"></script>
-  <script src="/MENTAS13/js/cursor.js"></script>
-  <!-- Pastikan memuat file admin.js yang berada di subfolder js/ yang sama -->
-  <script type="module" src="/MENTAS13/admin/js/admin.js"></script>
+  <!-- PERBAIKAN: Path relatif ke folder induk untuk utilitas -->
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/cursor.js"></script>
+  <!-- admin.js tetap di folder lokal ./js/ -->
+  <script type="module" src="js/admin.js"></script>
 </body>
 </html>
