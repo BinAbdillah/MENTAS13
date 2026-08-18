@@ -147,29 +147,34 @@
    
    /* ---------- MUAT DATA ---------- */
    async function muatData() {
-     // Jika mode preview, ambil dari localStorage
-     const urlParams = new URLSearchParams(window.location.search);
-     const isPreview = urlParams.get('preview') === '1';
-     
-     if (isPreview) {
-       const previewData = localStorage.getItem('rw13_preview_data');
-       if (previewData) {
-         console.log('🔍 Mode Preview: Memuat data dari localStorage.');
-         return rapikan(JSON.parse(previewData));
-       } else {
-         console.warn('⚠️ Tidak ada data preview, fallback ke data.json');
-       }
-     }
-   
-     // Mode Normal (atau fallback preview)
-     if (db) {
-       try { const snap = await _fb.get(_fb.ref(db, 'data')); if (snap.val()) return rapikan(snap.val()); }
-       catch (e) { console.warn('Baca Firebase gagal → fallback lokal.', e); }
-     }
-     const r = await fetch('data/data.json');
-     if (!r.ok) throw new Error('data.json tidak ditemukan (' + r.status + ')');
-     return rapikan(await r.json());
-   }
+  // Jika mode preview, ambil dari localStorage
+  const urlParams = new URLSearchParams(window.location.search);
+  const isPreview = urlParams.get('preview') === '1';
+  
+  if (isPreview) {
+    const previewData = localStorage.getItem('rw13_preview_data');
+    if (previewData) {
+      try {
+        const parsed = JSON.parse(previewData);
+        console.log('🎯 [Preview] Data berhasil dimuat dari localStorage:', parsed);
+        return rapikan(parsed);
+      } catch (e) {
+        console.error('❌ [Preview] Data rusak, fallback ke JSON. Error:', e);
+      }
+    } else {
+      console.warn('⚠️ [Preview] Data `rw13_preview_data` tidak ditemukan di localStorage. Fallback ke data.json.');
+    }
+  }
+
+  // Mode Normal (atau fallback preview)
+  if (db) {
+    try { const snap = await _fb.get(_fb.ref(db, 'data')); if (snap.val()) return rapikan(snap.val()); }
+    catch (e) { console.warn('Baca Firebase gagal → fallback lokal.', e); }
+  }
+  const r = await fetch('data/data.json');
+  if (!r.ok) throw new Error('data.json tidak ditemukan (' + r.status + ')');
+  return rapikan(await r.json());
+}
    
    /* ---------- PANGGILAN AMAN ---------- */
    function panggil(nama, DATA) {
