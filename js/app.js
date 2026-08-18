@@ -1,7 +1,5 @@
 /* =========================================================
-   app.js — REFACTOR v3 (Orkestrator + PWA + Live Preview)
-   Mendeteksi parameter URL untuk menampilkan data dari 
-   localStorage alih-alih Firebase/JSON saat dalam mode Preview.
+   app.js — REFACTOR v4.0 (Force LocalStorage for Preview)
    ========================================================= */
 
    const FB = window.FIREBASE_CONFIG || null;
@@ -31,14 +29,12 @@
      }
    }
    
-   /* ---------- RONDA: default sesuai AGST'26 ---------- */
    const RONDA_DEFAULT = {
      aktif: true, mulai: '2026-07-30', polahari: 3,
      tim: [{ nama: 'TEBO', anggota: [] }, { nama: 'MONCOS', anggota: [] }],
      jadwal: []
    };
    
-   /* ---------- PIN RONDA (kanan-bawah via CSS; markup minimalis) ---------- */
    function renderPinRonda(d) {
      let host = $('#pin-ronda');
      const r = d.ronda;
@@ -56,7 +52,6 @@
        </div>`;
    }
    
-   /* ---------- BANNER HUT ---------- */
    function renderBanner(d) {
      const slot = $('#banner-slot');
      if (!slot) return;
@@ -69,7 +64,6 @@
        </a>`;
    }
    
-   /* ---------- REVEAL ---------- */
    function jalankanReveal() {
      const els = document.querySelectorAll('.reveal');
      if (REDUCED || !('IntersectionObserver' in window)) { els.forEach((el) => el.classList.add('on')); return; }
@@ -80,7 +74,6 @@
      els.forEach((el) => io.observe(el));
    }
    
-   /* ---------- EFEK GSAP ---------- */
    function initEfek() {
      if (!EFEK_AKTIF) return;
      try {
@@ -109,7 +102,6 @@
      } catch (e) { console.warn('Efek scroll dinonaktifkan:', e); }
    }
    
-   /* ---------- NORMALISASI ---------- */
    function normalisasi(d) {
      d = d || {};
      d.identitas = d.identitas || {}; d.identitas.sosmed = d.identitas.sosmed || {};
@@ -147,43 +139,41 @@
    
    /* ---------- MUAT DATA ---------- */
    async function muatData() {
-  // Jika mode preview, ambil dari localStorage
-  const urlParams = new URLSearchParams(window.location.search);
-  const isPreview = urlParams.get('preview') === '1';
-  
-  if (isPreview) {
-    const previewData = localStorage.getItem('rw13_preview_data');
-    if (previewData) {
-      try {
-        const parsed = JSON.parse(previewData);
-        console.log('🎯 [Preview] Data berhasil dimuat dari localStorage:', parsed);
-        return rapikan(parsed);
-      } catch (e) {
-        console.error('❌ [Preview] Data rusak, fallback ke JSON. Error:', e);
-      }
-    } else {
-      console.warn('⚠️ [Preview] Data `rw13_preview_data` tidak ditemukan di localStorage. Fallback ke data.json.');
-    }
-  }
-
-  // Mode Normal (atau fallback preview)
-  if (db) {
-    try { const snap = await _fb.get(_fb.ref(db, 'data')); if (snap.val()) return rapikan(snap.val()); }
-    catch (e) { console.warn('Baca Firebase gagal → fallback lokal.', e); }
-  }
-  const r = await fetch('data/data.json');
-  if (!r.ok) throw new Error('data.json tidak ditemukan (' + r.status + ')');
-  return rapikan(await r.json());
-}
+     const urlParams = new URLSearchParams(window.location.search);
+     const isPreview = urlParams.get('preview') === '1';
+     
+     // PREVIEW MODE: Paksa ambil dari localStorage. Jangan pernah fallback ke JSON saat debug!
+     if (isPreview) {
+       const previewData = localStorage.getItem('rw13_preview_data');
+       if (previewData) {
+         try {
+           const parsed = JSON.parse(previewData);
+           console.log('🎯 [Preview] DATA DARI LOCALSTORAGE BERHASIL DIMUAT:', parsed);
+           return rapikan(parsed);
+         } catch (e) {
+           console.error('❌ [Preview] Data di localStorage rusak format JSON-nya!', e);
+         }
+       } else {
+         console.warn('⚠️ [Preview] Tidak ada data `rw13_preview_data` di localStorage. Fallback ke data.json.');
+       }
+     }
    
-   /* ---------- PANGGILAN AMAN ---------- */
+     // Mode Normal / Fallback
+     if (db) {
+       try { const snap = await _fb.get(_fb.ref(db, 'data')); if (snap.val()) return rapikan(snap.val()); }
+       catch (e) { console.warn('Baca Firebase gagal → fallback lokal.', e); }
+     }
+     const r = await fetch('data/data.json');
+     if (!r.ok) throw new Error('data.json tidak ditemukan (' + r.status + ')');
+     return rapikan(await r.json());
+   }
+   
    function panggil(nama, DATA) {
      const fn = window[nama];
      if (typeof fn !== 'function') { console.warn('[' + nama + '] belum tersedia — dilewati.'); return; }
      try { fn(DATA); } catch (e) { console.warn('[' + nama + '] gagal:', e); }
    }
    
-   /* ---------- RENDER SEMUA ---------- */
    function renderSemua(input) {
      const DATA = normalisasi(input);
      window.DATA = DATA;
@@ -202,7 +192,6 @@
      initEfek();
    }
    
-   /* ---------- NAVIGASI ANCHOR ---------- */
    document.addEventListener('click', (e) => {
      const a = e.target.closest('a[href^="#"]');
      if (!a) return;
@@ -215,7 +204,6 @@
      else target.scrollIntoView({ behavior: 'smooth' });
    });
    
-   /* ---------- MAIN ---------- */
    (async function main() {
      try {
        addEventListener('scroll', () => {
@@ -230,8 +218,6 @@
        });
    
        const DATA = await muatData();
-       
-       // Jika mode preview, jangan pasang listener realtime Firebase
        const urlParams = new URLSearchParams(window.location.search);
        const isPreview = urlParams.get('preview') === '1';
    
