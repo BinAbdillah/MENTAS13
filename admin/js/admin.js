@@ -1,6 +1,6 @@
 /* =========================================================
-   admin.js — REFACTOR v5.1 (Perbaikan Tombol & Header)
-   Memperbaiki selektor header agar tombol Pratinjau muncul.
+   admin.js — REFACTOR v5.2 (Perbaikan ReferenceError global)
+   Mengekspos fungsi kunci ke window agar modul ES6 membacanya.
    ========================================================= */
 
 const $ = (s) => document.querySelector(s);
@@ -363,10 +363,15 @@ function pasangPanelTema() {
     } catch (e) { status('❌ ' + e.message); }
   });
 
+  // PERBAIKAN: Tambahkan pengecekan eksistensi window.toggleCursor
   const toggleCursor = host.querySelector('#toggleCursor');
   if (toggleCursor) {
     toggleCursor.addEventListener('change', () => {
-      if (window.toggleCursor) window.toggleCursor(toggleCursor.checked);
+      if (typeof window.toggleCursor === 'function') {
+        window.toggleCursor(toggleCursor.checked);
+      } else {
+        console.warn('⚠️ cursor.js belum dimuat, fitur kursor nonaktif.');
+      }
     });
   }
 
@@ -542,7 +547,6 @@ function tampilEditor() {
   $('#temaHost').classList.remove('hidden');
   $('#formRoot').classList.remove('hidden');
   
-  // Sembunyikan tombol lama, tampilkan tombol baru
   $('#btnSimpan').classList.add('hidden');
   ['btnDownload', 'btnKeluar', 'btnMigrasi'].forEach(id => $('#' + id).classList.remove('hidden'));
   $('#btnSimpanDraft').classList.remove('hidden');
@@ -559,7 +563,6 @@ function tampilLogin() {
   $('#temaHost').classList.add('hidden');
   $('#formRoot').classList.add('hidden');
   ['btnSimpanDraft', 'btnPreview', 'btnTerbitkan', 'btnDownload', 'btnKeluar', 'btnMigrasi', 'btnSync'].forEach(id => { const b = $('#' + id); if (b) b.classList.add('hidden'); });
-  // Tampilkan tombol simpan asli saat belum login
   $('#btnSimpan').classList.remove('hidden');
   const el = $('#statusAuth'); if (el) el.textContent = '';
 }
@@ -613,12 +616,21 @@ $('#btnKeluar').onclick = () => {
   else tampilLogin(); 
 };
 
+/* ---------- PERBAIKAN: Ekspor Fungsi ke Global Window ---------- */
+function rekatkanJadwal(data) {
+  data.ronda = data.ronda || {};
+  data.ronda.jadwal = JADWAL_TERSIMPAN ||
+    (DATA_DASAR && DATA_DASAR.ronda && DATA_DASAR.ronda.jadwal) || data.ronda.jadwal || [];
+  return data;
+}
+// Binding ke window untuk mencegah ReferenceError di lingkungan ES Module
+window.rekatkanJadwal = rekatkanJadwal;
+
+
 /* ---------- FITUR UTAMA: DRAFT & PUBLISH + PREVIEW ---------- */
-// REFACTOR: Menggunakan selektor 'header' (bukan '#header') agar sesuai dengan HTML Admin
 const headerActions = document.querySelector('header .ml-auto');
 
 if (headerActions) {
-  // 1. Tambahkan tombol Pratinjau
   if (!$('#btnPreview')) {
     const previewBtn = document.createElement('button');
     previewBtn.id = 'btnPreview';
@@ -627,7 +639,6 @@ if (headerActions) {
     headerActions.prepend(previewBtn);
   }
   
-  // 2. Tambahkan tombol Simpan Draft (sebelum tombol Simpan asli)
   if (!$('#btnSimpanDraft')) {
     const draftBtn = document.createElement('button');
     draftBtn.id = 'btnSimpanDraft';
@@ -639,7 +650,6 @@ if (headerActions) {
     }
   }
   
-  // 3. Tambahkan tombol Terbitkan (menggantikan tombol Simpan asli secara visual/posisi)
   if (!$('#btnTerbitkan')) {
     const publishBtn = document.createElement('button');
     publishBtn.id = 'btnTerbitkan';
@@ -652,9 +662,8 @@ if (headerActions) {
   }
 }
 
-// Simpan Draft
 $('#btnSimpanDraft').onclick = async () => {
-  const data = rapikan(rekatkanJadwal(collect($('#formRoot'))));
+  const data = rapikan(window.rekatkanJadwal(collect($('#formRoot')))); // Gunakan window.rekatkanJadwal
   
   const draftData = Object.assign({}, DATA_DASAR || {}, data, { tema: temaAktif, _lastSaved: new Date().toISOString() });
   localStorage.setItem(K_DRAFT, JSON.stringify(draftData));
@@ -671,7 +680,6 @@ $('#btnSimpanDraft').onclick = async () => {
   perbaruiBadge();
 };
 
-// Terbitkan
 $('#btnTerbitkan').onclick = async () => {
   if (MODE === 'offline' || !navigator.onLine || !(auth && auth.currentUser)) {
     status('❌ Untuk menerbitkan, Anda harus online dan login.');
@@ -680,7 +688,7 @@ $('#btnTerbitkan').onclick = async () => {
   
   if (!confirm('⚠️ Yakin ingin menerbitkan perubahan ini ke website publik?')) return;
   
-  const data = rapikan(rekatkanJadwal(collect($('#formRoot'))));
+  const data = rapikan(window.rekatkanJadwal(collect($('#formRoot')))); // Gunakan window.rekatkanJadwal
   try {
     await _fb.set(_fb.ref(db, 'data'), data);
     await _fb.set(_fb.ref(db, 'drafts/' + auth.currentUser.uid), null);
@@ -693,7 +701,6 @@ $('#btnTerbitkan').onclick = async () => {
   }
 };
 
-// Preview
 $('#btnPreview').onclick = () => {
   const data = collect($('#formRoot'));
   const fullData = Object.assign({}, DATA_DASAR || {}, data, { tema: temaAktif });
