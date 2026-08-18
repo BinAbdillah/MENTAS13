@@ -1,6 +1,5 @@
 /* =========================================================
-   admin.js — REFACTOR v5.4 (Path Relatif Final)
-   Mengamankan path Pratinjau dan data.json menggunakan relatif folder.
+   admin.js — REFACTOR v5.5 (Preview Atomic & Fix LocalStorage)
    ========================================================= */
 
    const $ = (s) => document.querySelector(s);
@@ -34,7 +33,6 @@
    let DATA_DASAR = null;
    let JADWAL_TERSIMPAN = null;
    let DATA_PUBLIK = null; 
-   let DRAFT_TERSIMPAN = null;
    const K_CACHE = 'rw13_admin_cache';
    const K_DRAFT = 'rw13_draft';
    
@@ -368,8 +366,6 @@
        toggleCursor.addEventListener('change', () => {
          if (typeof window.toggleCursor === 'function') {
            window.toggleCursor(toggleCursor.checked);
-         } else {
-           console.warn('⚠️ cursor.js belum dimuat, fitur kursor nonaktif.');
          }
        });
      }
@@ -615,7 +611,6 @@
      else tampilLogin(); 
    };
    
-   // Binding ke window untuk mencegah ReferenceError di lingkungan ES Module
    function rekatkanJadwal(data) {
      data.ronda = data.ronda || {};
      data.ronda.jadwal = JADWAL_TERSIMPAN ||
@@ -636,7 +631,6 @@
        previewBtn.textContent = '👁️ Pratinjau';
        headerActions.prepend(previewBtn);
      }
-     
      if (!$('#btnSimpanDraft')) {
        const draftBtn = document.createElement('button');
        draftBtn.id = 'btnSimpanDraft';
@@ -647,7 +641,6 @@
          simpanBtn.parentElement.insertBefore(draftBtn, simpanBtn);
        }
      }
-     
      if (!$('#btnTerbitkan')) {
        const publishBtn = document.createElement('button');
        publishBtn.id = 'btnTerbitkan';
@@ -667,6 +660,7 @@
      localStorage.setItem(K_DRAFT, JSON.stringify(draftData));
      status('💾 Draft tersimpan di perangkat.');
    
+     // Jika online, coba simpan ke server. Jika gagal, tidak masalah, data lokal sudah aman.
      if (MODE === 'online' && auth && auth.currentUser && navigator.onLine) {
        try {
          await _fb.set(_fb.ref(db, 'drafts/' + auth.currentUser.uid), rapikan(draftData));
@@ -699,14 +693,20 @@
      }
    };
    
-   /* --- PERBAIKAN: Tambahkan console.log untuk debug --- */
-$('#btnPreview').onclick = () => {
-  const data = collect($('#formRoot'));
-  const fullData = Object.assign({}, DATA_DASAR || {}, data, { tema: temaAktif });
-  
-  console.log('📦 [Admin] Data yang akan disimpan ke localStorage:', fullData);
-  
-  localStorage.setItem(K_PREVIEW, JSON.stringify(fullData));
-  window.open('../index.html?preview=1', 'Preview RW 013', 'width=1200,height=800,scrollbars=yes');
-  status('✅ Jendela pratinjau dibuka.');
-};
+   /* --- PERBAIKAN ATOMIC DI SINI --- */
+   $('#btnPreview').onclick = () => {
+     // 1. Ambil data mentah dari form editor saat ini
+     const dataFromForm = collect($('#formRoot'));
+     
+     // 2. Gabungkan dengan tema yang aktif
+     const fullData = Object.assign({}, dataFromForm, { tema: temaAktif });
+     
+     // 3. Simpan ke localStorage dengan key K_PREVIEW
+     localStorage.setItem(K_PREVIEW, JSON.stringify(fullData));
+     
+     console.log('📦 [Admin] Data dikunci ke localStorage untuk preview:', fullData);
+     
+     // 4. Buka jendela preview
+     window.open('../index.html?preview=1', 'Preview RW 013', 'width=1200,height=800,scrollbars=yes');
+     status('✅ Jendela pratinjau dibuka.');
+   };
