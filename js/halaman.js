@@ -26,21 +26,18 @@
     const k = KARAKTER[key];
     if (!k) return;
     (k.cls || '').split(' ').filter(Boolean).forEach((c) => document.body.classList.add(c));
-    
     const r = document.documentElement;
     if (k.mode) r.dataset.mode = k.mode;
-    
-    // REFACTOR: HANYA mengubah suasana (bg, surface, fill, line, teks)
-    // TIDAK mengubah --accent, --accent-text, --heading (agar tetap konsisten dengan tema user)
+  
+    const gelap = k.mode === 'dark';
     const map = {
-      '--bg': k.bg,
-      '--surface': k.surface,
-      '--fill': k.fill,
-      '--line': k.line,
-      '--line-soft': k.lineSoft || k.line,
-      '--teks': k.teks
+      '--bg': k.bg, '--surface': k.surface, '--fill': k.fill,
+      '--line': k.line, '--line-soft': k.lineSoft || k.line, '--teks': k.teks,
+      /* KONTRAS TEKS mengikuti mode karakter (bukan tema gelap) */
+      '--heading':   k.heading   || (gelap ? '#F4F4F5' : '#111827'),
+      '--nav':       k.nav       || (gelap ? '#CFD4DA' : '#374151'),
+      '--nav-hover': k.navHover  || (gelap ? 'var(--accent-text)' : '#111827')
     };
-    
     Object.entries(map).forEach(([kk, v]) => { if (v) r.style.setProperty(kk, v); });
   }
   

@@ -1,92 +1,65 @@
 /* =========================================================
-   sw.js — Service Worker v1 (PWA untuk RW 013)
-   Meng-cache semua aset statis agar website dapat diakses
-   secara offline total setelah kunjungan pertama.
+   sw.js — REFACTOR v2
+   • path RELATIF (aman subpath GitHub Pages)
+   • install per-item (satu 404 tidak menggagalkan semua)
+   • hanya cache same-origin; query-string (?…) TIDAK di-cache
+   • fallback offline untuk navigasi → index.html
    ========================================================= */
-
-   const CACHE_NAME = 'rw13-mentas-v1';
-   const ASSETS_TO_CACHE = [
-     '/', // Root index.html
-     '/index.html',
-     '/struktur.html',
-     '/rt.html',
-     '/mitra.html',
-     '/fasilitas.html',
-     '/galeri.html',
-     '/pkk.html',
-     '/karangtaruna.html',
-     '/lmk.html',
-     '/js/app.js',
-     '/js/admin.js',
-     '/js/cuaca-widget.js',
-     '/js/cursor.js',
-     '/js/fasilitas.js',
-     '/js/galeri.js',
-     '/js/grup.js',
-     '/js/halaman.js',
-     '/js/menu-kanan.js',
-     '/js/mitra.js',
-     '/js/render.js',
-     '/js/rt.js',
-     '/js/struktur.js',
-     '/js/utils.js',
-     '/js/tailwind-config.js',
-     '/js/firebase-config.js',
-     '/css/style.css',
-     '/css/cursor.css',
-     '/data/data.json'
+   const CACHE_NAME = 'rw13-mentas-v2';   /* naikkan v3, v4, … tiap rilis besar */
+   const ASSETS = [
+     './', './index.html',
+     './struktur.html', './rt.html', './mitra.html', './fasilitas.html',
+     './galeri.html', './pkk.html', './karangtaruna.html', './lmk.html',
+     './admin/index.html',
+     './js/app.js', './admin/js/admin.js', './js/cuaca-widget.js', './js/cursor.js',
+     './js/fasilitas.js', './js/galeri.js', './js/grup.js', './js/halaman.js',
+     './js/menu-kanan.js', './js/mitra.js', './js/render.js', './js/rt.js', './js/struktur.js',
+     './js/utils.js', './js/tailwind-config.js', './js/firebase-config.js', './js/peta-cuaca.js',
+     './css/style.css', './css/cursor.css',
+     './data/data.json',
+     './assets/logo-rw.png', './assets/logo-HUT-RI-81.png', './assets/logo-posyandu.png'
    ];
    
-   // Install: Membuka cache dan menyimpan semua aset
    self.addEventListener('install', (event) => {
      event.waitUntil(
-       caches.open(CACHE_NAME).then((cache) => {
-         console.log('[Service Worker] Meng-cache aset...');
-         return cache.addAll(ASSETS_TO_CACHE);
+       caches.open(CACHE_NAME).then(async (cache) => {
+         for (const a of ASSETS) {
+           try { await cache.add(a); } catch (e) { console.warn('[SW] lewati:', a); }
+         }
        })
      );
      self.skipWaiting();
    });
    
-   // Aktifkan: Membersihkan cache lama
    self.addEventListener('activate', (event) => {
      event.waitUntil(
-       caches.keys().then((cacheNames) => {
-         return Promise.all(
-           cacheNames.map((cache) => {
-             if (cache !== CACHE_NAME) {
-               console.log('[Service Worker] Menghapus cache lama:', cache);
-               return caches.delete(cache);
-             }
-           })
-         );
-       })
+       caches.keys().then((names) =>
+         Promise.all(names.map((c) => { if (c !== CACHE_NAME) return caches.delete(c); }))
+       )
      );
-     return self.clients.claim();
+     self.clients.claim();
    });
    
-   // Fetch: Strategi Stale-While-Revalidate (Cepat dari cache, update di background)
    self.addEventListener('fetch', (event) => {
-     event.respondWith(
-       caches.match(event.request).then((cachedResponse) => {
-         const fetchPromise = fetch(event.request).then((networkResponse) => {
-           // Update cache dengan respons baru
-           if (networkResponse && networkResponse.status === 200) {
-             caches.open(CACHE_NAME).then((cache) => {
-               cache.put(event.request, networkResponse.clone());
-             });
-           }
-           return networkResponse;
-         }).catch(() => {
-           // Jika gagal fetch dan tidak ada cache, berikan halaman offline minimalis
-           if (event.request.mode === 'navigate') {
-             return caches.match('/index.html');
-           }
-           return new Response('Offline', { status: 503 });
-         });
+     const req = event.request;
+     if (req.method !== 'GET') return;                       /* POST/PUT dll dibiarkan */
+     const url = new URL(req.url);
+     if (url.search) return;                                 /* ?preview=1 dll → selalu jaringan */
    
-         // Kembalikan cache jika ada, jika tidak, tunggu fetch
-         return cachedResponse || fetchPromise;
+     event.respondWith(
+       caches.match(req).then((cached) => {
+         const fetched = fetch(req).then((res) => {
+           /* hanya cache respons same-origin yang sukses */
+           if (res && res.ok && url.origin === self.location.origin) {
+             const cl = res.clone();
+             caches.open(CACHE_NAME).then((c) => c.put(req, cl));
+           }
+           return res;
+         }).catch(() => {
+           if (req.mode === 'navigate') return caches.match('./index.html');
+           return Response.error();
+         });
+         return cached || fetched;   /* stale-while-revalidate */
        })
      );
    });

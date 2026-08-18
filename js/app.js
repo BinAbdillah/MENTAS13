@@ -1,5 +1,5 @@
 /* =========================================================
-   app.js — REFACTOR v4.0 (Force LocalStorage for Preview)
+   app.js — REFACTOR v4.1 (Debug Log Preview)
    ========================================================= */
 
    const FB = window.FIREBASE_CONFIG || null;
@@ -142,7 +142,7 @@
      const urlParams = new URLSearchParams(window.location.search);
      const isPreview = urlParams.get('preview') === '1';
      
-     // PREVIEW MODE: Paksa ambil dari localStorage. Jangan pernah fallback ke JSON saat debug!
+     // PREVIEW MODE: Paksa ambil dari localStorage.
      if (isPreview) {
        const previewData = localStorage.getItem('rw13_preview_data');
        if (previewData) {
@@ -236,13 +236,29 @@
        }
    
        if ('serviceWorker' in navigator && !isPreview) {
-         try {
-           const reg = await navigator.serviceWorker.register('/sw.js');
-           console.log('[SW] Registered at scope:', reg.scope);
-         } catch (e) {
-           console.warn('[SW] Registration failed:', e);
-         }
-       }
+        try {
+          /* RELATIF + scope './' → aman di subpath GitHub Pages (/MENTAS13/) */
+          const reg = await navigator.serviceWorker.register('sw.js', { scope: './' });
+          console.log('[SW] Terdaftar, scope:', reg.scope);
+      
+          /* Beri tahu warga bila ada versi situs baru (karena cache bisa menyajikan versi lama) */
+          reg.addEventListener('updatefound', () => {
+            const baru = reg.installing;
+            if (!baru) return;
+            baru.addEventListener('statechange', () => {
+              if (baru.state === 'installed' && navigator.serviceWorker.controller) {
+                const s = document.createElement('button');
+                s.textContent = '🔄 Versi baru tersedia — ketuk untuk muat ulang';
+                s.style.cssText = 'position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:95;' +
+                  'background:var(--accent);color:var(--on-accent);padding:.6rem 1.1rem;border-radius:999px;' +
+                  'font-size:.85rem;font-weight:800;border:none;cursor:pointer;box-shadow:0 8px 20px rgb(0 0 0/.35)';
+                s.onclick = () => location.reload();
+                document.body.appendChild(s);
+              }
+            });
+          });
+        } catch (e) { console.warn('[SW] Registrasi gagal:', e); }
+      }
    
      } catch (err) {
        console.error(err);
