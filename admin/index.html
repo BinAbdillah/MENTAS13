@@ -7,9 +7,6 @@
   <meta name="theme-color" content="#0C0D0F">
   <title>Admin — RW 013 Menteng Atas</title>
   
-  <!-- PERBAIKAN: Menambahkan base path agar gambar aset di folder root bisa terbaca dengan benar dari folder admin -->
-  <base href="/MENTAS13/">
-  
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛠️%3C/text%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,8 +14,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400..800&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="../js/tailwind-config.js"></script>
-  <link rel="stylesheet" href="../css/style.css">
+  
+  <!-- PERBAIKAN: Menggunakan Path Absolut (URL dimulai dengan /MENTAS13/) agar file terbaca dari mana saja -->
+  <script src="/MENTAS13/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/MENTAS13/css/style.css">
 </head>
 
 <body class="bg-slate-50 font-sans text-slate-800">
@@ -59,10 +58,11 @@
     <p id="statusLine" class="mt-6 text-center text-sm" style="opacity:.7"></p>
   </main>
 
-  <!-- PERBAIKAN: Urutan JS. Tambahkan cursor.js agar window.toggleCursor tersedia -->
-  <script src="../js/firebase-config.js"></script>
-  <script src="../js/utils.js"></script>
-  <script src="../js/cursor.js"></script>
-  <script type="module" src="js/admin.js"></script>
+  <!-- PERBAIKAN: Menggunakan Path Absolut (/MENTAS13/...) agar konsisten -->
+  <script src="/MENTAS13/js/firebase-config.js"></script>
+  <script src="/MENTAS13/js/utils.js"></script>
+  <script src="/MENTAS13/js/cursor.js"></script>
+  <!-- Pastikan memuat file admin.js yang berada di subfolder js/ yang sama -->
+  <script type="module" src="/MENTAS13/admin/js/admin.js"></script>
 </body>
 </html>
