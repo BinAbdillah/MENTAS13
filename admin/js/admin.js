@@ -699,14 +699,14 @@
      }
    };
    
-   /* ---------- PERBAIKAN FINAL DI SINI ---------- */
-   $('#btnPreview').onclick = () => {
-     const data = collect($('#formRoot'));
-     const fullData = Object.assign({}, DATA_DASAR || {}, data, { tema: temaAktif });
-     localStorage.setItem(K_PREVIEW, JSON.stringify(fullData));
-     
-     // Sekarang gunakan Path Relatif ke parent folder (`../`)
-     window.open('../index.html?preview=1', 'Preview RW 013', 'width=1200,height=800,scrollbars=yes');
-     
-     status('✅ Jendela pratinjau dibuka.');
-   };
+   /* --- PERBAIKAN: Tambahkan console.log untuk debug --- */
+$('#btnPreview').onclick = () => {
+  const data = collect($('#formRoot'));
+  const fullData = Object.assign({}, DATA_DASAR || {}, data, { tema: temaAktif });
+  
+  console.log('📦 [Admin] Data yang akan disimpan ke localStorage:', fullData);
+  
+  localStorage.setItem(K_PREVIEW, JSON.stringify(fullData));
+  window.open('../index.html?preview=1', 'Preview RW 013', 'width=1200,height=800,scrollbars=yes');
+  status('✅ Jendela pratinjau dibuka.');
+};
