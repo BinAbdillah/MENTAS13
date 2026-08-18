@@ -1,7 +1,7 @@
 /* =========================================================
-   admin.js — REFACTOR v1 (penutup urutan refactoring)
-   form otomatis • tema • ronda • upload foto GitHub • offline
-   rapikan() di gerbang muat/simpan/migrasi
+   admin.js — REFACTOR v4 (Live Preview & Login Offline)
+   Menambahkan fitur Pratinjau Popup untuk melihat perubahan 
+   secara real-time tanpa meninggalkan dashboard.
    ========================================================= */
 
    const $ = (s) => document.querySelector(s);
@@ -11,9 +11,12 @@
    const GH_REPO = 'BinAbdillah/MENTAS13';
    const GH_PAGES = 'https://binabdillah.github.io/MENTAS13/';
    const K_TOKEN = 'rw13_gh_token';
+   const K_PREVIEW = 'rw13_preview_data';
    
    let db = null, auth = null, _fb = null, _au = null, fapp = null;
-   if (firebaseSiap) {
+   let firebaseInitialized = false;
+   
+   if (firebaseSiap && navigator.onLine) {
      try {
        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
        _fb = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js');
@@ -21,7 +24,11 @@
        fapp = initializeApp(FB);
        db = _fb.getDatabase(fapp);
        auth = _au.getAuth(fapp);
-     } catch (e) { console.error('Firebase gagal dimuat:', e); }
+       firebaseInitialized = true;
+     } catch (e) { 
+       console.warn('Firebase gagal dimuat (mungkin offline):', e); 
+       firebaseInitialized = false;
+     }
    }
    
    let MODE = 'online';
@@ -48,7 +55,7 @@
    const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
    const escAttr = (s) => esc(s).replace(/"/g, '&quot;');
    const pretty = (k) => String(k).replace(/[_-]/g, ' ');
-   const status = (t) => { const el = $('#statusLine'); if (el) el.textContent = t; };
+   const status = (t) => { const el = $('#statusLine'); if (el) { if (t && t.includes('<')) el.innerHTML = t; else el.textContent = t; } };
    
    function mergeDeep(base, extra) {
      if (Array.isArray(extra)) return extra;
@@ -62,7 +69,6 @@
      return (typeof extra === 'undefined') ? base : extra;
    }
    
-   /* Rekatkan kembali jadwal ronda agar tidak hilang saat Simpan */
    function rekatkanJadwal(data) {
      data.ronda = data.ronda || {};
      data.ronda.jadwal = JADWAL_TERSIMPAN ||
@@ -70,7 +76,7 @@
      return data;
    }
    
-   /* ---------- UPLOAD FOTO (GitHub, kompresi otomatis) ---------- */
+   /* ---------- UPLOAD FOTO ---------- */
    function kompresGambar(file, maxSisi = 1600, kualitas = 0.82) {
      return new Promise((resolve, reject) => {
        const img = new Image();
@@ -94,7 +100,27 @@
    async function uploadFoto(file) {
      const token = (localStorage.getItem(K_TOKEN) || '').trim();
      if (!token) throw new Error('isi dulu 🔑 Token GitHub di panel Upload.');
+     
+     status(`
+       <div class="mx-auto max-w-md text-left">
+         <span>📤 Mengompres gambar...</span>
+         <div class="mt-1 h-1.5 w-full rounded-full bg-slate-700">
+           <div class="h-full w-1/3 rounded-full bg-emerald-500 transition-all"></div>
+         </div>
+       </div>
+     `);
+   
      const blob = await kompresGambar(file);
+     
+     status(`
+       <div class="mx-auto max-w-md text-left">
+         <span>📤 Mengunggah ke GitHub (memakan waktu ±1 menit)...</span>
+         <div class="mt-1 h-1.5 w-full rounded-full bg-slate-700">
+           <div class="h-full w-2/3 rounded-full bg-amber-500 transition-all"></div>
+         </div>
+       </div>
+     `);
+   
      const buf = await blob.arrayBuffer();
      const bytes = new Uint8Array(buf);
      let bin = '';
@@ -107,10 +133,12 @@
        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github+json' },
        body: JSON.stringify({ message: `📷 foto admin: ${nama}`, content: b64 })
      });
+     
      if (!r.ok) {
        const j = await r.json().catch(() => ({}));
        throw new Error('GitHub ' + r.status + (j.message ? ': ' + j.message : ''));
      }
+     status('✅ Foto ter-commit! Tekan Simpan untuk menyimpan data.');
      return GH_PAGES + nama;
    }
    
@@ -232,12 +260,10 @@
      const wrap = f.closest('[data-tipe="str"]');
      const inp = wrap.querySelector('input[type="text"]');
      const prev = wrap.querySelector('.foto-prev');
-     status('📤 Mengompres & mengunggah foto ke GitHub…');
      try {
        const url = await uploadFoto(f.files[0]);
        inp.value = url;
        if (prev) { prev.src = url; prev.style.visibility = 'visible'; }
-       status('✅ Foto ter-commit (±1 menit tayang) — tekan Simpan untuk menyimpan data.');
      } catch (err) {
        status('❌ Upload gagal: ' + err.message);
      }
@@ -252,6 +278,9 @@
      const sumber = (temaAktif.preset === 'custom')
        ? Object.assign({}, PRESET_TEMA.garuda, temaAktif.custom)
        : (PRESET_TEMA[temaAktif.preset] || PRESET_TEMA.garuda);
+       
+     const cursorStatus = localStorage.getItem('rw13_cursor_active') === 'true';
+   
      return `
        <div class="kartu mb-6 p-5">
          <b class="block text-lg" style="color:var(--heading)">🎨 Manajer Tema</b>
@@ -270,34 +299,30 @@
              </label>`).join('')}
            <button id="btnSimpanTema" class="btnx bg-emerald-600 text-white">🎨 Simpan Tema</button>
          </div>
-       </div>`;
-   }
-   
-   function panelRondaHTML() {
-     const r = (DATA_DASAR && DATA_DASAR.ronda) || {};
-     return `
+         <div class="mt-4 flex items-center gap-3 border-t pt-4" style="border-color:var(--line)">
+           <label class="flex items-center gap-2 text-sm font-bold cursor-pointer">
+             <input type="checkbox" id="toggleCursor" ${cursorStatus ? 'checked' : ''}>
+             🖱️ Aktifkan Kursor Halus (Custom Cursor)
+           </label>
+         </div>
+       </div>
        <div class="kartu mb-6 p-5">
          <b class="block text-lg" style="color:var(--heading)">🌙 Jadwal Ronda</b>
          <p class="mb-3 text-sm" style="color:var(--teks); opacity:.7">
-           Pola <b>${r.polahari || 3} hari</b> berselang mulai <b>${r.mulai || '2026-07-30'}</b> (TEBO ↔ MONCOS).
+           Pola <b>${sumber.polahari || 3} hari</b> berselang mulai <b>${sumber.mulai || '2026-07-30'}</b> (TEBO ↔ MONCOS).
            Jadwal 1 tahun disimpan di data — hanya pin kanan-bawah yang tampil.
          </p>
          <div class="flex flex-wrap items-center gap-3">
            <button id="btnGenRonda" class="btnx bg-emerald-600 text-white">⚙️ Generate 1 Tahun</button>
            <span id="roInfo" class="text-sm" style="opacity:.7"></span>
          </div>
-       </div>`;
-   }
-   
-   function panelUploadHTML() {
-     const adaToken = !!localStorage.getItem(K_TOKEN);
-     return `
+       </div>
        <div class="kartu mb-6 p-5">
          <b class="block text-lg" style="color:var(--heading)">📷 Upload Foto (via GitHub — gratis)</b>
          <p class="mb-3 text-sm" style="color:var(--teks); opacity:.7">
            Foto dikompresi otomatis lalu di-commit ke <code>assets/uploads/</code> dan tayang via GitHub Pages.
            Butuh <b>fine-grained token</b> (repo MENTAS13 saja, izin <i>Contents: read & write</i>), tersimpan hanya di browser ini.
-           Status: ${adaToken ? '🟢 token tersimpan' : '🔴 belum ada token'}.
+           Status: ${localStorage.getItem(K_TOKEN) ? '🟢 token tersimpan' : '🔴 belum ada token'}.
          </p>
          <div class="flex flex-wrap items-center gap-3">
            <input id="inToken" type="password" class="inp" style="flex:1; min-width:220px"
@@ -310,12 +335,12 @@
    function pasangPanelTema() {
      const host = $('#temaHost');
      if (!host) return;
-     host.innerHTML = panelTemaHTML() + panelRondaHTML() + panelUploadHTML();
+     host.innerHTML = panelTemaHTML();
    
      host.querySelector('#temaPreset').addEventListener('change', (e) => {
        temaAktif = { preset: e.target.value, custom: {} };
        terapkanTema(temaAktif);
-       host.innerHTML = panelTemaHTML() + panelRondaHTML() + panelUploadHTML();
+       host.innerHTML = panelTemaHTML();
        pasangPanelTema();
      });
    
@@ -343,6 +368,13 @@
          status('✅ Tema tersimpan & diterapkan real-time ke beranda.');
        } catch (e) { status('❌ ' + e.message); }
      });
+   
+     const toggleCursor = host.querySelector('#toggleCursor');
+     if (toggleCursor) {
+       toggleCursor.addEventListener('change', () => {
+         if (window.toggleCursor) window.toggleCursor(toggleCursor.checked);
+       });
+     }
    
      const info = host.querySelector('#roInfo');
      info.textContent = JADWAL_TERSIMPAN && JADWAL_TERSIMPAN.length
@@ -373,7 +405,7 @@
        const t = host.querySelector('#inToken').value.trim();
        if (t) localStorage.setItem(K_TOKEN, t); else localStorage.removeItem(K_TOKEN);
        status(t ? '🔑 Token tersimpan di browser ini.' : '🔑 Token dihapus.');
-       host.innerHTML = panelTemaHTML() + panelRondaHTML() + panelUploadHTML();
+       host.innerHTML = panelTemaHTML();
        pasangPanelTema();
      });
    }
@@ -418,7 +450,7 @@
      } catch (e) { status('❌ Gagal sinkron: ' + e.message); }
    }
    
-   /* ---------- MUAT DATA (rapikan saat masuk) ---------- */
+   /* ---------- MUAT DATA ---------- */
    async function muatKeForm() {
      let lokal = null;
      try { const r = await fetch('../data/data.json'); lokal = await r.json(); } catch (e) {}
@@ -447,10 +479,49 @@
      const vForm = JSON.parse(JSON.stringify(v));
      if (vForm.ronda) delete vForm.ronda.jadwal;
    
-     $('#formRoot').innerHTML = Object.entries(vForm)
-       .filter(([k]) => k !== 'tema')
-       .map(([k, val]) => buildUI(k, val)).join('');
-     status('📂 Dimuat dari ' + sumber + '.');
+     $('#formRoot').innerHTML = `
+       <div class="mb-6 flex flex-wrap gap-2 border-b pb-4" style="border-color:var(--line)" id="adminTabs">
+         <button class="btnx tab-btn bg-emerald-600 text-white" data-tab="umum">🏛️ Umum</button>
+         <button class="btnx tab-btn bg-slate-600 text-white" data-tab="struktur">👥 Struktur & RT</button>
+         <button class="btnx tab-btn bg-slate-600 text-white" data-tab="konten">📅 Konten & Galeri</button>
+         <button class="btnx tab-btn bg-slate-600 text-white" data-tab="layanan">📞 Layanan & Mitra</button>
+       </div>
+       <div id="adminContent"></div>
+     `;
+   
+     const grupTab = {
+       umum: ['identitas', 'hero', 'banner', 'peta', 'wilayah'],
+       struktur: ['penasehat', 'strukturRW', 'rt', 'ronda'],
+       konten: ['agenda', 'pengumuman', 'galeri'],
+       layanan: ['layanan', 'kontakDarurat', 'umkm', 'mitra', 'fasilitas']
+     };
+   
+     const contentEl = $('#adminContent');
+     for (const [tab, keys] of Object.entries(grupTab)) {
+       const el = document.createElement('div');
+       el.id = `tab-${tab}`;
+       el.className = tab === 'umum' ? 'block' : 'hidden';
+       el.innerHTML = Object.entries(vForm)
+         .filter(([k]) => keys.includes(k))
+         .map(([k, val]) => buildUI(k, val)).join('');
+       contentEl.appendChild(el);
+     }
+   
+     $('#adminTabs').addEventListener('click', (e) => {
+       const btn = e.target.closest('.tab-btn');
+       if (!btn) return;
+       $('#adminTabs').querySelectorAll('.tab-btn').forEach(b => {
+         b.classList.remove('bg-emerald-600', 'text-white');
+         b.classList.add('bg-slate-600', 'text-white');
+       });
+       btn.classList.remove('bg-slate-600');
+       btn.classList.add('bg-emerald-600');
+       
+       $('#adminContent').querySelectorAll('div[id^="tab-"]').forEach(d => d.classList.add('hidden'));
+       document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
+     });
+   
+     status('📂 Dimuat dari ' + sumber + ' (gunakan tab untuk navigasi).');
    }
    
    /* ---------- TAMPIL LOGIN / EDITOR ---------- */
@@ -475,37 +546,52 @@
      if (bacaCache()) { /* login offline tersedia */ }
      else { $('#cfgWarn').classList.remove('hidden'); $('#loginCard').classList.add('hidden'); }
    } else {
-     _au.onAuthStateChanged(auth, (u) => {
-       if (u) { MODE = 'online'; tampilEditor(); } else if (MODE === 'online') tampilLogin();
-     });
+     if (firebaseInitialized && auth) {
+       _au.onAuthStateChanged(auth, (u) => {
+         if (u && MODE !== 'offline') { 
+           MODE = 'online'; 
+           tampilEditor(); 
+         } else if (!u && MODE === 'online') {
+           tampilLogin();
+         }
+       });
+     }
    }
    
    $('#btnMasuk').onclick = async () => {
      $('#loginErr').textContent = '';
      const email = $('#inEmail').value.trim(), pass = $('#inPass').value;
-   
-     if (firebaseSiap && navigator.onLine) {
-       try {
-         await _au.signInWithEmailAndPassword(auth, email, pass);
-         localStorage.setItem(K_CACHE, JSON.stringify({ email, hash: await hashTeks(pass) }));
-         MODE = 'online';
-         return;
-       } catch (e) {}
-     }
+     if (!email || !pass) { $('#loginErr').textContent = '❌ Email dan password wajib diisi.'; return; }
    
      const cache = bacaCache();
      const h = await hashTeks(pass);
+   
      if (cache && cache.email === email && cache.hash === h) {
        MODE = 'offline';
        tampilEditor();
+       return;
+     }
+   
+     if (firebaseInitialized && navigator.onLine) {
+       try {
+         await _au.signInWithEmailAndPassword(auth, email, pass);
+         localStorage.setItem(K_CACHE, JSON.stringify({ email, hash: h }));
+         MODE = 'online';
+       } catch (e) {
+         $('#loginErr').textContent = '❌ Login Firebase gagal. Periksa email/password atau koneksi internet.';
+       }
      } else {
-       $('#loginErr').textContent = '❌ Gagal masuk. Bila offline, gunakan akun yang pernah login di perangkat ini.';
+       $('#loginErr').textContent = '❌ Tidak ada koneksi & tidak ada data login tersimpan di browser ini. Harap login online terlebih dahulu.';
      }
    };
    
-   $('#btnKeluar').onclick = () => { MODE = 'online'; if (_au) _au.signOut(auth); else tampilLogin(); };
+   $('#btnKeluar').onclick = () => { 
+     MODE = 'online'; 
+     if (firebaseInitialized && _au) _au.signOut(auth); 
+     else tampilLogin(); 
+   };
    
-   /* ---------- SIMPAN (rapikan sebelum ditulis) ---------- */
+   /* ---------- SIMPAN ---------- */
    $('#btnSimpan').onclick = async () => {
      const data = rapikan(rekatkanJadwal(collect($('#formRoot'))));
      if (MODE === 'offline' || !navigator.onLine || !(auth && auth.currentUser)) {
@@ -515,17 +601,16 @@
        perbaruiBadge();
        return;
      }
-     if (!confirm('Simpan perubahan ke Firebase? Website warga akan langsung berubah.')) return;
+     if (!confirm('Simpan perubahan ke Firebase?')) return;
      try {
-       await _fb.set(_fb.ref(db, 'data'), data);
-       status('✅ Tersimpan ke Firebase.');
+       await _fb.update(_fb.ref(db, 'data'), data);
+       status('✅ Tersimpan ke Firebase (Update parsial).');
      } catch (e) { status('❌ ' + e.message); }
    };
    
-   /* ---------- MIGRASI (rapikan sebelum kirim) ---------- */
    $('#btnMigrasi').onclick = async () => {
      if (MODE === 'offline' || !navigator.onLine) { status('❌ Migrasi butuh koneksi internet.'); return; }
-     if (!confirm('Kirim ISI data.json lokal ke Firebase (menimpa)?')) return;
+     if (!confirm('Kirim ISI data.json lokal ke Firebase (menimpa total)?')) return;
      try {
        const r = await fetch('../data/data.json');
        await _fb.set(_fb.ref(db, 'data'), rapikan(await r.json()));
@@ -541,4 +626,34 @@
      a.download = 'data.json';
      a.click();
      status('💾 data.json diunduh.');
+   };
+   
+   /* ---------- FITUR BARU: LIVE PREVIEW ---------- */
+   // Tambahkan tombol pratinjau ke header secara dinamis
+   const headerActions = document.querySelector('#header .ml-auto');
+   if (headerActions) {
+     // Cegah duplikasi jika tombol sudah ada
+     if (!$('#btnPreview')) {
+       const previewBtn = document.createElement('button');
+       previewBtn.id = 'btnPreview';
+       previewBtn.className = 'btnx bg-indigo-600 text-white hidden';
+       previewBtn.textContent = '👁️ Pratinjau';
+       headerActions.prepend(previewBtn); // Masukkan di posisi paling depan
+     }
+   }
+   
+   $('#btnPreview').onclick = () => {
+     const data = collect($('#formRoot'));
+     const fullData = Object.assign({}, DATA_DASAR || {}, data, { tema: temaAktif });
+     localStorage.setItem(K_PREVIEW, JSON.stringify(fullData));
+     window.open('index.html?preview=1', 'Preview RW 013', 'width=1200,height=800,scrollbars=yes');
+     status('✅ Jendela pratinjau dibuka.');
+   };
+   
+   // Pastikan tombol muncul saat editor tampil
+   const originalTampilEditor = tampilEditor;
+   tampilEditor = function() {
+     originalTampilEditor();
+     const pBtn = $('#btnPreview');
+     if (pBtn) pBtn.classList.remove('hidden');
    };

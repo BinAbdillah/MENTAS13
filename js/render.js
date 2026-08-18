@@ -118,7 +118,7 @@ function donatRT(d) {
     <div class="donat-leg mt-6">
       ${list.map((r, i) => `<span class="chip"><i style="background:${WARNA_DONAT[i % 9]}"></i>RT ${r.no} • ${r.statistik.jiwa}</span>`).join('')}
     </div>
-    <p class="mt-4 text-xs" style="opacity:.6">Arahkan kursor ke potongan donat untuk detail • gerakkan kursor di atas donat untuk memutar.</p>`;
+    <p class="mt-4 text-xs" style="opacity:.6"></p>`;
 }
 
 function pasangDonat3D(d) {
@@ -218,7 +218,7 @@ function renderAgenda(d) {
         ${kosong ? `
           <div class="kartu reveal mx-auto max-w-md p-10 text-center">
             <b class="block text-lg text-slate-900">Belum ada agenda terdaftar</b>
-            <p class="mt-2 text-base text-slate-500">Agenda terbaru otomatis tampil setelah ditambahkan lewat halaman admin.</p>
+            <p class="mt-2 text-base text-slate-500"></p>
           </div>` : `
           <div class="reveal grid gap-5 md:grid-cols-2">
             ${list.map((a) => {
@@ -257,7 +257,7 @@ function renderFooter(d) {
         <div>
           <h4 class="mb-4 text-lg font-bold text-white">Kontak Pengurus</h4>
           <ul class="space-y-2.5 text-base">
-            <li>${ada(i.telepon) ? `<a class="hover:text-emerald-400" href="tel:${i.telepon}">${i.telepon}</a>` : '<span class="nilai-kosong">Telepon akan diperbarui</span>'}</li>
+            <li>${ada(i.telepon) ? `<a class="hover:text-emerald-400" href="tel:${i.telepon}">${i.telepon}</a>` : '<span class="nilai-kosong">Telepon</span>'}</li>
             <li>${ada(i.email) ? `<a class="hover:text-emerald-400" href="mailto:${i.email}">${i.email}</a>` : '<span class="nilai-kosong">Email akan diperbarui</span>'}</li>
             ${ada(i.sosmed && i.sosmed.whatsapp) ? `<li><a class="hover:text-emerald-400" href="https://wa.me/${i.sosmed.whatsapp}">WhatsApp Pengurus</a></li>` : ''}
           </ul>
@@ -277,7 +277,7 @@ function renderFooter(d) {
         <div class="text-outline-dark text-[clamp(3rem,10vw,7.5rem)] font-extrabold uppercase leading-none opacity-60">RW 013</div>
       </div>
       <div class="border-t border-slate-800 py-5 text-center text-sm text-slate-500">
-        © ${new Date().getFullYear()} ${i.namaRW || 'RW 013 Menteng Atas'} — dibangun gotong royong oleh warga.
+        © ${new Date().getFullYear()} ${i.namaRW || 'RW 013 Menteng Atas'} — Website Rasa Gotong Royong.
       </div>
     </footer>`;
 }

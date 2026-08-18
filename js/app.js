@@ -1,7 +1,7 @@
 /* =========================================================
-   app.js — REFACTOR v1 (orkestrator BERANDA)
-   muatData + rapikan • panggilan aman • pin ronda •
-   ronda & cuaca memakai helper utils (tanpa duplikat)
+   app.js — REFACTOR v3 (Orkestrator + PWA + Live Preview)
+   Mendeteksi parameter URL untuk menampilkan data dari 
+   localStorage alih-alih Firebase/JSON saat dalam mode Preview.
    ========================================================= */
 
    const FB = window.FIREBASE_CONFIG || null;
@@ -43,7 +43,7 @@
      let host = $('#pin-ronda');
      const r = d.ronda;
      if (!r || r.aktif === false) { if (host) host.remove(); return; }
-     const tim = hitungTimRonda(r, isoLokal(new Date()));      // helper utils
+     const tim = hitungTimRonda(r, isoLokal(new Date()));
      if (!tim) { if (host) host.remove(); return; }
      const nama = (tim.anggota || []).filter(Boolean).join(', ');
      const tgl = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
@@ -99,7 +99,6 @@
          gsap.fromTo(el, { yPercent: 115 }, { yPercent: 0, duration: 1, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
        });
    
-       /* marquee Info Warga: durasi mengikuti kecepatan scroll */
        const mq = document.querySelector('.marquee-track');
        if (mq && lenis) {
          lenis.on('scroll', ({ velocity }) => {
@@ -110,7 +109,7 @@
      } catch (e) { console.warn('Efek scroll dinonaktifkan:', e); }
    }
    
-   /* ---------- NORMALISASI (aman sebelum render) ---------- */
+   /* ---------- NORMALISASI ---------- */
    function normalisasi(d) {
      d = d || {};
      d.identitas = d.identitas || {}; d.identitas.sosmed = d.identitas.sosmed || {};
@@ -146,8 +145,23 @@
      return d;
    }
    
-   /* ---------- MUAT DATA (Firebase → lokal; selalu rapikan) ---------- */
+   /* ---------- MUAT DATA ---------- */
    async function muatData() {
+     // Jika mode preview, ambil dari localStorage
+     const urlParams = new URLSearchParams(window.location.search);
+     const isPreview = urlParams.get('preview') === '1';
+     
+     if (isPreview) {
+       const previewData = localStorage.getItem('rw13_preview_data');
+       if (previewData) {
+         console.log('🔍 Mode Preview: Memuat data dari localStorage.');
+         return rapikan(JSON.parse(previewData));
+       } else {
+         console.warn('⚠️ Tidak ada data preview, fallback ke data.json');
+       }
+     }
+   
+     // Mode Normal (atau fallback preview)
      if (db) {
        try { const snap = await _fb.get(_fb.ref(db, 'data')); if (snap.val()) return rapikan(snap.val()); }
        catch (e) { console.warn('Baca Firebase gagal → fallback lokal.', e); }
@@ -157,7 +171,7 @@
      return rapikan(await r.json());
    }
    
-   /* ---------- PANGGILAN AMAN untuk renderer global ---------- */
+   /* ---------- PANGGILAN AMAN ---------- */
    function panggil(nama, DATA) {
      const fn = window[nama];
      if (typeof fn !== 'function') { console.warn('[' + nama + '] belum tersedia — dilewati.'); return; }
@@ -183,7 +197,7 @@
      initEfek();
    }
    
-   /* ---------- NAVIGASI ANCHOR (Lenis) ---------- */
+   /* ---------- NAVIGASI ANCHOR ---------- */
    document.addEventListener('click', (e) => {
      const a = e.target.closest('a[href^="#"]');
      if (!a) return;
@@ -211,10 +225,15 @@
        });
    
        const DATA = await muatData();
+       
+       // Jika mode preview, jangan pasang listener realtime Firebase
+       const urlParams = new URLSearchParams(window.location.search);
+       const isPreview = urlParams.get('preview') === '1';
+   
        window._lastJson = JSON.stringify(DATA);
        renderSemua(DATA);
    
-       if (db) {
+       if (!isPreview && db) {
          _fb.onValue(_fb.ref(db, 'data'), (snap) => {
            const v = snap.val();
            if (!v) return;
@@ -224,6 +243,16 @@
            renderSemua(v);
          });
        }
+   
+       if ('serviceWorker' in navigator && !isPreview) {
+         try {
+           const reg = await navigator.serviceWorker.register('/sw.js');
+           console.log('[SW] Registered at scope:', reg.scope);
+         } catch (e) {
+           console.warn('[SW] Registration failed:', e);
+         }
+       }
+   
      } catch (err) {
        console.error(err);
        $('#hero').innerHTML = `

@@ -1,8 +1,8 @@
 /* =========================================================
-   halaman.js — REFACTOR v1 (fondasi SUBPAGE)
-   header: logo + judul besar + prev/next + widget cuaca
-   karakter visual per halaman menimpa tema global
-   orangHal/avatarHal = alias utils (orang/avatar)
+   halaman.js — REFACTOR v2 (Branding Konsisten)
+   Karakter halaman sekarang menjadi "Overlay" yang hanya
+   mengubah suasana (latar, kartu, teks) tanpa menghapus
+   Tema Aksen utama yang dipilih pengurus RW.
    ========================================================= */
 
    const DAFTAR_HALAMAN = [
@@ -13,41 +13,34 @@
   
   /* Setiap halaman punya "jiwa" visualnya sendiri */
   const KARAKTER = {
-    'struktur.html':     { mode: 'light', bg: '#F4F7FB', surface: '#FFFFFF', fill: '#E7EEF7', line: '#CBD9EA',
-                           accent: '#1D4ED8', accentSoft: '#DBEAFE', accentText: '#1E40AF', onAccent: '#FFFFFF',
-                           heading: '#0A1F44', nav: '#33415C', navHover: '#1D4ED8', teks: '#16233A', cls: 'hal-struktur' },
-    'rt.html':           { mode: 'light', bg: '#F2F8F7', surface: '#FFFFFF', fill: '#DFF0ED', line: '#BFDFD9',
-                           accent: '#0F766E', accentSoft: '#CCFBF1', accentText: '#0F766E', onAccent: '#FFFFFF',
-                           heading: '#134E4A', nav: '#3D5A56', navHover: '#0F766E', teks: '#1C2B29', cls: 'hal-rt' },
-    'pkk.html':          { mode: 'light', bg: '#FFF6FA', surface: '#FFFFFF', fill: '#FDE7F2', line: '#FBCFE0',
-                           accent: '#DB2777', accentSoft: '#FCE7F3', accentText: '#BE185D', onAccent: '#FFFFFF',
-                           heading: '#7A1B4E', nav: '#6D4059', navHover: '#DB2777', teks: '#33202B', cls: 'hal-pkk' },
-    'karangtaruna.html': { mode: 'dark',  bg: '#0B1220', surface: '#101A2E', fill: '#1B2A44', line: '#2C3E5F',
-                           accent: '#F97316', accentSoft: '#3A2410', accentText: '#FB923C', accentTextSoft: '#FDBA74', onAccent: '#0B1220',
-                           heading: '#F8FAFC', nav: '#C7D2E2', navHover: '#FB923C', teks: '#E2E8F0', cls: 'hal-karangtaruna' },
-    'lmk.html':          { mode: 'light', bg: '#FAF6EE', surface: '#FFFCF6', fill: '#F2E8D8', line: '#E3D5BC',
-                           accent: '#A16207', accentSoft: '#F7EED9', accentText: '#854D0E', onAccent: '#FFFFFF',
-                           heading: '#40301D', nav: '#5C4B33', navHover: '#A16207', teks: '#2E2417', cls: 'hal-lmk' },
-    'fasilitas.html':    { mode: 'light', bg: '#F1F8F2', surface: '#FFFFFF', fill: '#DFF0E1', line: '#C4E0C8',
-                           accent: '#16A34A', accentSoft: '#DCFCE7', accentText: '#15803D', onAccent: '#FFFFFF',
-                           heading: '#14351C', nav: '#3E5A46', navHover: '#16A34A', teks: '#1B2A20', cls: 'hal-fasilitas' },
-    'galeri.html':       { mode: 'dark',  bg: '#0C0D0F', surface: '#15171A', fill: '#23262B', line: '#2E3238',
-                           accent: '#E11D48', accentSoft: '#3B1220', accentText: '#F87171', onAccent: '#FFFFFF',
-                           heading: '#F4F4F5', nav: '#CFD4DA', navHover: '#F87171', teks: '#E4E4E7', cls: 'hal-galeri' }
+    'struktur.html':     { mode: 'light', bg: '#F4F7FB', surface: '#FFFFFF', fill: '#E7EEF7', line: '#CBD9EA', lineSoft: '#DEE7F2', teks: '#16233A', cls: 'hal-struktur' },
+    'rt.html':           { mode: 'light', bg: '#F2F8F7', surface: '#FFFFFF', fill: '#DFF0ED', line: '#BFDFD9', lineSoft: '#D0E8E2', teks: '#1C2B29', cls: 'hal-rt' },
+    'pkk.html':          { mode: 'light', bg: '#FFF6FA', surface: '#FFFFFF', fill: '#FDE7F2', line: '#FBCFE0', lineSoft: '#FAD5E7', teks: '#33202B', cls: 'hal-pkk' },
+    'karangtaruna.html': { mode: 'dark',  bg: '#0B1220', surface: '#101A2E', fill: '#1B2A44', line: '#2C3E5F', lineSoft: '#22324F', teks: '#E2E8F0', cls: 'hal-karangtaruna' },
+    'lmk.html':          { mode: 'light', bg: '#FAF6EE', surface: '#FFFCF6', fill: '#F2E8D8', line: '#E3D5BC', lineSoft: '#EBDFCB', teks: '#2E2417', cls: 'hal-lmk' },
+    'fasilitas.html':    { mode: 'light', bg: '#F1F8F2', surface: '#FFFFFF', fill: '#DFF0E1', line: '#C4E0C8', lineSoft: '#D1E8D4', teks: '#1B2A20', cls: 'hal-fasilitas' },
+    'galeri.html':       { mode: 'dark',  bg: '#0C0D0F', surface: '#15171A', fill: '#23262B', line: '#2E3238', lineSoft: '#25292C', teks: '#E4E4E7', cls: 'hal-galeri' }
   };
   
   function terapkanKarakter(key) {
     const k = KARAKTER[key];
     if (!k) return;
     (k.cls || '').split(' ').filter(Boolean).forEach((c) => document.body.classList.add(c));
+    
     const r = document.documentElement;
     if (k.mode) r.dataset.mode = k.mode;
+    
+    // REFACTOR: HANYA mengubah suasana (bg, surface, fill, line, teks)
+    // TIDAK mengubah --accent, --accent-text, --heading (agar tetap konsisten dengan tema user)
     const map = {
-      '--bg': k.bg, '--surface': k.surface, '--fill': k.fill, '--line': k.line, '--line-soft': k.lineSoft || k.line,
-      '--accent': k.accent, '--accent-strong': k.accentStrong || k.accent, '--accent-bright': k.accentBright || k.accent,
-      '--accent-soft': k.accentSoft, '--accent-text': k.accentText, '--accent-text-soft': k.accentTextSoft || k.accentText,
-      '--on-accent': k.onAccent, '--heading': k.heading, '--nav': k.nav, '--nav-hover': k.navHover, '--teks': k.teks
+      '--bg': k.bg,
+      '--surface': k.surface,
+      '--fill': k.fill,
+      '--line': k.line,
+      '--line-soft': k.lineSoft || k.line,
+      '--teks': k.teks
     };
+    
     Object.entries(map).forEach(([kk, v]) => { if (v) r.style.setProperty(kk, v); });
   }
   
@@ -72,7 +65,7 @@
     d.identitas = d.identitas || {};
     try { terapkanTema(d.tema); } catch (e) {}
     const cur = (location.pathname.split('/').pop() || '').toLowerCase();
-    terapkanKarakter(cur);                                   // karakter menimpa tema global
+    terapkanKarakter(cur); // Karakter hanya mengubah nuansa, aksen tetap tema pengurus
     document.title = judul + ' — ' + (d.identitas.namaRW || 'RW 013 Menteng Atas');
   
     const host = $('#headerHal');
