@@ -1,6 +1,5 @@
 {
-  "_catatan": "KONTRAK v1 — orang={nama,foto}; tanggal=YYYY-MM-DD; koordinat=[lat,lng]; statistik=angka. Data bersih tanpa spasi liar. Statistik per-RT dijumlahkan otomatis ke Profil. ronda: pola 3-hari (TEBO/MONCOS) sesuai AGST'26.",
-
+  "_catatan": "KONTRAK v1 — orang={nama,foto}; tanggal=YYYY-MM-DD; koordinat=[lat,lng]; statistik=angka. Data bersih tanpa spasi liar (dibersihkan 2026-08-18). ronda: pola 3-hari (TEBO/MONCOS) sesuai AGST'26.",
   "identitas": {
     "namaRW": "RW 013 Menteng Atas",
     "tagline": "A.M.A.N.A.H",
@@ -8,52 +7,39 @@
     "kecamatan": "Kecamatan Setiabudi",
     "kota": "Jakarta Selatan",
     "alamat": "RT 06 RW 013 Menteng Atas Setiabudi, Jakarta Selatan",
-    "koordinat": [-6.2138, 106.8478],
+    "koordinat": [-6.21854, 106.84035],
     "telepon": "-",
     "email": "RW013Mentas@gmail.com",
     "jamLayanan": "Minggu~Jum'at • 20.00–22.00 WIB",
     "sosmed": { "instagram": "", "facebook": "", "whatsapp": "" }
   },
-
-  "tema": { "preset": "garuda", "custom": {} },
-
+  "tema": { "preset": "biru", "custom": {} },
   "ronda": {
     "aktif": true,
     "mulai": "2026-07-30",
     "polahari": 3,
-    "tim": [
-      { "nama": "TEBO", "anggota": [] },
-      { "nama": "MONCOS", "anggota": [] }
-    ],
+    "tim": [ { "nama": "TEBO", "anggota": [] }, { "nama": "MONCOS", "anggota": [] } ],
     "jadwal": []
   },
-
   "hero": {
-    "foto": "https://picsum.photos/1600/900?random=1",
+    "foto": "https://binabdillah.github.io/MENTAS13/assets/uploads/1787213981137-bg0.jpg.jpg",
     "judul": "Selamat Datang di Portal Resmi",
     "sambutan": "Ini menjadi sarana informasi bagi warga RW 013 Menteng Atas. Mari bersama menjaga lingkungan yang aman, bersih, dan guyub.",
     "periode": "2024–2029"
   },
-
   "banner": {
-    "aktif": true,
-    "mulai": "2026-08-01",
-    "selesai": "2026-08-31",
+    "aktif": true, "mulai": "2026-08-01", "selesai": "2026-08-31",
     "gambar": "assets/logo-HUT-RI-81.png",
     "teks": "HUT RI ke-81 — Menjaga Alam, Membangun Bangsa",
     "link": "#agenda",
     "gantiFotoHero": false
   },
-
   "peta": {
     "mode": "google",
     "googleEmbed": "https://www.google.com/maps/d/embed?mid=1_opObY1kFOyctMgN6jrozmqhc3j5bLg&ehbc=2E312F"
   },
-
   "wilayah": {
-    "luasM2": 4200,
-    "penduduk": 1881,
-    "jumlahRT": 9,
+    "luasM2": 4200, "penduduk": 1881, "jumlahRT": 9,
     "perbatasan": [
       { "arah": "Timur", "dengan": "Jl. Subur Ujung RW.015" },
       { "arah": "Selatan", "dengan": "Pemakaman Menteng Pulo" },
@@ -61,12 +47,10 @@
       { "arah": "Barat", "dengan": "Gg. 3 RW.005" }
     ]
   },
-
   "penasehat": [
     { "nama": "", "foto": "" }, { "nama": "", "foto": "" }, { "nama": "", "foto": "" },
     { "nama": "", "foto": "" }, { "nama": "", "foto": "" }
   ],
-
   "strukturRW": {
     "inti": [
       { "jabatan": "Ketua", "nama": "Abdillah A. Rahman", "foto": "" },
@@ -80,7 +64,6 @@
       { "nama": "Sosial & Kesejahteraan", "ikon": "🤝", "anggota": [] }
     ]
   },
-
   "rt": [
     { "no": "001", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 62, "jiwa": 205, "laki": 104, "perempuan": 101, "balita": 18, "lansia": 22 } },
     { "no": "002", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 58, "jiwa": 196, "laki": 99, "perempuan": 97, "balita": 16, "lansia": 20 } },
@@ -92,52 +75,42 @@
     { "no": "008", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 57, "jiwa": 194, "laki": 98, "perempuan": 96, "balita": 16, "lansia": 19 } },
     { "no": "009", "pengurus": { "Ketua": { "nama": "", "foto": "" }, "Sekretaris": { "nama": "", "foto": "" }, "Bendahara": { "nama": "", "foto": "" }, "Bank Sampah": { "nama": "", "foto": "" } }, "statistik": { "kk": 60, "jiwa": 208, "laki": 106, "perempuan": 102, "balita": 17, "lansia": 22 } }
   ],
-
   "mitra": [
-    { "nama": "TP PKK RW 013", "ikon": "👩", "deskripsi": "Gerakan pemberdayaan & kesejahteraan keluarga.",
-      "foto": "", "kontak": "", "program": ["Dasawisma", "UP2K", "Kader Posyandu"],
+    { "nama": "TP PKK RW 013", "ikon": "👩", "deskripsi": "Gerakan pemberdayaan & kesejahteraan keluarga.", "foto": "", "kontak": "", "program": ["Dasawisma", "UP2K", "Kader Posyandu"],
       "struktur": [ { "jabatan": "Ketua", "nama": "", "foto": "" }, { "jabatan": "Sekretaris", "nama": "", "foto": "" }, { "jabatan": "Bendahara", "nama": "", "foto": "" } ] },
-    { "nama": "Karang Taruna Unit 13", "ikon": "🧑‍‍🧑", "deskripsi": "Wadah kreativitas & kegiatan pemuda wilayah.",
-      "foto": "", "kontak": "", "program": ["Liga futsal antar-RT", "Bakti sosial", "Konten warga"],
+    { "nama": "Karang Taruna Unit 13", "ikon": "🧑🤝‍🧑", "deskripsi": "Wadah kreativitas & kegiatan pemuda wilayah.", "foto": "", "kontak": "", "program": ["Liga futsal antar-RT", "Bakti sosial", "Konten warga"],
       "struktur": [ { "jabatan": "Ketua", "nama": "", "foto": "" }, { "jabatan": "Wakil Ketua", "nama": "", "foto": "" }, { "jabatan": "Sekretaris", "nama": "", "foto": "" } ] },
-    { "nama": "LMK", "ikon": "🏘️", "deskripsi": "Lembaga Musyawarah Kelurahan — mitra pembangunan warga.",
-      "foto": "", "kontak": "", "program": ["Musyawarah pembangunan", "Advokasi warga"],
+    { "nama": "LMK", "ikon": "🏘️", "deskripsi": "Lembaga Musyawarah Kelurahan — mitra pembangunan warga.", "foto": "", "kontak": "", "program": ["Musyawarah pembangunan", "Advokasi warga"],
       "struktur": [ { "jabatan": "Ketua", "nama": "", "foto": "" } ] }
   ],
-
   "agenda": [
-    { "tanggal": "2026-08-16", "waktu": "19.30–21.00", "judul": "Malam Tirakatan & Doa Bersama", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "Tasyakuran HUT RI ke-81 bersama seluruh warga." },
-    { "tanggal": "2026-08-17", "waktu": "07.00–12.00", "judul": "Upacara & Lomba 17 Agustus", "tempat": "Lapangan RW 013", "kategori": "Kegiatan", "deskripsi": "Upacara bendera dilanjutkan lomba balita hingga dewasa. Tema: Menjaga Alam, Membangun Bangsa." },
-    { "tanggal": "2026-08-23", "waktu": "06.30–09.00", "judul": "Kerja Bakti & Tanam Tanaman", "tempat": "RT 001–009 & RPTRA Kebon Sawo", "kategori": "Kerja Bakti", "deskripsi": "Bersih selokan antisipasi hujan + gerakan Indonesia Hijau: tanam tanaman di RPTRA." },
-    { "tanggal": "2026-08-30", "waktu": "08.00–11.00", "judul": "Posyandu Balita & Lansia", "tempat": "Posyandu Melati", "kategori": "Kesehatan", "deskripsi": "Penimbangan balita, cek tensi & gula darah gratis untuk lansia." },
-    { "tanggal": "2026-09-05", "waktu": "19.30–21.00", "judul": "Rapat Pleno Pengurus RW", "tempat": "Pos RW 13", "kategori": "Rapat", "deskripsi": "Evaluasi kegiatan Agustus dan rencana program September." }
+    { "tanggal": "-", "waktu": "-", "judul": "-", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "-" },
+    { "tanggal": "-", "waktu": "-", "judul": "-", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "-" },     
+    { "tanggal": "-", "waktu": "-", "judul": "-", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "-" },
+    { "tanggal": "-", "waktu": "-", "judul": "-", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "-" },
+    { "tanggal": "-", "waktu": "-", "judul": "-", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "-" },
   ],
-
   "pengumuman": [
     { "tanggal": "2026-08-10", "judul": "Pendaftaran lomba 17 Agustus dibuka", "isi": "Daftar melalui ketua RT masing-masing atau Pos RW sebelum 14 Agustus.", "prioritas": "Biasa", "pin": true },
     { "tanggal": "2026-08-12", "judul": "Kerja bakti serentak Minggu pagi", "isi": "Fokus bersih selokan & tanam tanaman. Alat kebersihan disediakan per RT.", "prioritas": "Biasa", "pin": false },
     { "tanggal": "2026-08-05", "judul": "Posyandu balita & lansia 30 Agustus", "isi": "Bawa KMS balita; lansia cek tensi & gula darah gratis.", "prioritas": "Penting", "pin": false }
   ],
-
   "galeri": [
     { "foto": "assets/logo-HUT-RI-81.png", "keterangan": "Spanduk tema HUT RI ke-81 — Indonesia Hijau", "tanggal": "2026-08-01", "kategori": "Kegiatan" },
     { "foto": "assets/logo-posyandu.png", "keterangan": "Kader Posyandu siap melayani warga", "tanggal": "2026-07-30", "kategori": "Kesehatan" },
     { "foto": "assets/logo-rw.png", "keterangan": "Logo resmi RW 013 Menteng Atas", "tanggal": "2026-01-01", "kategori": "Dokumentasi" }
   ],
-
   "layanan": [],
   "kontakDarurat": [],
   "umkm": [],
-
   "fasilitas": [
-    { "nama": "Masjid Jami' Al Barkah", "ikon": "🕌", "jenis": "Ibadah", "alamat": "RT 01 RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21360, 106.84760] },
-    { "nama": "Yayasan Ar Rizky As Salafiyyah", "ikon": "🏫", "jenis": "Pendidikan", "alamat": "RT 02 RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21365, 106.84795] },
-    { "nama": "Saung Warga RW 13", "ikon": "🛖", "jenis": "Ruang Publik", "alamat": "RT 02 RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21390, 106.84760] },
-    { "nama": "RPTRA Kebon Sawo", "ikon": "🌳", "jenis": "Ruang Hijau", "alamat": "RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21400, 106.84790] },
-    { "nama": "PAUD ASTERIA", "ikon": "🎓", "jenis": "Pendidikan", "alamat": "RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21395, 106.84800] },
-    { "nama": "Pos RW 13", "ikon": "🏠", "jenis": "Administrasi", "alamat": "RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21375, 106.84775] }
+    { "nama": "Masjid Jami' Al Barkah", "ikon": "🕌", "jenis": "Ibadah", "alamat": "RT 01 RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21801, 106.83994] },
+    { "nama": "Yayasan Ar Rizky As Salafiyyah", "ikon": "🏫", "jenis": "Pendidikan", "alamat": "RT 02 RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21843, 106.83978] },
+    { "nama": "Saung Warga RW 13", "ikon": "🛖", "jenis": "Ruang Publik", "alamat": "RT 02 RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21862, 106.83999] },
+    { "nama": "RPTRA Kebon Sawo", "ikon": "🌳", "jenis": "Ruang Hijau", "alamat": "RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21861, 106.84044] },
+    { "nama": "PAUD ASTERIA", "ikon": "🎓", "jenis": "Pendidikan", "alamat": "RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21854, 106.84035] },
+    { "nama": "Pos RW 13", "ikon": "🏠", "jenis": "Administrasi", "alamat": "RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21854, 106.84035] }
   ],
-
   "batasRW": [
     [-6.21355, 106.84755], [-6.21350, 106.84800], [-6.21380, 106.84812],
     [-6.21410, 106.84800], [-6.21415, 106.84755], [-6.21385, 106.84743]
