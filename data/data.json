@@ -2,7 +2,7 @@
   "_catatan": "KONTRAK v1 — orang={nama,foto}; tanggal=YYYY-MM-DD; koordinat=[lat,lng]; statistik=angka. Data bersih tanpa spasi liar (dibersihkan 2026-08-18). ronda: pola 3-hari (TEBO/MONCOS) sesuai AGST'26.",
   "identitas": {
     "namaRW": "RW 013 Menteng Atas",
-    "tagline": "A M A N A H",
+    "tagline": "A.M.A.N.A.H",
     "logo": "assets/logo-rw.png",
     "kecamatan": "Kecamatan Setiabudi",
     "kota": "Jakarta Selatan",
@@ -28,7 +28,7 @@
     "periode": "2024–2029"
   },
   "banner": {
-    "aktif": false, "mulai": "2026-08-01", "selesai": "2026-08-31",
+    "aktif": true, "mulai": "2026-08-01", "selesai": "2026-08-31",
     "gambar": "assets/logo-HUT-RI-81.png",
     "teks": "HUT RI ke-81 — Menjaga Alam, Membangun Bangsa",
     "link": "#agenda",
@@ -84,7 +84,7 @@
       "struktur": [ { "jabatan": "Ketua", "nama": "", "foto": "" } ] }
   ],
   "agenda": [
-    { "tanggal": "31-08-2026", "waktu": "08:30-11;30", "judul": "PSN", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "Rutin" },
+    { "tanggal": "-", "waktu": "-", "judul": "-", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "-" },
     { "tanggal": "-", "waktu": "-", "judul": "-", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "-" },     
     { "tanggal": "-", "waktu": "-", "judul": "-", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "-" },
     { "tanggal": "-", "waktu": "-", "judul": "-", "tempat": "Saung Warga RW 13", "kategori": "Kegiatan", "deskripsi": "-" },
@@ -102,7 +102,7 @@
   ],
   "layanan": [],
   "kontakDarurat": [],
-  "umkm": [Unit Usaha PKK RW 13],
+  "umkm": [],
   "fasilitas": [
     { "nama": "Masjid Jami' Al Barkah", "ikon": "🕌", "jenis": "Ibadah", "alamat": "RT 01 RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21801, 106.83994] },
     { "nama": "Yayasan Ar Rizky As Salafiyyah", "ikon": "🏫", "jenis": "Pendidikan", "alamat": "RT 02 RW 013 Menteng Atas", "foto": "", "koordinat": [-6.21843, 106.83978] },

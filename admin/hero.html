@@ -1,0 +1,51 @@
+<section class="hero">
+  <div class="hero-container">
+    <div class="hero-content">
+      <h1>The Future of AI is Here.</h1>
+      <p>Scale your business with smart automation and real-time global data.</p>
+      <button class="cta-btn">Start Your Trial</button>
+    </div>
+    <div class="hero-image">
+      <img src="rbt1.png" alt="Friendly AI Robot">
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    background-color: #ffffff;
+    padding: 80px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+  }
+  .hero-container {
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+  }
+  .hero-content h1 {
+    font-size: 3.5rem;
+    color: #0c1a32;
+    margin-bottom: 20px;
+  }
+  .cta-btn {
+    background-color: #00AEEF;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .hero-image img {
+    max-width: 100%;
+    height: auto;
+  }
+  /* Stack on mobile */
+  @media (max-width: 768px) {
+    .hero-container { flex-direction: column; text-align: center; }
+  }
+</style>

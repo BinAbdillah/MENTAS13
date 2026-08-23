@@ -255,7 +255,7 @@
    });
    
    /* ---------- PANEL TEMA / RONDA / UPLOAD ---------- */
-   let temaAktif = { preset: 'garuda', custom: {} };
+   let temaAktif = { preset: 'biru', custom: {} };
    
    function panelTemaHTML() {
      const p = Object.keys(PRESET_TEMA);
@@ -329,7 +329,7 @@
    
      host.querySelectorAll('input[data-warna]').forEach((inp) => {
        inp.addEventListener('input', () => {
-         const base = PRESET_TEMA[temaAktif.preset] || PRESET_TEMA.garuda;
+         const base = PRESET_TEMA[temaAktif.preset] || PRESET_TEMA.biru;
          const custom = Object.assign({}, base, temaAktif.custom);
          custom[inp.dataset.warna] = inp.value;
          temaAktif = { preset: 'custom', custom };
