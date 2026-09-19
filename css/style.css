@@ -1,80 +1,132 @@
+/* =========================================================
+   ADMIN FORM BUILDER — CLASSIC POLISH
+   Improves readability, grouping, and visual structure for data editing.
+   Keeps existing logic intact.
+   ========================================================= */
 
-/* ---------- FINAL CLASSIC CLEANUP ---------- */
-#rootHal {
-  padding-top: 1.5rem;
+body.admin-page #formRoot {
+  display: block;
+  border-radius: 1.5rem;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.35);
 }
 
-#rootHal .kartu,
-#rootHal .bg-white,
-#rootHal .bg-slate-50,
-#rootHal .bg-slate-100,
-#rootHal [class*="bg-"] {
-  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,249,242,0.82)) !important;
+body.admin-page #adminContent {
+  display: grid;
+  gap: 1rem;
 }
 
-#rootHal .kartu,
-#rootHal .rounded-2xl,
-#rootHal .rounded-3xl,
-#rootHal .rounded-xl,
-#rootHal .rounded-lg {
-  border-color: var(--line) !important;
+body.admin-page #adminContent > div[id^="tab-"] {
+  display: grid;
+  gap: 1rem;
+}
+
+body.admin-page fieldset.item,
+body.admin-page fieldset.arr,
+body.admin-page fieldset.obj {
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  padding: 1rem;
+  margin: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,249,242,0.7));
   box-shadow: var(--shadow-soft);
 }
 
-#rootHal .text-slate-600,
-#rootHal .text-slate-500,
-#rootHal .text-slate-400,
-#rootHal .text-slate-300,
-#rootHal .text-slate-200,
-#rootHal .text-slate-700,
-#rootHal .text-slate-800 {
-  color: var(--ink-soft) !important;
-}
-
-#rootHal h1,
-#rootHal h2,
-#rootHal h3,
-#rootHal h4,
-#rootHal h5,
-#rootHal h6 {
-  color: var(--ink) !important;
-}
-
-#rootHal .btn,
-#rootHal button,
-#rootHal .btnx,
-#rootHal .rounded-full {
+body.admin-page fieldset > legend,
+body.admin-page fieldset > .lbl,
+body.admin-page .lbl2 {
+  font-weight: 800;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
 }
 
-#rootHal .rounded-full {
-  border-radius: 999px;
+body.admin-page .fieldwrap {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 0.8rem;
 }
 
-#rootHal .border,
-#rootHal .border-2,
-#rootHal .border-b,
-#rootHal .border-t,
-#rootHal .border-l,
-#rootHal .border-r {
-  border-color: var(--line) !important;
+body.admin-page input,
+body.admin-page textarea,
+body.admin-page select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: rgba(255,255,255,0.8);
+  color: var(--ink);
+  padding: 0.72rem 0.85rem;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-#rootHal table,
-#rootHal thead,
-#rootHal tbody,
-#rootHal tr,
-#rootHal td,
-#rootHal th {
-  border-color: var(--line) !important;
+body.admin-page input:focus,
+body.admin-page textarea:focus,
+body.admin-page select:focus {
+  outline: none;
+  border-color: rgba(122,45,34,0.55);
+  box-shadow: 0 0 0 4px rgba(122,45,34,0.09);
 }
 
-body:not(.home) #rootHal {
-  min-height: 100vh;
+body.admin-page textarea {
+  min-height: 120px;
+  resize: vertical;
 }
 
-@media (max-width: 768px) {
-  #rootHal {
-    padding-top: 1rem;
+body.admin-page .section-card {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: rgba(255,255,255,0.45);
+  padding: 0.9rem;
+}
+
+body.admin-page .subgroup {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.7rem;
+  border: 1px dashed var(--line);
+  border-radius: 0.85rem;
+  background: rgba(255,255,255,0.22);
+}
+
+body.admin-page .mini-row {
+  display: grid;
+  gap: 0.7rem;
+}
+
+@media (min-width: 640px) {
+  body.admin-page .mini-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+body.admin-page .action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+body.admin-page .action-row button,
+body.admin-page .action-row .btnx {
+  border-radius: 0.8rem;
+}
+
+body.admin-page .muted {
+  color: var(--muted);
+}
+
+body.admin-page .status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 999px;
+  background: rgba(122,45,34,0.08);
+  color: var(--accent-deep);
+  padding: 0.38rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
 }
