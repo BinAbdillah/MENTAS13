@@ -1,91 +1,97 @@
 (() => {
-  const state = {
-    online: navigator.onLine,
-    firebaseReady: !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey && window.FIREBASE_CONFIG.databaseURL),
-    syncPending: false,
+  const DRAFT_KEY = 'rw13_draft';
+  const byId = (id) => document.getElementById(id);
+  const hasFirebaseConfig = () => {
+    const cfg = window.FIREBASE_CONFIG;
+    return !!(cfg && cfg.apiKey && cfg.databaseURL);
   };
 
-  const byId = (id) => document.getElementById(id);
+  const state = {
+    online: navigator.onLine,
+    firebaseReady: hasFirebaseConfig(),
+    syncing: false,
+  };
+
+  function hasDraft() {
+    try { return !!localStorage.getItem(DRAFT_KEY); } catch (_) { return false; }
+  }
+
+  function setButton(id, enabled) {
+    const button = byId(id);
+    if (!button) return;
+    button.disabled = !enabled;
+    button.setAttribute('aria-disabled', String(!enabled));
+  }
 
   function refresh() {
-    const auth = byId('statusAuth');
-    const btnSync = byId('btnSync');
-    const btnTerbitkan = byId('btnTerbitkan');
-    const btnSimpan = byId('btnSimpan');
-    const btnMigrasi = byId('btnMigrasi');
-    const btnPreview = byId('btnPreview');
-    const btnSimpanDraft = byId('btnSimpanDraft');
+    const status = byId('statusAuth');
+    if (!status) return;
 
-    if (!auth) return;
-
-    const localDraftExists = !!localStorage.getItem('rw13_draft');
+    state.online = navigator.onLine;
+    state.firebaseReady = hasFirebaseConfig();
+    const draftPending = hasDraft();
 
     if (!state.online) {
-      auth.textContent = 'Offline — draft lokal aktif';
-      auth.dataset.state = 'offline';
-      if (btnSync) btnSync.disabled = true;
-      if (btnTerbitkan) btnTerbitkan.disabled = true;
-      if (btnSimpan) btnSimpan.disabled = true;
-      if (btnMigrasi) btnMigrasi.disabled = true;
-      if (btnPreview) btnPreview.disabled = false;
-      if (btnSimpanDraft) btnSimpanDraft.disabled = false;
+      status.textContent = '🔴 Offline — draft lokal aktif';
+      status.dataset.state = 'offline';
+      setButton('btnSync', false);
+      setButton('btnTerbitkan', false);
+      setButton('btnSimpan', false);
+      setButton('btnMigrasi', false);
+      setButton('btnSimpanDraft', true);
+      setButton('btnPreview', true);
       return;
     }
 
     if (!state.firebaseReady) {
-      auth.textContent = 'Online — Firebase belum siap';
-      auth.dataset.state = 'warning';
-      if (btnSync) btnSync.disabled = true;
-      if (btnTerbitkan) btnTerbitkan.disabled = true;
-      if (btnSimpan) btnSimpan.disabled = true;
-      if (btnMigrasi) btnMigrasi.disabled = true;
-      if (btnPreview) btnPreview.disabled = false;
-      if (btnSimpanDraft) btnSimpanDraft.disabled = false;
+      status.textContent = '🟡 Online — Firebase belum siap';
+      status.dataset.state = 'warning';
+      setButton('btnSync', false);
+      setButton('btnTerbitkan', false);
+      setButton('btnSimpan', false);
+      setButton('btnMigrasi', false);
+      setButton('btnSimpanDraft', true);
+      setButton('btnPreview', true);
       return;
     }
 
-    if (state.syncPending || localDraftExists) {
-      auth.textContent = 'Online — sinkronisasi pending';
-      auth.dataset.state = 'sync';
+    if (state.syncing) {
+      status.textContent = '🔄 Online — sedang menyinkronkan';
+      status.dataset.state = 'syncing';
+    } else if (draftPending) {
+      status.textContent = '🟠 Online — sinkronisasi pending';
+      status.dataset.state = 'pending';
     } else {
-      auth.textContent = 'Online — siap sinkron';
-      auth.dataset.state = 'online';
+      status.textContent = '🟢 Online — siap sinkron';
+      status.dataset.state = 'online';
     }
 
-    if (btnSync) btnSync.disabled = false;
-    if (btnTerbitkan) btnTerbitkan.disabled = false;
-    if (btnSimpan) btnSimpan.disabled = false;
-    if (btnMigrasi) btnMigrasi.disabled = false;
-    if (btnPreview) btnPreview.disabled = false;
-    if (btnSimpanDraft) btnSimpanDraft.disabled = false;
+    // The actual auth handler in admin.js remains the final security gate.
+    setButton('btnSync', !state.syncing && draftPending);
+    setButton('btnTerbitkan', !state.syncing);
+    setButton('btnSimpan', !state.syncing);
+    setButton('btnMigrasi', !state.syncing);
+    setButton('btnSimpanDraft', true);
+    setButton('btnPreview', true);
   }
 
-  function setSyncPending(value) {
-    state.syncPending = !!value;
+  function setSyncing(value) {
+    state.syncing = !!value;
     refresh();
   }
 
-  window.__adminStatus = {
-    state,
-    refresh,
-    setSyncPending,
-    setFirebaseReady(value) {
-      state.firebaseReady = !!value;
-      refresh();
-    },
-  };
+  window.__adminStatus = { state, refresh, setSyncing };
 
-  window.addEventListener('online', refresh);
-  window.addEventListener('offline', refresh);
-  window.addEventListener('storage', (event) => {
-    if (event.key === 'rw13_draft') {
-      state.syncPending = !!localStorage.getItem('rw13_draft');
-      refresh();
-    }
-  });
+  addEventListener('online', refresh);
+  addEventListener('offline', refresh);
+  addEventListener('focus', refresh);
   document.addEventListener('visibilitychange', refresh);
-  document.addEventListener('DOMContentLoaded', refresh, { once: true });
+  addEventListener('storage', (event) => {
+    if (event.key === DRAFT_KEY) refresh();
+  });
 
-  state.syncPending = !!localStorage.getItem('rw13_draft');
+  // Observe dynamically-created action buttons without polling.
+  new MutationObserver(refresh).observe(document.body, { childList: true, subtree: true });
+
   refresh();
 })();
