@@ -1,156 +1,119 @@
 /* =========================================================
-   ADMIN DASHBOARD – FINAL TACTICAL REFINEMENT
-   Improves overall density, modern polish, and classic RW dashboard feel.
+   ADMIN SECTION SHELL REFINEMENT
+   Improves the editor blocks for component-based content editing.
    ========================================================= */
 
-body.admin-page main {
-  max-width: 1100px;
+body.admin-page #formRoot .fieldwrap {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 0.8rem;
 }
 
-body.admin-page #formRoot {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(46, 50, 56, 0.08);
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.03);
+body.admin-page #formRoot fieldset.item > .fieldwrap,
+body.admin-page #formRoot fieldset.arr > .fieldwrap,
+body.admin-page #formRoot fieldset.obj > .fieldwrap {
+  padding-top: 0.6rem;
 }
 
-body.admin-page #formRoot > #adminTabs {
+body.admin-page #formRoot .subgroup,
+body.admin-page #formRoot .section-card,
+body.admin-page #formRoot .mini-row {
+  display: grid;
+  gap: 0.7rem;
+}
+
+body.admin-page #formRoot .section-card,
+body.admin-page #formRoot .subgroup {
+  border: 1px dashed var(--line);
+  border-radius: 0.9rem;
+  background: rgba(255,255,255,0.2);
+  padding: 0.8rem;
+}
+
+body.admin-page #formRoot .mini-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body.admin-page #formRoot .mini-row > * {
+  min-width: 0;
+}
+
+body.admin-page #formRoot .action-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--line);
+  margin-top: 0.8rem;
 }
 
-body.admin-page #formRoot #adminContent {
-  display: grid;
-  gap: 1rem;
+body.admin-page #formRoot .status-pill,
+body.admin-page #formRoot .muted,
+body.admin-page #formRoot .mono {
+  transition: opacity 0.2s ease;
 }
 
-body.admin-page #formRoot [id^="tab-"] {
-  display: grid;
-  gap: 1rem;
-}
-
-body.admin-page [data-tipe="obj"],
-body.admin-page [data-tipe="arr"],
-body.admin-page [data-tipe="item"] {
-  background: linear-gradient(180deg, rgba(255,255,255,0.84), rgba(255,248,243,0.7));
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  padding: 1rem;
-}
-
-body.admin-page [data-tipe="obj"] > legend,
-body.admin-page [data-tipe="arr"] > legend,
-body.admin-page [data-tipe="item"] > legend {
-  padding: 0.2rem 0.5rem;
-  border-radius: 0.55rem;
-  background: rgba(122, 45, 34, 0.06);
-  color: var(--accent-deep);
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-size: 0.68rem;
-}
-
-body.admin-page [data-tipe="item"] {
-  position: relative;
-  padding-right: 3.2rem;
-}
-
-body.admin-page .leaf {
-  display: grid;
+body.admin-page #formRoot .status-pill {
+  display: inline-flex;
+  align-items: center;
   gap: 0.45rem;
-  margin: 0;
-}
-
-body.admin-page .leaf + .leaf {
-  margin-top: 0.7rem;
-}
-
-body.admin-page .leaf .lbl,
-body.admin-page .lbl2,
-body.admin-page .hint {
-  letter-spacing: 0.08em;
+  padding: 0.38rem 0.72rem;
+  border-radius: 999px;
+  background: rgba(122, 45, 34, 0.08);
+  color: var(--accent-deep);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-body.admin-page .leaf .lbl,
-body.admin-page .lbl2 {
-  font-size: 0.69rem;
-  font-weight: 800;
-  opacity: 0.72;
-  color: var(--ink-soft);
+body.admin-page #formRoot .muted {
+  color: var(--muted);
 }
 
-body.admin-page .hint {
-  font-size: 0.64rem;
-  opacity: 0.7;
-  font-weight: 700;
+body.admin-page #formRoot .mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
 }
 
-body.admin-page input[type="checkbox"] {
+body.admin-page #formRoot .foto-prev {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  object-fit: cover;
+  border-radius: 0.8rem;
+  border: 1px solid var(--line);
+}
+
+body.admin-page #formRoot button,
+body.admin-page #formRoot .btnx {
+  white-space: nowrap;
+}
+
+body.admin-page #formRoot input[type="checkbox"],
+body.admin-page #formRoot input[type="radio"] {
   width: 1rem;
   height: 1rem;
   accent-color: var(--accent);
 }
 
-body.admin-page .foto-prev {
-  border: 1px solid var(--line);
-  border-radius: 0.8rem;
-  background: rgba(255,255,255,0.7);
+body.admin-page #formRoot textarea {
+  min-height: 120px;
 }
 
-body.admin-page .btnx {
-  font-weight: 800;
-  letter-spacing: 0.04em;
-}
-
-body.admin-page .btnx.bg-emerald-600 {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%) !important;
-}
-
-body.admin-page .btnx.bg-slate-600 {
-  background: linear-gradient(135deg, rgba(51,65,85,0.95), rgba(71,85,105,0.88)) !important;
-}
-
-body.admin-page .btnx.bg-amber-500,
-body.admin-page .btnx.bg-indigo-600,
-body.admin-page .btnx.bg-red-600,
-body.admin-page .btnx.bg-sky-600 {
-  box-shadow: 0 12px 22px rgba(15, 23, 42, 0.08);
-}
-
-body.admin-page #statusLine {
-  border-top: 1px solid var(--line);
-  padding-top: 1rem;
-  margin-top: 1rem;
-}
-
-body.admin-page #loginCard {
-  border: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,249,242,0.82));
-  border-radius: 1.4rem;
-  box-shadow: 0 18px 30px rgba(15, 23, 42, 0.04);
-}
-
-body.admin-page #cfgWarn {
-  border-radius: 1.1rem;
-  box-shadow: 0 14px 24px rgba(245, 158, 11, 0.08);
+body.admin-page #formRoot .leaf[data-kind="multi"] textarea,
+body.admin-page #formRoot .leaf[data-kind="textarea"] textarea {
+  min-height: 150px;
 }
 
 @media (max-width: 640px) {
-  body.admin-page #formRoot {
-    padding: 0.85rem;
+  body.admin-page #formRoot .mini-row {
+    grid-template-columns: 1fr;
   }
 
-  body.admin-page #formRoot > #adminTabs {
-    gap: 0.45rem;
-  }
-
-  body.admin-page .tab-btn {
-    flex: 1 1 calc(50% - 0.4rem);
-    min-width: 0;
+  body.admin-page #formRoot .section-card,
+  body.admin-page #formRoot .subgroup,
+  body.admin-page #formRoot fieldset.item,
+  body.admin-page #formRoot fieldset.arr,
+  body.admin-page #formRoot fieldset.obj {
+    padding: 0.75rem;
   }
 }
