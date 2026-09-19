@@ -93,7 +93,6 @@ a {
   box-shadow: 0 10px 25px rgba(34, 24, 18, 0.08);
 }
 
-/* ---------- Tailwind remaps for classic palette ---------- */
 .bg-white,
 [class~="bg-white/90"],
 .bg-slate-50,
@@ -182,7 +181,6 @@ a {
   --tw-shadow-color: rgba(184, 137, 69, 0.2) !important;
 }
 
-/* ---------- Core components ---------- */
 .kartu {
   border-radius: 1.35rem;
   border: 1px solid var(--line);
@@ -255,7 +253,6 @@ summary::-webkit-details-marker {
   filter: saturate(1.08);
 }
 
-/* ---------- Header + motif ---------- */
 .moto-header {
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 700;
@@ -267,7 +264,6 @@ summary::-webkit-details-marker {
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-/* ---------- Floating menu ---------- */
 .menu-kanan {
   position: fixed;
   right: 14px;
@@ -337,7 +333,6 @@ summary::-webkit-details-marker {
   padding: 0.3rem 0.75rem 0.5rem;
 }
 
-/* ---------- Weather widget ---------- */
 #cuaca-widget {
   position: relative;
 }
@@ -380,7 +375,6 @@ summary::-webkit-details-marker {
   transform: none;
 }
 
-/* ---------- Ronda pin ---------- */
 #pin-ronda {
   position: fixed;
   right: 14px;
@@ -411,7 +405,6 @@ summary::-webkit-details-marker {
   opacity: 0.85;
 }
 
-/* ---------- Donut / charts ---------- */
 .donat-3d {
   perspective: 900px;
   position: relative;
@@ -469,7 +462,6 @@ summary::-webkit-details-marker {
   border: 1px solid var(--line-soft);
 }
 
-/* ---------- Subpages ---------- */
 .judul-hal {
   font-size: clamp(2.1rem, 5vw, 3.7rem);
   font-weight: 700;
@@ -511,7 +503,6 @@ body.hal-lmk h3 {
   font-family: Georgia, "Times New Roman", serif;
 }
 
-/* ---------- Legacy facility cards ---------- */
 .fas-track {
   display: grid;
   grid-template-columns: 1fr;
@@ -528,7 +519,6 @@ body.hal-lmk h3 {
   }
 }
 
-/* ---------- Form & admin ---------- */
 .inp {
   width: 100%;
   border: 1px solid var(--line);
@@ -592,7 +582,6 @@ fieldset.item, fieldset.arr, fieldset.obj {
   font-weight: 800;
 }
 
-/* ---------- Light mode override for dark-mode attribute ---------- */
 html[data-mode="dark"],
 html[data-mode="dark"] body,
 html[data-mode="dark"] .bg-slate-50,
@@ -622,7 +611,6 @@ html[data-mode="dark"] .cuaca-panel {
   background: rgba(255, 253, 249, 0.97) !important;
 }
 
-/* ---------- Motion & accessibility ---------- */
 .mask {
   display: block;
   overflow: hidden;
